@@ -1,10 +1,13 @@
 {
   "name": "osmtogeojson",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "convert OSM to geojson",
   "main": "osmtogeojson.js",
   "scripts": {
     "test": "mocha-phantomjs test/index.html"
+  },
+  "bin": {
+    "osmtogeojson": "osmtogeojson"
   },
   "repository": {
     "type": "git",
@@ -20,7 +23,9 @@
     "url": "https://github.com/tyrasd/osmtogeojson/issues"
   },
   "dependencies": {
-    "lodash": "~2.2.0"
+    "lodash": "~2.2.0",
+    "xmldom": "~0.1.16",
+    "optimist": "~0.3.5"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",

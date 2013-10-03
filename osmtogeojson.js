@@ -7,7 +7,9 @@ var osmtogeojson = {};
 osmtogeojson.toGeojson = function( data ) {
 
   var result;
-  if ( data instanceof XMLDocument )
+  console.log(data.childNodes[0].tagName);
+  if ( ((typeof XMLDocument !== "undefined") && data instanceof XMLDocument ||
+        (typeof XMLDocument === "undefined") && data.childNodes) )
     result = _osmXML2geoJSON(data);
   else
     result = _overpassJSON2geoJSON(data);

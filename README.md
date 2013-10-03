@@ -14,15 +14,20 @@ This code is used in and maintained by the [overpass turbo](http://github.com/ty
 Usage & API
 -----------
 
-nodejs:
-
-    npm install osmtogeojson
-
-    var osm = require('osmtogeojson');
-    osm.toGeojson(xml_data);
-
-browser:
-
-    <script src='osmtogeojson.js'></script>
-
-    osmtogeojson.toGeojson(xml_data);
+* as a command line tool:
+  
+        npm install -g osmtogeojson
+        $ osmtogeojson file.osm > file.geojson
+  
+* as a nodejs libary:
+  
+        npm install osmtogeojson
+  
+        var osm = require('osmtogeojson');
+        osm.toGeojson(xml_data);
+  
+* as a browser library:
+  
+        <script src='osmtogeojson.js'></script>
+  
+        osmtogeojson.toGeojson(xml_data);
