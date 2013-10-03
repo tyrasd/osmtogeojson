@@ -1,0 +1,30 @@
+{
+  "name": "osmtogeojson",
+  "version": "1.0.0",
+  "description": "convert OSM to geojson",
+  "main": "osmtogeojson.js",
+  "scripts": {
+    "test": "mocha-phantomjs test/index.html"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/tyrasd/osmtogeojson.git"
+  },
+  "keywords": [
+    "openstreetmap",
+    "geojson"
+  ],
+  "author": "Martin Raifer",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/tyrasd/osmtogeojson/issues"
+  },
+  "dependencies": {
+    "lodash": "~2.2.0"
+  },
+  "devDependencies": {
+    "expect.js": "~0.2.0",
+    "mocha": "~1.12.0",
+    "mocha-phantomjs": "~3.1.5"
+  }
+}
