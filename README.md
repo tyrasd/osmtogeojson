@@ -7,7 +7,7 @@ Converts [OSM](http://openstreetmap.org) [data](http://wiki.openstreetmap.org/wi
 * stable
 * real OSM [polygon support](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
 * real OSM multipolygon support
-* well [tested](http://github.com/tyrasd/osmtogeojson/blob/master/test/) and proven
+* well [tested](http://github.com/tyrasd/osmtogeojson/tree/master/test/) and proven
 
 This code is used in and maintained by the [overpass turbo](http://github.com/tyrasd/overpass-ide) project.
 
@@ -23,6 +23,6 @@ nodejs:
 
 browser:
 
-    <script src='osm_geojson.js'></script>
+    <script src='osmtogeojson.js'></script>
 
-    osmtogeojson..toGeojson(xml_data);
+    osmtogeojson.toGeojson(xml_data);
