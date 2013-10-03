@@ -11,6 +11,8 @@ Converts [OSM](http://openstreetmap.org) [data](http://wiki.openstreetmap.org/wi
 
 This code is used in and maintained by the [overpass turbo](http://github.com/tyrasd/overpass-ide) project.
 
+[![Build Status](https://secure.travis-ci.org/tyrasd/osmtogeojson.png)](https://travis-ci.org/tyrasd/osmtogeojson)
+
 Usage & API
 -----------
 
