@@ -30,6 +30,7 @@ Usage & API
   
 * as a browser library:
   
+        <script src='lodash.js'></script>
         <script src='osmtogeojson.js'></script>
   
         osmtogeojson.toGeojson(xml_data);
