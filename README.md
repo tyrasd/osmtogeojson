@@ -49,3 +49,25 @@ Converts OSM data into GeoJSON.
   * `polygonFeatures`: Either a [json object](https://github.com/tyrasd/osmtogeojson/blob/5d8684dc80712c3dc44d7a72692a2df3c7253cb1/osmtogeojson.js#L23-L103) or callback function that is used to determine if a closed way should be treated as a Polygon or LineString. [read more](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
 
 The result is a javascript object of GeoJSON data.
+
+GeoJSON
+-------
+
+The GeoJSON produced by this library will include exactly one GeoJSON-feature for each of the following OSM objects (that is everything that is also visible in overpass turbo's map view):
+
+* all unconnected or [*interesting*](#api) tagged nodes (POIs)
+* all ways (except [*uninteresting*](#api) multipolygon outlines)
+* all multipolygons (simple multipolygons with exactly one closed outer way are present via their outer way)
+
+All data is given as a FeatureCollection.
+
+Each Feature in the collection has an `id` property that is formed from the type and id of the original OSM object (e.g. `node/123`) and has the member `properties` containing the following data:
+
+* `type`: the OSM data type
+* `id`: the OSM id 
+* `tags`: a collection of all tags
+* `meta`: metainformaton about the feature (e.g. version, timestamp, user, etc.)
+* `relations`: an array of relations the feature is member of. Each relation is encoded as an object literal containing the following properties: `role` (membership role), `rel` (the relation's id) and `reltags` (contains all tags of the relation)
+
+If the [option](#api) `flatProperties` is set to true, the `properties` object will not contain any nested object literals, but directly provide a concise id, meta data and the tags of the respective OSM object.
+
