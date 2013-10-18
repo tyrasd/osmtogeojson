@@ -1,21 +1,25 @@
 #!/usr/bin/env node
 
 var osmtogeojson = require('./'),
-    argv = require('optimist')
-        .usage('Usage: $0 FILE')
-        .demand(1)
-        .argv;
+    opt = require('optimist')
+        .usage('Usage: $0 FILE'),
+    argv = opt.argv,
     fs = require('fs'),
+    concat = require('concat-stream'),
     xmldom = new (require('xmldom').DOMParser)();
 
-var filename = argv._[0];
+var filename = argv._[0] || '';
 
-console.log(
-    JSON.stringify(
-        osmtogeojson.toGeojson(
-            xmldom.parseFromString(
-                fs.readFileSync(filename, 'utf8')
-            )
-        ), null, 4
-    )
-);
+if (process.stdin.isTTY && !argv._[0]) return opt.showHelp();
+
+(argv._.length ? fs.createReadStream(argv._[0]) : process.stdin).pipe(concat(convert));
+
+function convert(data) {
+    process.stdout.write(
+        JSON.stringify(
+            osmtogeojson.toGeojson(
+                xmldom.parseFromString(data.toString())
+            ), null, 4
+        )
+    );
+}
