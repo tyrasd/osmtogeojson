@@ -4,7 +4,14 @@ try {
 
 var osmtogeojson = {};
 
-osmtogeojson.toGeojson = function( data ) {
+osmtogeojson.toGeojson = function( data, options ) {
+
+  options = _.merge(
+    {
+      uninterestingTags: {"source":true, "source_ref":true, "source:ref":true, "history":true, "attribution":true, "created_by":true, "tiger:county":true, "tiger:tlid":true, "tiger:upload_uuid":true},
+    },
+    options
+  );
 
   var result;
   if ( ((typeof XMLDocument !== "undefined") && data instanceof XMLDocument ||
@@ -127,7 +134,7 @@ osmtogeojson.toGeojson = function( data ) {
       if (typeof ignore_tags !== "object")
         ignore_tags={};
       for (var k in t)
-        if (k!="created_by" && k!="source" && ignore_tags[k]===undefined)
+        if (options.uninterestingTags[k]!==true && ignore_tags[k]===undefined)
           return true;
       return false;
     };
