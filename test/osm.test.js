@@ -20,6 +20,7 @@ describe("osm (xml)", function () {
       features: [
         {
           type: "Feature",
+          id: "node/1",
           properties: {
             type: "node",
             id: 1,
@@ -48,6 +49,7 @@ describe("osm (xml)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/1",
           properties: {
             type: "way",
             id: 1,
@@ -81,6 +83,7 @@ describe("osm (xml)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/2",
           properties: {
             type: "way",
             id: 2,
@@ -138,6 +141,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "node/1",
           properties: {
             type: "node",
             id: 1,
@@ -189,6 +193,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/1",
           properties: {
             type: "way",
             id: 1,
@@ -251,6 +256,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/1",
           properties: {
             type: "way",
             id: 1,
@@ -355,6 +361,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/2",
           properties: {
             type: "way",
             id: 2,
@@ -529,6 +536,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "relation/1",
           properties: {
             type: "relation",
             id: 1,
@@ -565,6 +573,7 @@ describe("osm (json)", function () {
         },
         {
           type: "Feature",
+          id: "way/3",
           properties: {
             type: "way",
             id: 3,
@@ -590,6 +599,7 @@ describe("osm (json)", function () {
         }, 
         {
           type: "Feature",
+          id: "way/5",
           properties: {
             type: "way",
             id: 5,
@@ -615,6 +625,7 @@ describe("osm (json)", function () {
         },
         {
           type: "Feature",
+          id: "way/4",
           properties: {
             type: "way",
             id: 4,
@@ -706,6 +717,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/12",
           properties: {
             type: "way",
             id: 12,
@@ -732,6 +744,7 @@ describe("osm (json)", function () {
         },
         {
           type: "Feature",
+          id: "way/11",
           properties: {
             type: "way",
             id:   11,
@@ -752,6 +765,7 @@ describe("osm (json)", function () {
         },
         {
           type: "Feature",
+          id: "way/10",
           properties: {
             type: "way",
             id: 10,
@@ -817,6 +831,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/1",
           properties: {
             type: "way",
             id: 1,
@@ -835,6 +850,7 @@ describe("osm (json)", function () {
         },
         {
           type: "Feature",
+          id: "node/3",
           properties: {
             type: "node",
             id: 3,
@@ -849,6 +865,7 @@ describe("osm (json)", function () {
         },
         {
           type: "Feature",
+          id: "node/5",
           properties: {
             type: "node",
             id: 5,
@@ -912,6 +929,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "way/1",
           properties: {
             type: "way",
             id: 1,
@@ -935,6 +953,7 @@ describe("osm (json)", function () {
         },
         {
           type: "Feature",
+          id: "node/1",
           properties: {
             type: "node",
             id: 1,
@@ -981,6 +1000,7 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "node/1",
           properties: {
             type: "node",
             id: 1,

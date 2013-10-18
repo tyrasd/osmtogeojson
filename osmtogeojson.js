@@ -212,6 +212,7 @@ osmtogeojson.toGeojson = function( data ) {
         continue; // lon and lat are required for showing a point
       geojsonnodes.features.push({
         "type"       : "Feature",
+        "id"         : "node/"+pois[i].id,
         "properties" : {
           "type" : "node",
           "id"   : pois[i].id,
@@ -404,6 +405,7 @@ osmtogeojson.toGeojson = function( data ) {
           // mp parsed, now construct the geoJSON
           var feature = {
             "type"       : "Feature",
+            "id"         : "relation/"+rels[i].id,
             "properties" : {
               "type" : "relation",
               "id"   : rels[i].id,
@@ -456,6 +458,7 @@ osmtogeojson.toGeojson = function( data ) {
           way_type = "Polygon";
           var feature = {
             "type"       : "Feature",
+            "id"         : "way/"+outer_way.id,
             "properties" : {
               "type" : "way",
               "id"   : outer_way.id,
@@ -502,6 +505,7 @@ osmtogeojson.toGeojson = function( data ) {
       }
       var feature = {
         "type"       : "Feature",
+        "id"         : "way/"+ways[i].id,
         "properties" : {
           "type" : "way",
           "id"   : ways[i].id,
