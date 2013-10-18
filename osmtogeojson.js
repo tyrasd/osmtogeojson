@@ -223,6 +223,8 @@ osmtogeojson.toGeojson = function( data, options ) {
     function has_interesting_tags(t, ignore_tags) {
       if (typeof ignore_tags !== "object")
         ignore_tags={};
+      if (typeof options.uninterestingTags === "function")
+        return options.uninterestingTags(t, ignore_tags);
       for (var k in t)
         if (options.uninterestingTags[k]!==true && ignore_tags[k]===undefined)
           return true;
@@ -634,6 +636,8 @@ osmtogeojson.toGeojson = function( data, options ) {
   }
   function _isPolygonFeature( tags ) {
     var polygonFeatures = options.polygonFeatures;
+    if (typeof polygonFeatures === "function")
+      return polygonFeatures(tags);
     // explicitely tagged non-areas
     if ( tags['area'] === 'no' )
       return false;
