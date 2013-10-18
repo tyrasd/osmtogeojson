@@ -1026,3 +1026,31 @@ describe("osm (json)", function () {
   });
 
 });
+
+
+describe("options", function () {
+  // check API options
+  it("flattened properties", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type: "node",
+          id:   1,
+          tags: {"foo": "bar"},
+          user: "johndoe",
+          lat:  1.234,
+          lon:  4.321
+        }
+      ]
+    };
+    geojson_properties= {
+      id: "node/1",
+      foo: "bar",
+      user: "johndoe"
+    };
+    var result = osmtogeojson.toGeojson(json, {flatProperties: true});
+    expect(result.features[0].properties).to.eql(geojson_properties);
+  });
+
+});

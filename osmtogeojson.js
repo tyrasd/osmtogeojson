@@ -8,6 +8,7 @@ osmtogeojson.toGeojson = function( data, options ) {
 
   options = _.merge(
     {
+      flatProperties: false,
       uninterestingTags: {
         "source": true,
         "source_ref": true,
@@ -632,6 +633,16 @@ osmtogeojson.toGeojson = function( data, options ) {
     geojson.features = geojson.features.concat(geojsonpolygons.features);
     geojson.features = geojson.features.concat(geojsonlines.features);
     geojson.features = geojson.features.concat(geojsonnodes.features);
+    // optionally, flatten properties
+    if (options.flatProperties) {
+      _.each(geojson.features, function(f) {
+        f.properties = _.merge(
+          f.properties.meta,
+          f.properties.tags,
+          {id: f.properties.type+"/"+f.properties.id}
+        );
+      });
+    }
     return geojson;
   }
   function _isPolygonFeature( tags ) {

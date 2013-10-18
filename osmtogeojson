@@ -18,7 +18,8 @@ function convert(data) {
     process.stdout.write(
         JSON.stringify(
             osmtogeojson.toGeojson(
-                xmldom.parseFromString(data.toString())
+                xmldom.parseFromString(data.toString()),
+                {flatProperties: true}
             ), null, 4
         )
     );
