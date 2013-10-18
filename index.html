@@ -1,7 +1,12 @@
-<!-- based on https://github.com/aaronlidman/osm-and-geojson (c)Aaron Lidman, WTFPL -->
+<!-- 
+demo page / introduction for osmtogeojson
+http://tyrasd.github.io/osmtogeojson
+http://github.com/tyrasd/osmtogeojson
+this page is based on https://github.com/aaronlidman/osm-and-geojson (c)Aaron Lidman, WTFPL
+-->
 <html>
 <head>
-    <title>OSM & GeoJSON by Aaron Lidman</title>
+    <title>osmtogeojson</title>
     <script type="text/javascript" src="http://cdnjs.cloudflare.com/ajax/libs/lodash.js/2.2.1/lodash.min.js"></script>
     <script type="text/javascript" src="http://code.jquery.com/jquery-1.10.1.min.js"></script>
     <script type="text/javascript" src="osmtogeojson.js"></script>
@@ -67,14 +72,14 @@
             text-shadow: 0px 0px 1px black;
             border-radius: 3px;
             color: white;
-            background: #569834;
+            background: #A33;
             padding: 10px 15px;
             font-weight: bold;
             text-decoration: none;
         }
 
         .button:hover { 
-            background: #3A6623;
+            background: #833;
         }
 
         .button:active {
@@ -129,6 +134,7 @@
     </style>
 </head>
 <body>
+        <a href="https://github.com/you"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
         <div id="top">
             <span id="name">osmtogeojson</span> converts OSM XML to GeoJSON.
         </div>
@@ -180,14 +186,7 @@
                     </ul>
                 </li>
             </ul>
-            <span style="font-weight: bold;">API: </span>
-            <ul>
-                <li><span style="font-weight: bold">.toGeojson(data)</span>
-                    <ul>
-                        <li class="disc">Converts an OSM XML Document (DOM) or <a href="http://overpass-api.de/output_formats.html#json">OSM JSON</a> to a GeoJSON&nbsp;object.</li>
-                    </ul>
-                </li>
-            </ul>
+            Read more about the API in the official <a href="https://github.com/tyrasd/osmtogeojson#usage">documentation</a>.
             <div id="download">
                 <p><a class="button" href="http://github.com/tyrasd/osmtogeojson/raw/gh-pages/osmtogeojson.js">download osmtogeojson.js</a><br/><br/>
                     github: <a href="https://github.com/tyrasd/osmtogeojson">tyrasd/osmtogeojson</a><br/>
