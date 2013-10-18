@@ -48,7 +48,7 @@ Converts OSM data into GeoJSON.
   * `uninterestingTags`: Either a [blacklist](https://github.com/tyrasd/osmtogeojson/blob/5d8684dc80712c3dc44d7a72692a2df3c7253cb1/osmtogeojson.js#L12-L22) of tag keys or a callback function. Will be used to decide if a feature is *interesting* enough for its own GeoJSON feature.
   * `polygonFeatures`: Either a [json object](https://github.com/tyrasd/osmtogeojson/blob/5d8684dc80712c3dc44d7a72692a2df3c7253cb1/osmtogeojson.js#L23-L103) or callback function that is used to determine if a closed way should be treated as a Polygon or LineString. [read more](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
 
-The result is a javascript object of GeoJSON data.
+The result is a javascript object of GeoJSON data:
 
 GeoJSON
 -------
@@ -59,9 +59,7 @@ The GeoJSON produced by this library will include exactly one GeoJSON-feature fo
 * all ways (except [*uninteresting*](#api) multipolygon outlines)
 * all multipolygons (simple multipolygons with exactly one closed outer way are present via their outer way)
 
-All data is given as a FeatureCollection.
-
-Each Feature in the collection has an `id` property that is formed from the type and id of the original OSM object (e.g. `node/123`) and has the member `properties` containing the following data:
+All data is given as a FeatureCollection. Each Feature in the collection has an `id` property that is formed from the type and id of the original OSM object (e.g. `node/123`) and has the member `properties` containing the following data:
 
 * `type`: the OSM data type
 * `id`: the OSM id 
