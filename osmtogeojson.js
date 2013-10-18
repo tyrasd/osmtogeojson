@@ -8,7 +8,97 @@ osmtogeojson.toGeojson = function( data, options ) {
 
   options = _.merge(
     {
-      uninterestingTags: {"source":true, "source_ref":true, "source:ref":true, "history":true, "attribution":true, "created_by":true, "tiger:county":true, "tiger:tlid":true, "tiger:upload_uuid":true},
+      uninterestingTags: {
+        "source": true,
+        "source_ref": true,
+        "source:ref": true,
+        "history": true,
+        "attribution": true,
+        "created_by": true,
+        "tiger:county": true,
+        "tiger:tlid": true,
+        "tiger:upload_uuid": true
+      },
+      polygonFeatures: {
+        "building": true,
+        "highway": {
+          "included_values": {
+            "services": true,
+            "rest_area": true,
+            "escape": true
+          }
+        },
+        "natural": {
+          "excluded_values": {
+            "coastline": true,
+            "ridge": true,
+            "arete": true,
+            "tree_row": true
+          }
+        },
+        "landuse": true,
+        "waterway": {
+          "included_values": {
+            "riverbank": true,
+            "dock": true,
+            "boatyard": true,
+            "dam": true
+          }
+        },
+        "amenity": true,
+        "leisure": true,
+        "barrier": {
+          "included_values": {
+            "city_wall": true,
+            "ditch": true,
+            "hedge": true,
+            "retaining_wall": true,
+            "wall": true,
+            "spikes": true
+          }
+        },
+        "railway": {
+          "included_values": {
+            "station": true,
+            "turntable": true,
+            "roundhouse": true,
+            "platform": true
+          }
+        },
+        "area": true,
+        "boundary": true,
+        "man_made": {
+          "excluded_values": {
+            "cutline": true,
+            "embankment": true,
+            "pipeline": true
+          }
+        },
+        "power": {
+          "included_values": {
+            "generator": true,
+            "station": true,
+            "sub_station": true,
+            "transformer": true
+          }
+        },
+        "place": true,
+        "shop": true,
+        "aeroway": {
+          "excluded_values": {
+            "taxiway": true
+          }
+        },
+        "tourism": true,
+        "historic": true,
+        "public_transport": true,
+        "office": true,
+        "building:part": true,
+        "military": true,
+        "ruins": true,
+        "area:highway": true,
+        "craft": true
+      }
     },
     options
   );
@@ -543,86 +633,7 @@ osmtogeojson.toGeojson = function( data, options ) {
     return geojson;
   }
   function _isPolygonFeature( tags ) {
-    var polygonFeatures = {
-      "building": true,
-      "highway": {
-        "included_values": {
-          "services": true,
-          "rest_area": true,
-          "escape": true
-        }
-      },
-      "natural": {
-        "excluded_values": {
-          "coastline": true,
-          "ridge": true,
-          "arete": true,
-          "tree_row": true
-        }
-      },
-      "landuse": true,
-      "waterway": {
-        "included_values": {
-          "riverbank": true,
-          "dock": true,
-          "boatyard": true,
-          "dam": true
-        }
-      },
-      "amenity": true,
-      "leisure": true,
-      "barrier": {
-        "included_values": {
-          "city_wall": true,
-          "ditch": true,
-          "hedge": true,
-          "retaining_wall": true,
-          "wall": true,
-          "spikes": true
-        }
-      },
-      "railway": {
-        "included_values": {
-          "station": true,
-          "turntable": true,
-          "roundhouse": true,
-          "platform": true
-        }
-      },
-      "area": true,
-      "boundary": true,
-      "man_made": {
-        "excluded_values": {
-          "cutline": true,
-          "embankment": true,
-          "pipeline": true
-        }
-      },
-      "power": {
-        "included_values": {
-          "generator": true,
-          "station": true,
-          "sub_station": true,
-          "transformer": true
-        }
-      },
-      "place": true,
-      "shop": true,
-      "aeroway": {
-        "excluded_values": {
-          "taxiway": true
-        }
-      },
-      "tourism": true,
-      "historic": true,
-      "public_transport": true,
-      "office": true,
-      "building:part": true,
-      "military": true,
-      "ruins": true,
-      "area:highway": true,
-      "craft": true
-    };
+    var polygonFeatures = options.polygonFeatures;
     // explicitely tagged non-areas
     if ( tags['area'] === 'no' )
       return false;
