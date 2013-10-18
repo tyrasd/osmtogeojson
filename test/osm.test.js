@@ -1024,6 +1024,89 @@ describe("osm (json)", function () {
     var result = osmtogeojson.toGeojson(json);
     expect(result).to.eql(geojson);
   });
+  // multipolygon detection corner case
+  it("multipolygon detection corner case", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type:    "relation",
+          id:      1,
+          tags:    {"type":"multipolygon", "amenity":"xxx"},
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "inner"
+            }
+          ]
+        },
+        {
+          type:  "way",
+          id:    2,
+          nodes: [4,5,6,7,4],
+          tags:  {"amenity":"yyy"}
+        },
+        {
+          type:  "way",
+          id:    3,
+          nodes: [8,9,10,8]
+        },
+        {
+          type: "node",
+          id:   4,
+          lat: -1.0,
+          lon: -1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat: -1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   6,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   7,
+          lat:  1.0,
+          lon: -1.0
+        },
+        {
+          type: "node",
+          id:   8,
+          lat: -0.5,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   9,
+          lat:  0.5,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   10,
+          lat:  0.0,
+          lon:  0.5
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(2);
+    expect(_.pluck(_.pluck(result.features,"properties"),"id")).to.eql([1,2]);
+    expect(result.features[0].properties.id).to.eql(1);
+    expect(result.features[1].properties.id).to.eql(2);
+  });
 
 });
 
