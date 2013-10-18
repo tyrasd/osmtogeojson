@@ -1026,7 +1026,7 @@ describe("osm (json)", function () {
   });
   // multipolygon detection corner case
   it("multipolygon detection corner case", function () {
-    var json, geojson;
+    var json;
     json = {
       elements: [
         {
@@ -1107,14 +1107,73 @@ describe("osm (json)", function () {
     expect(result.features[0].properties.id).to.eql(1);
     expect(result.features[1].properties.id).to.eql(2);
   });
+  // interesting objects
+  it("interesting objects", function() {
+    // complex example containing a generic relation, several ways as well as
+    // tagged, uninteresting and untagged nodes
+    // see https://github.com/openstreetmap/openstreetmap-website/pull/283
+    var xml;
+    xml = '<osm version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">'+
+            '<relation id="4294968148" visible="true" timestamp="2013-05-14T10:33:05Z" version="1" changeset="23123" user="tyrTester06" uid="1178">'+
+              '<member type="way" ref="4295032195" role="line"/>'+
+              '<member type="node" ref="4295668179" role="point"/>'+
+              '<member type="node" ref="4295668178" role=""/>'+
+              '<member type="way" ref="4295032194" role=""/>'+
+              '<member type="way" ref="4295032193" role=""/>'+
+              '<member type="node" ref="4295668174" role="foo"/>'+
+              '<member type="node" ref="4295668175" role="bar"/>'+
+              '<tag k="type" v="fancy"/>'+
+            '</relation>'+
+            '<way id="4295032195" visible="true" timestamp="2013-05-14T10:33:05Z" version="1" changeset="23123" user="tyrTester06" uid="1178">'+
+              '<nd ref="4295668174"/>'+
+              '<nd ref="4295668172"/>'+
+              '<nd ref="4295668171"/>'+
+              '<nd ref="4295668170"/>'+
+              '<nd ref="4295668173"/>'+
+              '<nd ref="4295668175"/>'+
+              '<tag k="highway" v="residential"/>'+
+            '</way>'+
+            '<way id="4295032194" visible="true" timestamp="2013-05-14T10:33:05Z" version="1" changeset="23123" user="tyrTester06" uid="1178">'+
+              '<nd ref="4295668177"/>'+
+              '<nd ref="4295668178"/>'+
+              '<nd ref="4295668180"/>'+
+              '<tag k="highway" v="service"/>'+
+            '</way>'+
+            '<way id="4295032193" visible="true" timestamp="2013-05-14T10:33:04Z" version="1" changeset="23123" user="tyrTester06" uid="1178">'+
+              '<nd ref="4295668181"/>'+
+              '<nd ref="4295668178"/>'+
+              '<nd ref="4295668176"/>'+
+              '<tag k="highway" v="service"/>'+
+            '</way>'+
+            '<node id="4295668172" version="1" changeset="23123" lat="46.4910906" lon="11.2735763" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z">'+
+              '<tag k="highway" v="crossing"/>'+
+            '</node>'+
+            '<node id="4295668173" version="1" changeset="23123" lat="46.4911004" lon="11.2759498" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z">'+
+              '<tag k="created_by" v="foo"/>'+
+            '</node>'+
+            '<node id="4295668170" version="1" changeset="23123" lat="46.4909732" lon="11.2753813" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668171" version="1" changeset="23123" lat="46.4909781" lon="11.2743295" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668174" version="1" changeset="23123" lat="46.4914820" lon="11.2731001" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668175" version="1" changeset="23123" lat="46.4915603" lon="11.2765254" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668176" version="1" changeset="23123" lat="46.4919468" lon="11.2756726" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668177" version="1" changeset="23123" lat="46.4919664" lon="11.2753031" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668178" version="1" changeset="23123" lat="46.4921083" lon="11.2755021" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668179" version="1" changeset="23123" lat="46.4921327" lon="11.2742229" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668180" version="1" changeset="23123" lat="46.4922893" lon="11.2757152" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+            '<node id="4295668181" version="1" changeset="23123" lat="46.4923235" lon="11.2752747" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
+          '</osm>'
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+    var result = osmtogeojson.toGeojson(xml);
+    expect(result.features).to.have.length(8);
+  });
 
 });
 
 
 describe("options", function () {
-  // check API options
+  // flattened properties output mode
   it("flattened properties", function () {
-    var json, geojson;
+    var json, geojson_properties;
     json = {
       elements: [
         {
@@ -1135,5 +1194,36 @@ describe("options", function () {
     var result = osmtogeojson.toGeojson(json, {flatProperties: true});
     expect(result.features[0].properties).to.eql(geojson_properties);
   });
-
+  // interesting objects
+  it("uninteresting tags", function () {
+    var json;
+    json = {
+      elements: [
+        {
+          type:  "way",
+          id:    1,
+          nodes: [2,3]
+        },
+        {
+          type: "node",
+          id:   2,
+          tags: {"foo": "bar"},
+          user: "johndoe",
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          tags: {"foo": "bar", "asd": "fasd"},
+          user: "johndoe",
+          lat:  2.0,
+          lon:  0.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json, {uninterestingTags: {foo:true}});
+    expect(result.features).to.have.length(2);
+    expect(result.features[1].properties.id).to.eql(3);
+  });
 });
