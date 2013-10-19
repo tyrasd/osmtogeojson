@@ -66,6 +66,7 @@ All data is given as a FeatureCollection. Each Feature in the collection has an 
 * `tags`: a collection of all tags
 * `meta`: metainformaton about the feature (e.g. version, timestamp, user, etc.)
 * `relations`: an array of relations the feature is member of. Each relation is encoded as an object literal containing the following properties: `role` (membership role), `rel` (the relation's id) and `reltags` (contains all tags of the relation)
+* `tainted`: this flag is set when the feature's geometry is incomplete (e.g. missing nodes of a way or missing ways of a multipolygon)
 
 If the [option](#api) `flatProperties` is set to true, the `properties` object will not contain any nested object literals, but directly provide a concise id, meta data and the tags of the respective OSM object.
 
