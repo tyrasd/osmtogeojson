@@ -4,7 +4,7 @@ osmtogeojson
 Converts [OSM](http://openstreetmap.org) [data](http://wiki.openstreetmap.org/wiki/OSM_XML) to [GeoJSON](http://www.geojson.org/). Try the [demo](http://tyrasd.github.io/osmtogeojson/)!
 
 * stable
-* real OSM [polygon support](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
+* real OSM [polygon detection](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
 * real OSM multipolygon support
 * well [tested](http://github.com/tyrasd/osmtogeojson/tree/master/test/) and proven
 * ~~fast~~ not slow
