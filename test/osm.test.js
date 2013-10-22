@@ -897,7 +897,13 @@ describe("osm (json)", function () {
         {
           type:  "way",
           id:    1,
-          nodes: [1,2]
+          tags:  {"foo":"bar"},
+          nodes: [1,2,3]
+        },
+        {
+          type:  "way",
+          id:    2,
+          nodes: [3,1]
         },
         {
           type: "node",
@@ -909,6 +915,12 @@ describe("osm (json)", function () {
           type: "node",
           id:   2,
           lat:  2.0,
+          lon:  2.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  1.0,
           lon:  2.0
         },
         {
@@ -925,6 +937,28 @@ describe("osm (json)", function () {
               type: "node",
               ref:  1,
               role: "fasd"
+            },
+            {
+              type: "relation",
+              ref:  2,
+              role: ""
+            }
+          ]
+        },
+        {
+          type:    "relation",
+          id:      2,
+          tags:    {"type":"multipolygon"},
+          members: [
+            {
+              type: "way",
+              ref:  1,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
             }
           ]
         }
@@ -935,16 +969,47 @@ describe("osm (json)", function () {
       features: [
         {
           type: "Feature",
+          id: "relation/2",
+          properties: {
+            type: "relation",
+            id: 2,
+            tags: {"type":"multipolygon"},
+            relations: [
+              {
+                rel: 1,
+                role: "",
+                reltags: {"foo":"bar"}
+              }
+            ],
+            meta: {}
+          },
+          geometry: {
+            type: "MultiPolygon",
+            coordinates: [[[
+              [2.0,1.0],
+              [1.0,1.0],
+              [2.0,2.0],
+              [2.0,1.0]
+            ]]]
+          }
+        },
+        {
+          type: "Feature",
           id: "way/1",
           properties: {
             type: "way",
             id: 1,
-            tags: {},
+            tags: {"foo":"bar"},
             relations: [
               {
                 rel: 1,
                 role: "asd",
                 reltags: {"foo":"bar"}
+              },
+              {
+                rel: 2,
+                role: "outer",
+                reltags: {"type":"multipolygon"}
               }
             ],
             meta: {}
@@ -953,7 +1018,8 @@ describe("osm (json)", function () {
             type: "LineString",
             coordinates: [
               [1.0,1.0],
-              [2.0,2.0]
+              [2.0,2.0],
+              [2.0,1.0]
             ]
           }
         },
@@ -1113,6 +1179,20 @@ describe("osm (json)", function () {
     expect(result.features[0].properties.id).to.eql(1);
     expect(result.features[1].properties.id).to.eql(2);
   });
+  // overpass area
+  it("overpass area", function () {
+    var json, geojson_properties;
+    json = {
+      elements: [
+        {
+          type: "area",
+          id:   1,
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
+  });
 
 });
 
@@ -1234,5 +1314,357 @@ describe("options", function () {
     var result = osmtogeojson.toGeojson(json, {uninterestingTags: {foo:true}});
     expect(result.features).to.have.length(2);
     expect(result.features[1].properties.id).to.eql(3);
+  });
+  // todo: callbacks
+});
+
+describe("tainted data", function () {
+  // ignore missing node coordinates
+  it("ids_only (missing coordinates or references)", function () {
+    var json, result;
+    json = {
+      elements: [
+        {
+          type: "node",
+          id:   1
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
+  });
+  // tainted way
+  it("tainted way", function () {
+    var json;
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          nodes: [2,3,4]
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  1.0,
+          lon:  1.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].geometry.coordinates).to.eql([[0.0,0.0],[1.0,1.0]]);
+    expect(result.features[0].properties.tainted).to.equal(true);
+  });
+  // tainted simple multipolygon
+  it("tainted simple multipolygon", function () {
+    var json, result;
+    // missing way
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "inner"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [3,4,5,3]
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  0.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  1.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(2);
+    expect(result.features[0].properties.tainted).to.equal(true);
+    // missing node
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [3,4,5,6,3]
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  0.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  1.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(2);
+    expect(result.features[0].properties.tainted).to.equal(true);
+  });
+  // tainted multipolygon
+  it("tainted multipolygon", function () {
+    var json, result;
+    // missing way
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [4,5,6,4]
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  0.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   6,
+          lat:  1.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].properties.tainted).to.equal(true);
+    // missing node
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [4,5,6,7,4]
+        },
+        {
+          type: "way",
+          id:   3,
+          nodes: [4,5,6,4]
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  0.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   6,
+          lat:  1.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].properties.tainted).to.equal(true);
+  });
+  // degenerate multipolygon
+  it("degenerate multipolygon", function () {
+    // no coordinates
+    var json, result;
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [4,5,6]
+        },
+        {
+          type: "way",
+          id:   3,
+          nodes: [6,4]
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
+    // no outer ring
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "inner"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [3,4,5,3]
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  1.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
   });
 });
