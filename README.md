@@ -21,7 +21,7 @@ Usage
         npm install -g osmtogeojson
         $ osmtogeojson file.osm > file.geojson
   
-* as a nodejs libary:
+* as a nodejs library:
   
         npm install osmtogeojson
   
