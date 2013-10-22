@@ -1113,6 +1113,10 @@ describe("osm (json)", function () {
     expect(result.features[0].properties.id).to.eql(1);
     expect(result.features[1].properties.id).to.eql(2);
   });
+
+});
+
+describe("defaults", function() {
   // interesting objects
   it("interesting objects", function() {
     // complex example containing a generic relation, several ways as well as
@@ -1172,9 +1176,8 @@ describe("osm (json)", function () {
     var result = osmtogeojson.toGeojson(xml);
     expect(result.features).to.have.length(8);
   });
-
+  // todo: polygon detection
 });
-
 
 describe("options", function () {
   // flattened properties output mode
