@@ -1,6 +1,6 @@
-try {
+if (typeof require !== "undefined") {
   _ = require("lodash");
-} catch(e) {}
+}
 
 var osmtogeojson = {};
 

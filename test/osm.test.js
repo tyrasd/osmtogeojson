@@ -1,3 +1,9 @@
+if (typeof require !== "undefined") {
+  var expect = require("expect.js");
+  var DOMParser = require("xmldom").DOMParser;
+  var osmtogeojson = require("../");
+}
+
 describe("osm (xml)", function () {
 
   it('blank osm', function() {

@@ -4,7 +4,7 @@
   "description": "convert OSM to geojson",
   "main": "osmtogeojson.js",
   "scripts": {
-    "test": "mocha-phantomjs test/index.html"
+    "test": "mocha -R spec"
   },
   "bin": {
     "osmtogeojson": "osmtogeojson"
@@ -30,7 +30,6 @@
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
-    "mocha": "~1.12.0",
-    "mocha-phantomjs": "~3.1.5"
+    "mocha": "~1.12.0"
   }
 }
