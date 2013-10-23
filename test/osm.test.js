@@ -1728,40 +1728,6 @@ describe("defaults", function() {
     var result = osmtogeojson.toGeojson(xml);
     expect(result.features).to.have.length(8);
   });
-  // interesting objects with custom callback
-  it("interesting objects: callback", function () {
-    var json, result;
-    json = {
-      elements: [
-        {
-          type: "way",
-          id:   1,
-          nodes: [1,2]
-        },
-        {
-          type: "node",
-          id:   1,
-          tags: {"tag": "1"},
-          lat:  1.0,
-          lon:  0.0
-        },
-        {
-          type: "node",
-          id:   2,
-          tags: {"tag": "2"},
-          lat:  2.0,
-          lon:  0.0
-        }
-      ]
-    };
-    var result = osmtogeojson.toGeojson(json, {uninterestingTags: function(tags, ignore_tags) {
-      return tags["tag"] != "1";
-    }});
-    expect(result.features).to.have.length(2);
-    expect(result.features[0].geometry.type).to.equal("LineString");
-    expect(result.features[1].geometry.type).to.equal("Point");
-    expect(result.features[1].properties.id).to.equal(1);
-  });
   // polygon detection
   // see: http://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
   it("polygon detection", function () {
@@ -1801,7 +1767,7 @@ describe("defaults", function() {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(2);
     expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[1].geometry.type).to.equal("LineString");
@@ -1837,9 +1803,106 @@ describe("defaults", function() {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(1);
     expect(result.features[0].geometry.type).to.equal("LineString");
+  });
+});
+
+describe("options", function () {
+  // flattened properties output mode
+  it("flattened properties", function () {
+    var json, geojson_properties;
+    json = {
+      elements: [
+        {
+          type: "node",
+          id:   1,
+          tags: {"foo": "bar"},
+          user: "johndoe",
+          lat:  1.234,
+          lon:  4.321
+        }
+      ]
+    };
+    geojson_properties= {
+      id: "node/1",
+      foo: "bar",
+      user: "johndoe"
+    };
+    var result = osmtogeojson.toGeojson(json, {flatProperties: true});
+    expect(result.features[0].properties).to.eql(geojson_properties);
+  });
+  // interesting objects
+  it("uninteresting tags", function () {
+    var json;
+    json = {
+      elements: [
+        {
+          type:  "way",
+          id:    1,
+          nodes: [2,3]
+        },
+        {
+          type: "node",
+          id:   2,
+          tags: {"foo": "bar"},
+          user: "johndoe",
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          tags: {"foo": "bar", "asd": "fasd"},
+          user: "johndoe",
+          lat:  2.0,
+          lon:  0.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json, {uninterestingTags: {foo:true}});
+    expect(result.features).to.have.length(2);
+    expect(result.features[1].properties.id).to.eql(3);
+  });
+  // interesting objects with custom callback
+  it("uninteresting tags: callback", function () {
+    var json, result;
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          nodes: [1,2]
+        },
+        {
+          type: "node",
+          id:   1,
+          tags: {"tag": "1"},
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          tags: {"tag": "2"},
+          lat:  2.0,
+          lon:  0.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json, {uninterestingTags: function(tags, ignore_tags) {
+      return tags["tag"] != "1";
+    }});
+    expect(result.features).to.have.length(2);
+    expect(result.features[0].geometry.type).to.equal("LineString");
+    expect(result.features[1].geometry.type).to.equal("Point");
+    expect(result.features[1].properties.id).to.equal(1);
+  });
+  // polygon detection
+  // see: http://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
+  it("polygon detection", function () {
+    var json, result;
     // custom tagging detection rules
     json = {
       elements: [
@@ -1899,7 +1962,7 @@ describe("defaults", function() {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json, {
+    result = osmtogeojson.toGeojson(json, {
       polygonFeatures: {
         "is_polygon_key": true,
         "is_polygon_key_value": {
@@ -1962,65 +2025,6 @@ describe("defaults", function() {
     expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[1].geometry.type).to.equal("LineString");
   });
-});
-
-describe("options", function () {
-  // flattened properties output mode
-  it("flattened properties", function () {
-    var json, geojson_properties;
-    json = {
-      elements: [
-        {
-          type: "node",
-          id:   1,
-          tags: {"foo": "bar"},
-          user: "johndoe",
-          lat:  1.234,
-          lon:  4.321
-        }
-      ]
-    };
-    geojson_properties= {
-      id: "node/1",
-      foo: "bar",
-      user: "johndoe"
-    };
-    var result = osmtogeojson.toGeojson(json, {flatProperties: true});
-    expect(result.features[0].properties).to.eql(geojson_properties);
-  });
-  // interesting objects
-  it("uninteresting tags", function () {
-    var json;
-    json = {
-      elements: [
-        {
-          type:  "way",
-          id:    1,
-          nodes: [2,3]
-        },
-        {
-          type: "node",
-          id:   2,
-          tags: {"foo": "bar"},
-          user: "johndoe",
-          lat:  1.0,
-          lon:  0.0
-        },
-        {
-          type: "node",
-          id:   3,
-          tags: {"foo": "bar", "asd": "fasd"},
-          user: "johndoe",
-          lat:  2.0,
-          lon:  0.0
-        }
-      ]
-    };
-    var result = osmtogeojson.toGeojson(json, {uninterestingTags: {foo:true}});
-    expect(result.features).to.have.length(2);
-    expect(result.features[1].properties.id).to.eql(3);
-  });
-  // todo: callbacks
 });
 
 describe("tainted data", function () {
