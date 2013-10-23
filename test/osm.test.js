@@ -778,6 +778,22 @@ describe("osm (json)", function () {
     result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(0);
   });
+  // invalid empty multipolygon
+  it("empty multipolygon", function () {
+    var json, result;
+    // empty multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type":"multipolygon"}
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
+  });
   // relations
   it("relations and id-spaces", function () {
     var json, geojson;
