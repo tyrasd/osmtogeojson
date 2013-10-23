@@ -225,7 +225,7 @@ osmtogeojson.toGeojson = function( data, options ) {
       if (typeof ignore_tags !== "object")
         ignore_tags={};
       if (typeof options.uninterestingTags === "function")
-        return options.uninterestingTags(t, ignore_tags);
+        return !options.uninterestingTags(t, ignore_tags);
       for (var k in t)
         if (!(options.uninterestingTags[k]===true) &&
             !(ignore_tags[k]===true || ignore_tags[k]===t[k]))
