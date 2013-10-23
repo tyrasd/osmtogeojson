@@ -345,8 +345,9 @@ osmtogeojson.toGeojson = function( data, options ) {
             outer_count++;
         _.each(rels[i].members, function(m) {
           if (wayids[m.ref]) {
-            // TODO: this may not work in the following corner case:
+            // this even works in the following corner case:
             // a multipolygon amenity=xxx with outer line tagged amenity=yyy
+            // see https://github.com/tyrasd/osmtogeojson/issues/7
             if (m.role==="outer" && !has_interesting_tags(wayids[m.ref].tags,rels[i].tags))
               wayids[m.ref].is_multipolygon_outline = true;
             if (m.role==="inner" && !has_interesting_tags(wayids[m.ref].tags))
