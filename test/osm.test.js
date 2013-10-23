@@ -956,7 +956,8 @@ describe("osm (json)", function () {
   });
   // meta info // todo +lines, +polygons
   it("meta data", function () {
-    var json, geojson;
+    var json, geojson, result;
+    // node with meta data
     json = {
       elements: [
         {
@@ -998,8 +999,55 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson.toGeojson(json);
     expect(result).to.eql(geojson);
+    // ways and relsvar json, geojson;
+    json = {
+      elements: [
+        {
+          type: "node",
+          id:   1,
+          lat:  1.234,
+          lon:  4.321,
+          tags: {"amenity": "yes"},
+          user: "johndoe",
+        },
+        {
+          type: "way",
+          id:   1,
+          tags: {"highway": "road"},
+          user: "johndoe",
+          nodes: [1,1,1,1]
+        },
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type": "multipolygon"},
+          user: "johndoe",
+          members: [{type:"way",ref:1,role:"outer"},{type:"way",ref:1,role:"outer"}]
+        },
+        {
+          type: "way",
+          id:   2,
+          tags: {"highway": "road"},
+          user: "johndoe",
+          nodes: [1,1,1,1]
+        },
+        {
+          type: "relation",
+          id:   2,
+          tags: {"type": "multipolygon"},
+          user: "johndoe",
+          members: [{type:"way",ref:2,role:"outer"}]
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(4);
+    expect(result.features[0].properties.meta).to.have.property("user");
+    expect(result.features[1].properties.meta).to.have.property("user");
+    expect(result.features[2].properties.meta).to.have.property("user");
+    expect(result.features[3].properties.meta).to.have.property("user");
   });
   // multipolygon detection corner case
   // see https://github.com/tyrasd/osmtogeojson/issues/7
@@ -2173,6 +2221,10 @@ describe("tainted data", function () {
     expect(result.features[0].geometry.coordinates).to.eql([[0.0,0.0],[1.0,1.0]]);
     expect(result.features[0].properties.tainted).to.equal(true);
   });
+  // invalid empty multipolygon
+  it("empty multipolygon", function () {
+    var json, result;
+  });
   // tainted simple multipolygon
   it("tainted simple multipolygon", function () {
     var json, result;
@@ -2225,6 +2277,30 @@ describe("tainted data", function () {
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(2);
     expect(result.features[0].properties.tainted).to.equal(true);
+    // missing nodes
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type":"multipolygon"},
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [3,4,5,3]
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
     // missing node
     json = {
       elements: [
