@@ -484,22 +484,13 @@ osmtogeojson.toGeojson = function( data, options ) {
           var mp_coords = [];
           mp_coords = _.compact(_.map(mp, function(cluster) { 
             var cl = _.compact(_.map(cluster, function(ring) {
-              if (ring === undefined) { // todo: can this happen?
-                is_tainted = true;
-                return;
-              }
-              ring = _.compact(_.map(ring, function(node) {
-                if (node === undefined || node.lat === undefined) {
-                  is_tainted = true;
-                  return;
-                }
-                return [+node.lon,+node.lat];
-              }));
               if (ring.length < 4) { // todo: is this correct: ring.length < 4 ?
                 is_tainted = true;
                 return;
               }
-              return ring;
+              return _.compact(_.map(ring, function(node) {
+                return [+node.lon,+node.lat];
+              }));
             }));
             if (cl.length == 0) {
               is_tainted = true;
