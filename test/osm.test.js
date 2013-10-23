@@ -660,139 +660,6 @@ describe("osm (json)", function () {
     var result = osmtogeojson.toGeojson(json);
     expect(result).to.eql(geojson);
   });
-  // tainted geometries
-  it("tainted geometries", function () {
-    var json, geojson;
-    json = {
-      elements: [
-        {
-          type:  "way",
-          id:    10,
-          nodes: [2,3,5]
-        },
-        {
-          type:  "way",
-          id:    11,
-          nodes: [2,3,4,5,2],
-          tags:  {"area":"yes"}
-        },
-        {
-          type:  "way",
-          id:    12,
-          nodes: [2,3,4,2],
-        },
-        {
-          type:    "relation",
-          id:      100,
-          tags:    {"type":"multipolygon"},
-          members: [
-            {
-              type: "way",
-              ref:  12,
-              role: "outer"
-            },
-            {
-              type: "way",
-              ref:  13,
-              role: "inner"
-            }
-          ]
-        },
-        {
-          type: "node",
-          id:   2,
-          lat:  1.0,
-          lon:  0.0
-        },
-        {
-          type: "node",
-          id:   3,
-          lat:  0.0,
-          lon:  1.0
-        },
-        {
-          type: "node",
-          id:   4,
-          lat:  1.0,
-          lon:  1.0
-        }
-      ]
-    };
-    geojson = {
-      type: "FeatureCollection",
-      features: [
-        {
-          type: "Feature",
-          id: "way/12",
-          properties: {
-            type: "way",
-            id: 12,
-            tags: {},
-            relations: [
-              {
-                rel: 100,
-                role: "outer",
-                reltags: {"type":"multipolygon"}
-              }
-            ],
-            meta: {},
-            tainted: true
-          },
-          geometry: {
-            type: "Polygon",
-            coordinates: [[
-              [0.0,1.0],
-              [1.0,0.0],
-              [1.0,1.0],
-              [0.0,1.0]
-            ]]
-          }
-        },
-        {
-          type: "Feature",
-          id: "way/11",
-          properties: {
-            type: "way",
-            id:   11,
-            tags: {"area":"yes"},
-            relations: [],
-            meta: {},
-            tainted: true
-          },
-          geometry: {
-            type: "Polygon",
-            coordinates: [[
-              [0.0,1.0],
-              [1.0,0.0],
-              [1.0,1.0],
-              [0.0,1.0]
-            ]]
-          }
-        },
-        {
-          type: "Feature",
-          id: "way/10",
-          properties: {
-            type: "way",
-            id: 10,
-            tags: {},
-            relations: [],
-            meta: {},
-            tainted: true
-          },
-          geometry: {
-            type: "LineString",
-            coordinates: [
-              [0.0,1.0],
-              [1.0,0.0]
-            ]
-          }
-        }
-      ]
-    };
-    var result = osmtogeojson.toGeojson(json);
-    expect(result).to.eql(geojson);
-  });
   // tags & pois
   it("tags: ways and nodes / pois", function () {
     var json, geojson;
@@ -1806,6 +1673,139 @@ describe("options", function () {
 });
 
 describe("tainted data", function () {
+  // basic tainted geometries
+  it("tainted geometries", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type:  "way",
+          id:    10,
+          nodes: [2,3,5]
+        },
+        {
+          type:  "way",
+          id:    11,
+          nodes: [2,3,4,5,2],
+          tags:  {"area":"yes"}
+        },
+        {
+          type:  "way",
+          id:    12,
+          nodes: [2,3,4,2],
+        },
+        {
+          type:    "relation",
+          id:      100,
+          tags:    {"type":"multipolygon"},
+          members: [
+            {
+              type: "way",
+              ref:  12,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  13,
+              role: "inner"
+            }
+          ]
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  1.0,
+          lon:  1.0
+        }
+      ]
+    };
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "way/12",
+          properties: {
+            type: "way",
+            id: 12,
+            tags: {},
+            relations: [
+              {
+                rel: 100,
+                role: "outer",
+                reltags: {"type":"multipolygon"}
+              }
+            ],
+            meta: {},
+            tainted: true
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [[
+              [0.0,1.0],
+              [1.0,0.0],
+              [1.0,1.0],
+              [0.0,1.0]
+            ]]
+          }
+        },
+        {
+          type: "Feature",
+          id: "way/11",
+          properties: {
+            type: "way",
+            id:   11,
+            tags: {"area":"yes"},
+            relations: [],
+            meta: {},
+            tainted: true
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [[
+              [0.0,1.0],
+              [1.0,0.0],
+              [1.0,1.0],
+              [0.0,1.0]
+            ]]
+          }
+        },
+        {
+          type: "Feature",
+          id: "way/10",
+          properties: {
+            type: "way",
+            id: 10,
+            tags: {},
+            relations: [],
+            meta: {},
+            tainted: true
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [0.0,1.0],
+              [1.0,0.0]
+            ]
+          }
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json);
+    expect(result).to.eql(geojson);
+  });
   // ignore missing node coordinates
   it("ids_only (missing coordinates or references)", function () {
     var json, result;
