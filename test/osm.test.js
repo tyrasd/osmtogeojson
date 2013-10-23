@@ -1632,6 +1632,40 @@ describe("defaults", function() {
     var result = osmtogeojson.toGeojson(xml);
     expect(result.features).to.have.length(8);
   });
+  // interesting objects with custom callback
+  it("interesting objects", function () {
+    var json, result;
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          nodes: [1,2]
+        },
+        {
+          type: "node",
+          id:   1,
+          tags: {"tag": "1"},
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          tags: {"tag": "2"},
+          lat:  2.0,
+          lon:  0.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json, {uninterestingTags: function(tags, ignore_tags) {
+      return tags["tag"] != "1";
+    }});
+    expect(result.features).to.have.length(2);
+    expect(result.features[0].geometry.type).to.equal("LineString");
+    expect(result.features[1].geometry.type).to.equal("Point");
+    expect(result.features[1].properties.id).to.equal(1);
+  });
   // polygon detection
   // see: http://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
   it("polygon detection", function () {
@@ -1787,6 +1821,50 @@ describe("defaults", function() {
     expect(result.features[3].geometry.type).to.equal("LineString");
     expect(result.features[4].geometry.type).to.equal("LineString");
     expect(result.features[5].geometry.type).to.equal("LineString");
+  });
+  // polygon detection with custom callback
+  it("polygon detection: callback", function () {
+    var json, result;
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          tags: {"tag": "1"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id:   2,
+          tags: {"tag": "2"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  3.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json, {polygonFeatures: function(tags) {
+      return tags["tag"] == "1";
+    }});
+    expect(result.features).to.have.length(2);
+    expect(result.features[0].geometry.type).to.equal("Polygon");
+    expect(result.features[1].geometry.type).to.equal("LineString");
   });
 });
 
