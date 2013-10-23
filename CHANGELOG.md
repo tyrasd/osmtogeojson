@@ -1,3 +1,7 @@
+1.2.1
+-----
+* fix wrong (inverse) logic in uninterestingTags callback evaluation (backported from master)
+
 1.2.0
 -----
 * add [demo](http://tyrasd.github.io/osmtogeojson/) page
