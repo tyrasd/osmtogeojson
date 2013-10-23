@@ -1097,7 +1097,8 @@ describe("osm (json)", function () {
     expect(result).to.eql(geojson);
   });
   // multipolygon detection corner case
-  it("multipolygon detection corner case", function () {
+  // see https://github.com/tyrasd/osmtogeojson/issues/7
+  it("multipolygon: outer way tagging", function () {
     var json;
     json = {
       elements: [
@@ -1178,6 +1179,176 @@ describe("osm (json)", function () {
     expect(_.pluck(_.pluck(result.features,"properties"),"id")).to.eql([1,2]);
     expect(result.features[0].properties.id).to.eql(1);
     expect(result.features[1].properties.id).to.eql(2);
+  });
+  // non-matching inner and outer rings
+  it("multipolygon: non-matching inner and outer rings", function() {
+    // complex multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  -1,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "inner"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [4,5,6,7,4]
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   6,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   7,
+          lat:  0.0,
+          lon:  1.0
+        },
+        {
+          type: "way",
+          id:   3,
+          nodes: [8,9,10,8]
+        },
+        {
+          type: "node",
+          id:   8,
+          lat:  3.0,
+          lon:  3.0
+        },
+        {
+          type: "node",
+          id:   9,
+          lat:  4.0,
+          lon:  3.0
+        },
+        {
+          type: "node",
+          id:   10,
+          lat:  3.0,
+          lon:  4.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.coordinates).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
+    /*
+    // simple multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "inner"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [4,5,6,7,4]
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   6,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   7,
+          lat:  0.0,
+          lon:  1.0
+        },
+        {
+          type: "way",
+          id:   3,
+          nodes: [8,9,10,8]
+        },
+        {
+          type: "node",
+          id:   8,
+          lat:  3.0,
+          lon:  3.0
+        },
+        {
+          type: "node",
+          id:   9,
+          lat:  4.0,
+          lon:  3.0
+        },
+        {
+          type: "node",
+          id:   10,
+          lat:  3.0,
+          lon:  4.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(2);
+    expect(result.features[0].geometry.type).to.equal("Polygon");
+    expect(result.features[0].geometry.coordinates).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
+    */
   });
   // overpass area
   it("overpass area", function () {

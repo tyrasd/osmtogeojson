@@ -478,7 +478,9 @@ osmtogeojson.toGeojson = function( data, options ) {
             if (o !== undefined)
               mp[o].push(inners[j]);
             else
-              ;//mp.push(inners[j]); // invalid geometry // tyr: why?
+              // so, no outer ring for this inner ring is found.
+              // We're going to ignore holes in empty space.
+              ;
           }
           // sanitize mp-coordinates (remove empty clusters or rings, {lat,lon,...} to [lon,lat]
           var mp_coords = [];
