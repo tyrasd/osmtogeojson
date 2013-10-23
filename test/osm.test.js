@@ -1632,7 +1632,162 @@ describe("defaults", function() {
     var result = osmtogeojson.toGeojson(xml);
     expect(result.features).to.have.length(8);
   });
-  // todo: polygon detection
+  // polygon detection
+  // see: http://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
+  it("polygon detection", function () {
+    var json, result;
+    // basic tags: area=yes
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          tags: {"foo":"bar", "area": "yes"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id:   2,
+          tags: {"area": "yes"},
+          nodes: [1,2,3]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  3.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(2);
+    expect(result.features[0].geometry.type).to.equal("Polygon");
+    expect(result.features[1].geometry.type).to.equal("LineString");
+    // basic tags: area=no
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          tags: {
+            "area": "no",
+            "building": "yes"
+          },
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  3.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].geometry.type).to.equal("LineString");
+    // custom tagging detection rules
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          tags: {"is_polygon_key": "*"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id:   2,
+          tags: {"is_polygon_key_value": "included_value"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id:   3,
+          tags: {"is_polygon_key_excluded_value": "*"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id:   4,
+          tags: {"is_polygon_key": "no"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id:   5,
+          tags: {"is_polygon_key_value": "not_included_value"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id:   6,
+          tags: {"is_polygon_key_excluded_value": "excluded_value"},
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  0.0,
+          lon:  3.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json, {
+      polygonFeatures: {
+        "is_polygon_key": true,
+        "is_polygon_key_value": {
+          "included_values": {"included_value": true}
+        },
+        "is_polygon_key_excluded_value": {
+          "excluded_values": {"excluded_value": true}
+        }
+      }
+    });
+    expect(result.features).to.have.length(6);
+    expect(result.features[0].geometry.type).to.equal("Polygon");
+    expect(result.features[1].geometry.type).to.equal("Polygon");
+    expect(result.features[2].geometry.type).to.equal("Polygon");
+    expect(result.features[3].geometry.type).to.equal("LineString");
+    expect(result.features[4].geometry.type).to.equal("LineString");
+    expect(result.features[5].geometry.type).to.equal("LineString");
+  });
 });
 
 describe("options", function () {
