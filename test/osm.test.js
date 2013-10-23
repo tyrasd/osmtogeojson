@@ -1590,7 +1590,39 @@ describe("osm (json)", function () {
 
 describe("defaults", function() {
   // interesting objects
-  it("interesting objects", function() {
+  it("interesting objects", function () {
+    var json, result;
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          nodes: [1,2]
+        },
+        {
+          type: "node",
+          id:   1,
+          tags: {"created_by": "foo"},
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          tags: {"interesting": "yes"},
+          lat:  2.0,
+          lon:  0.0
+        }
+      ]
+    };
+    var result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(2);
+    expect(result.features[0].geometry.type).to.equal("LineString");
+    expect(result.features[1].geometry.type).to.equal("Point");
+    expect(result.features[1].properties.id).to.equal(2);
+  });
+  // interesting objects
+  it("interesting objects: relation members", function() {
     // complex example containing a generic relation, several ways as well as
     // tagged, uninteresting and untagged nodes
     // see https://github.com/openstreetmap/openstreetmap-website/pull/283
@@ -1649,7 +1681,7 @@ describe("defaults", function() {
     expect(result.features).to.have.length(8);
   });
   // interesting objects with custom callback
-  it("interesting objects", function () {
+  it("interesting objects: callback", function () {
     var json, result;
     json = {
       elements: [
