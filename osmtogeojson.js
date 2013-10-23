@@ -482,26 +482,32 @@ osmtogeojson.toGeojson = function( data, options ) {
           }
           // sanitize mp-coordinates (remove empty clusters or rings, {lat,lon,...} to [lon,lat]
           var mp_coords = [];
-          mp_coords = _.map(mp, function(cluster) { 
-            var cl = _.map(cluster, function(ring) {
-              if (ring === undefined || ring.length <= 1) {
+          mp_coords = _.compact(_.map(mp, function(cluster) { 
+            var cl = _.compact(_.map(cluster, function(ring) {
+              if (ring === undefined) { // todo: can this happen?
                 is_tainted = true;
                 return;
               }
-              return _.map(ring, function(node) {
+              ring = _.compact(_.map(ring, function(node) {
                 if (node === undefined || node.lat === undefined) {
                   is_tainted = true;
                   return;
                 }
                 return [+node.lon,+node.lat];
-              });
-            });
+              }));
+              if (ring.length < 4) { // todo: is this correct: ring.length < 4 ?
+                is_tainted = true;
+                return;
+              }
+              return ring;
+            }));
             if (cl.length == 0) {
               is_tainted = true;
               return;
             }
             return cl;
-          });
+          }));
+
           if (mp_coords.length == 0)
             continue; // ignore multipolygons without coordinates
           // mp parsed, now construct the geoJSON
