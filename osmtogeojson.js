@@ -486,18 +486,14 @@ osmtogeojson.toGeojson = function( data, options ) {
           var mp_coords = [];
           mp_coords = _.compact(_.map(mp, function(cluster) { 
             var cl = _.compact(_.map(cluster, function(ring) {
-              if (ring.length < 4) { // todo: is this correct: ring.length < 4 ?
-                is_tainted = true;
+              if (ring.length < 4) // todo: is this correct: ring.length < 4 ?
                 return;
-              }
               return _.compact(_.map(ring, function(node) {
                 return [+node.lon,+node.lat];
               }));
             }));
-            if (cl.length == 0) {
-              is_tainted = true;
+            if (cl.length == 0)
               return;
-            }
             return cl;
           }));
 
