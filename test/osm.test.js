@@ -1350,6 +1350,322 @@ describe("osm (json)", function () {
     expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
     */
   });
+  // non-trivial ring building (way order and direction)
+  it("multipolygon: non-trivial ring building", function() {
+    // way order
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  1,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   1,
+          nodes: [1,2]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [2,3]
+        },
+        {
+          type: "way",
+          id:   3,
+          nodes: [3,1]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  3.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.coordinates).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(4);
+    // way directions
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  1,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  4,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  5,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  6,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   1,
+          nodes: [1,2]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [2,3]
+        },
+        {
+          type: "way",
+          id:   3,
+          nodes: [4,3]
+        },
+        {
+          type: "way",
+          id:   4,
+          nodes: [5,4]
+        },
+        {
+          type: "way",
+          id:   5,
+          nodes: [5,6]
+        },
+        {
+          type: "way",
+          id:   6,
+          nodes: [1,6]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  3.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  4.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  5.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   6,
+          lat:  6.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.coordinates).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(7);
+  });
+  // unclosed rings
+  it("multipolygon: unclosed ring", function() {
+    // non-matching ways, unclosed rings
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  1,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   1,
+          nodes: [1,2,3,4]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [3,2]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  3.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  4.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.coordinates).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(4);
+    expect(result.features[0].properties.tainted).to.not.equal(true);
+    // matching ways, but unclosed ring
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  1,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   1,
+          nodes: [1,2]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [2,3,4]
+        },
+        {
+          type: "node",
+          id:   1,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  2.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  3.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  4.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(1);
+    expect(result.features[0].properties.id).to.equal(1);
+    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.coordinates).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
+    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(4);
+    expect(result.features[0].properties.tainted).to.not.equal(true);
+  });
   // overpass area
   it("overpass area", function () {
     var json, geojson_properties;

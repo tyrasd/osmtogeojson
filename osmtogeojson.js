@@ -419,7 +419,7 @@ osmtogeojson.toGeojson = function( data, options ) {
                   }
                 }
                 if (!what)
-                  break; // Invalid geometry (unclosed ring)
+                  break; // Invalid geometry (dangling way, unclosed ring)
                 ways.splice(i, 1);
                 how.apply(current, what);
               }
@@ -437,10 +437,8 @@ osmtogeojson.toGeojson = function( data, options ) {
                   return true;
               return false;
             }
-            var _pluck = function(from) {
+            var mapCoordinates = function(from) {
               return _.map(from, function(n) {
-                if (n === undefined)
-                  return; 
                 return [+n.lat,+n.lon];
               });
             }
@@ -460,14 +458,16 @@ osmtogeojson.toGeojson = function( data, options ) {
             };
             // stolen from iD/relation.js
             var o, outer;
-            inner = _pluck(inner);
+            // todo: all this coordinate mapping makes this unneccesarily slow.
+            // see the "todo: this is slow! :(" above.
+            inner = mapCoordinates(inner);
             /*for (o = 0; o < outers.length; o++) {
-              outer = _pluck(outers[o]);
+              outer = mapCoordinates(outers[o]);
               if (polygonContainsPolygon(outer, inner))
                 return o;
             }*/
             for (o = 0; o < outers.length; o++) {
-              outer = _pluck(outers[o]);
+              outer = mapCoordinates(outers[o]);
               if (polygonIntersectsPolygon(outer, inner))
                 return o;
             }
