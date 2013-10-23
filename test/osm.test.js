@@ -756,6 +756,28 @@ describe("osm (json)", function () {
     var result = osmtogeojson.toGeojson(json);
     expect(result).to.eql(geojson);
   });
+  // invalid one-node-ways
+  it("one-node-ways", function () {
+    var json, result;
+    json = {
+      elements: [
+        {
+          type:  "way",
+          id:    1,
+          nodes: [2],
+          tags:  {"foo":"bar"}
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  0.0,
+          lon:  0.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
+    expect(result.features).to.have.length(0);
+  });
   // relations
   it("relations and id-spaces", function () {
     var json, geojson;
