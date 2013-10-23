@@ -1665,6 +1665,52 @@ describe("tainted data", function () {
       ]
     };
     result = osmtogeojson.toGeojson(json);
+    // expected behaviour: do not return a degenerate (multi)polygon.
+    // this could in principle return just the way that is now sort of unused
+    // but just as with an (untagged) node of a one-node-way we're going to
+    // assume that those outlines aren't interesting enough.
+    expect(result.features).to.have.length(0);
+    // incomplete outer ring
+    json = {
+      elements: [
+        {
+          type: "relation",
+          tags: {"type": "multipolygon"},
+          id:   1,
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "outer"
+            }
+          ]
+        },
+        {
+          type: "way",
+          id:   2,
+          nodes: [4,5,6,4]
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  1.0,
+          lon:  1.0
+        }
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(0);
   });
+
 });
