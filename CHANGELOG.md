@@ -1,3 +1,9 @@
+1.3.0
+-----
+* more versatile cli tool (can read osm json, optionally enhanced output)
+* many more unit tests
+* fixed bugs with some partially incomplete data
+
 1.2.1
 -----
 * fix wrong (inverse) logic in uninterestingTags callback evaluation (backported from master)
