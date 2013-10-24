@@ -2,7 +2,9 @@
 
 var osmtogeojson = require('./'),
     opt = require('optimist')
-        .usage('Usage: $0 FILE'),
+        .usage('Usage: $0 [-f format] [-e] FILE')
+        .string('f').describe('f', 'file format. if not given, will be detected by filename')
+        .boolean('e').describe('e', 'enhanced properties. if set, the resulting GeoJSON feature\'s properties will contain more structured information'),
     argv = opt.argv,
     fs = require('fs'),
     concat = require('concat-stream'),
@@ -10,16 +12,32 @@ var osmtogeojson = require('./'),
 
 var filename = argv._[0] || '';
 
-if (process.stdin.isTTY && !argv._[0]) return opt.showHelp();
+var enhanced_geojson = argv.e;
+var format = argv.f;
+
+if (format == 'xml') format = 'osm';
+if (!format) {
+    if (filename.match(/\.osm$/i)) format = 'osm';
+    if (filename.match(/\.xml$/i)) format = 'osm';
+    if (filename.match(/\.json$/i)) format = 'json';
+}
 
 (argv._.length ? fs.createReadStream(argv._[0]) : process.stdin).pipe(concat(convert));
 
+if (process.stdin.isTTY && !argv._[0]) return opt.showHelp();
+
 function convert(data) {
+    if (format == 'osm')
+        data = xmldom.parseFromString(data.toString());
+    else if (format == 'json')
+        data = JSON.parse(data.toString());
+    else
+        data = undefined;
     process.stdout.write(
         JSON.stringify(
             osmtogeojson.toGeojson(
-                xmldom.parseFromString(data.toString()),
-                {flatProperties: true}
+                data,
+                {flatProperties: !enhanced_geojson}
             ), null, 4
         )
     );
