@@ -27,10 +27,8 @@ if (!format) format = 'auto';
 
 (argv._.length ? fs.createReadStream(argv._[0]) : process.stdin).pipe(concat(convert));
 
-if (process.stdin.isTTY && !argv._[0]) return opt.showHelp();
-
 function convert(data) {
-    data = data.toString();
+    if (!data) data = ''; else data = data.toString();
     if (format === 'auto') {
         if (data.match(/^\s*</)) // (osm) xml files begin with a "<"
             format = 'osm';
