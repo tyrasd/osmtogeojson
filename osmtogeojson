@@ -5,14 +5,20 @@ var osmtogeojson = require('./'),
         .usage('Usage: $0 [-f format] [-e] FILE')
         .string('f').describe('f', 'file format. if not given, will be detected by filename. supported values: osm, json')
         .boolean('e').describe('e', 'enhanced properties. if set, the resulting GeoJSON feature\'s properties will contain more structured information')
+        .boolean('version').describe('version','display software version')
         .boolean('help').describe('help','print this help message'),
     argv = opt.argv,
     fs = require('fs'),
     concat = require('concat-stream'),
-    xmldom = new (require('xmldom').DOMParser)();
+    xmldom = new (require('xmldom').DOMParser)(),
+    pack = require('./package.json');
 
 if (argv.help) {
     return opt.showHelp();
+}
+if (argv.version) {
+    process.stdout.write(pack.version+'\n');
+    return;
 }
 
 var filename = argv._[0] || '';
