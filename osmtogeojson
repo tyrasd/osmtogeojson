@@ -15,29 +15,39 @@ var filename = argv._[0] || '';
 var enhanced_geojson = argv.e;
 var format = argv.f;
 
-if (format == 'xml') format = 'osm';
+if (format === 'xml') format = 'osm';
+// detect file format from filename
 if (!format) {
     if (filename.match(/\.osm$/i)) format = 'osm';
     if (filename.match(/\.xml$/i)) format = 'osm';
     if (filename.match(/\.json$/i)) format = 'json';
 }
-
-if (['osm','json'].indexOf(format) === -1) {
-    process.stderr.write('This doesn\'t look like a recognized file format.\n');
-    return opt.showHelp();
-}
+// fall back to autodetection if still no format
+if (!format) format = 'auto';
 
 (argv._.length ? fs.createReadStream(argv._[0]) : process.stdin).pipe(concat(convert));
 
 if (process.stdin.isTTY && !argv._[0]) return opt.showHelp();
 
 function convert(data) {
-    if (format == 'osm')
-        data = xmldom.parseFromString(data.toString());
-    else if (format == 'json')
-        data = JSON.parse(data.toString());
-    else
-        return;
+    data = data.toString();
+    if (format === 'auto') {
+        if (data.match(/^\s*</)) // (osm) xml files begin with a "<"
+            format = 'osm';
+        else if (data.match(/^\s*{/)) // osm json files begin with a "{"
+            format = 'json';
+        else {
+            format = 'unknown';
+        }
+    }
+    if (format === 'osm')
+        data = xmldom.parseFromString(data);
+    else if (format === 'json')
+        data = JSON.parse(data);
+    else {
+        process.stderr.write('This doesn\'t look like a recognized file format.\n');
+        return opt.showHelp();
+    }
     process.stdout.write(
         JSON.stringify(
             osmtogeojson.toGeojson(
