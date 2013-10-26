@@ -4,11 +4,16 @@ var osmtogeojson = require('./'),
     opt = require('optimist')
         .usage('Usage: $0 [-f format] [-e] FILE')
         .string('f').describe('f', 'file format. if not given, will be detected by filename. supported values: osm, json')
-        .boolean('e').describe('e', 'enhanced properties. if set, the resulting GeoJSON feature\'s properties will contain more structured information'),
+        .boolean('e').describe('e', 'enhanced properties. if set, the resulting GeoJSON feature\'s properties will contain more structured information')
+        .boolean('help').describe('help','print this help message'),
     argv = opt.argv,
     fs = require('fs'),
     concat = require('concat-stream'),
     xmldom = new (require('xmldom').DOMParser)();
+
+if (argv.help) {
+    return opt.showHelp();
+}
 
 var filename = argv._[0] || '';
 
