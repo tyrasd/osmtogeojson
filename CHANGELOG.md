@@ -1,3 +1,8 @@
+1.3.1
+-----
+* add --help and --version parameters to cli tool
+* fix bug with not automatically detected file formats in pipe mode (cli tool)
+
 1.3.0
 -----
 * more versatile cli tool (can read osm json, optionally enhanced output)
