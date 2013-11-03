@@ -1,3 +1,8 @@
+1.4.0
+-----
+* fix various speed bottlenecks (xml parsing, geojson construction, …)
+* better performance when handling large xml files with the cli tool: ![](https://f.cloud.github.com/assets/1927298/1461813/4a1ce53e-44ce-11e3-9a96-d600eb3aba9b.png)
+
 1.3.1
 -----
 * add --help and --version parameters to cli tool
