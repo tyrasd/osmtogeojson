@@ -11,6 +11,7 @@ var osmtogeojson = require('./'),
     fs = require('fs'),
     concat = require('concat-stream'),
     xmldom = new (require('xmldom').DOMParser)(),
+    osmxml2osmjson = require('./parse_osmxml.js'),
     pack = require('./package.json');
 
 if (argv.help) {
@@ -49,10 +50,12 @@ function convert(data) {
             format = 'unknown';
         }
     }
-    if (format === 'osm')
+    if (format === 'xmldom')
         data = xmldom.parseFromString(data);
     else if (format === 'json')
         data = JSON.parse(data);
+    else if (format === 'osm' || format === 'fastxml')
+        data = osmxml2osmjson(data);
     else {
         process.stderr.write('This doesn\'t look like a recognized file format.\n');
         return opt.showHelp();
