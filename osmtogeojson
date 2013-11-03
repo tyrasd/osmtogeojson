@@ -57,12 +57,16 @@ function convert(data) {
         process.stderr.write('This doesn\'t look like a recognized file format.\n');
         return opt.showHelp();
     }
-    process.stdout.write(
-        JSON.stringify(
-            osmtogeojson.toGeojson(
-                data,
-                {flatProperties: !enhanced_geojson}
-            ), null, 4
-        )
-    );
+    var geojson = osmtogeojson.toGeojson(data, {
+        flatProperties: !enhanced_geojson
+    });
+    // this is much faster than a simple JSON.stringify of the whole geojson
+    // object. also, this is less memory intensive and output starts right
+    // after the conversion without any additional delay
+    process.stdout.write('{\n"type": "FeatureCollection",\n"features": [\n');
+    geojson.features.forEach(function(f) {
+        process.stdout.write(JSON.stringify(f, null, 4));
+        process.stdout.write(',\n');
+    });
+    process.stdout.write('\n]\n}\n');
 }
