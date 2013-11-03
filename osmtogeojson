@@ -67,9 +67,10 @@ function convert(data) {
     // object. also, this is less memory intensive and output starts right
     // after the conversion without any additional delay
     process.stdout.write('{\n"type": "FeatureCollection",\n"features": [\n');
-    geojson.features.forEach(function(f) {
+    geojson.features.forEach(function(f,i) {
         process.stdout.write(JSON.stringify(f, null, 4));
-        process.stdout.write(',\n');
+        if (i != geojson.features.length-1)
+            process.stdout.write(',\n');
     });
     process.stdout.write('\n]\n}\n');
 }
