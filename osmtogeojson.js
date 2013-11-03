@@ -113,22 +113,29 @@ osmtogeojson.toGeojson = function( data, options ) {
   return result;
 
   function _overpassJSON2geoJSON(json) {
-    // create copy of json to make sure the original object doesn't get altered
-    json = JSON.parse(JSON.stringify(json));
     // sort elements
     var nodes = new Array();
     var ways  = new Array();
     var rels  = new Array();
+    // create copies of individual json objects to make sure the original data doesn't get altered
+    // todo: cloning is slow: see if this can be done differently!
     for (var i=0;i<json.elements.length;i++) {
       switch (json.elements[i].type) {
       case "node":
-        nodes.push(json.elements[i]);
+        var node = _.clone(json.elements[i]);
+        // todo: this clone could be avoided if we didn't store relations directly within the raw data 
+        // see https://github.com/tyrasd/osmtogeojson/blob/gh-pages/osmtogeojson.js#L298-L302
+        nodes.push(node);
       break;
       case "way":
-        ways.push(json.elements[i]);
+        var way = _.clone(json.elements[i]);
+        way.nodes = _.clone(way.nodes);
+        ways.push(way);
       break;
       case "relation":
-        rels.push(json.elements[i]);
+        var rel = _.clone(json.elements[i]);
+        rel.members = _.clone(rel.members);
+        rels.push(rel);
       break;
       default:
       // type=area (from coord-query) is an example for this case.
