@@ -2584,3 +2584,41 @@ describe("tainted data", function () {
   });
 
 });
+
+describe("other", function () {
+  // 
+  it("sideeffects", function () {
+    var json, json_before, json_after;
+    json = {
+      elements: [
+        {
+          type: "node",
+          id:   1,
+          tags: {"foo": "bar"},
+          user: "johndoe",
+          lat:  1.234,
+          lon:  4.321
+        },
+        {
+          type: "node",
+          id:   2
+        },
+        {
+          type:  "way",
+          id:    1,
+          nodes: [1,2,3]
+        },
+        {
+          type:  "relation",
+          id:    1,
+          members: [{type: "way", ref:1},{type: "way", ref:2},{type: "node", ref:1}]
+        }
+      ]
+    };
+    json_before = JSON.stringify(json);
+    osmtogeojson.toGeojson(json);
+    json_after = JSON.stringify(json);
+    expect(json_after).to.equal(json_before);
+  });
+
+});
