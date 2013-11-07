@@ -123,8 +123,6 @@ osmtogeojson.toGeojson = function( data, options ) {
       switch (json.elements[i].type) {
       case "node":
         var node = json.elements[i];
-        // todo: this clone could be avoided if we didn't store relations directly within the raw data 
-        // see https://github.com/tyrasd/osmtogeojson/blob/gh-pages/osmtogeojson.js#L298-L302
         nodes.push(node);
       break;
       case "way":
