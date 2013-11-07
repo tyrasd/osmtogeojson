@@ -122,7 +122,7 @@ osmtogeojson.toGeojson = function( data, options ) {
     for (var i=0;i<json.elements.length;i++) {
       switch (json.elements[i].type) {
       case "node":
-        var node = _.clone(json.elements[i]);
+        var node = json.elements[i];
         // todo: this clone could be avoided if we didn't store relations directly within the raw data 
         // see https://github.com/tyrasd/osmtogeojson/blob/gh-pages/osmtogeojson.js#L298-L302
         nodes.push(node);
@@ -283,6 +283,7 @@ osmtogeojson.toGeojson = function( data, options ) {
         continue; // ignore relations without members (e.g. returned by an ids_only query)
       relids[rels[i].id] = rels[i];
     }
+    var relsmap = {node: {}, way: {}, relation: {}};
     for (var i=0;i<rels.length;i++) {
       if (!_.isArray(rels[i].members))
         continue; // ignore relations without members (e.g. returned by an ids_only query)
@@ -299,15 +300,16 @@ osmtogeojson.toGeojson = function( data, options ) {
             m = relids[rels[i].members[j].ref];
           break;
         }
-        if (m) { // typeof m != "undefined"
-          if (typeof m.relations == "undefined")
-            m.relations = new Array();
-          m.relations.push({
-              "role" : rels[i].members[j].role,
-              "rel" : rels[i].id,
-              "reltags" : rels[i].tags,
-              });
-        }
+        if (!m) continue;
+        var m_type = rels[i].members[j].type;
+        var m_ref = rels[i].members[j].ref;
+        if (typeof relsmap[m_type][m_ref] === "undefined")
+          relsmap[m_type][m_ref] = [];
+        relsmap[m_type][m_ref].push({
+          "role" : rels[i].members[j].role,
+          "rel" : rels[i].id,
+          "reltags" : rels[i].tags,
+        });
       }
     }
     // construct geojson
@@ -325,7 +327,7 @@ osmtogeojson.toGeojson = function( data, options ) {
           "type" : "node",
           "id"   : pois[i].id,
           "tags" : pois[i].tags || {},
-          "relations" : pois[i].relations || [],
+          "relations" : relsmap["node"][pois[i].id] || [],
           "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": pois[i].timestamp, "version": pois[i].version, "changeset": pois[i].changeset, "user": pois[i].user, "uid": pois[i].uid}),
         },
         "geometry"   : {
@@ -514,7 +516,7 @@ osmtogeojson.toGeojson = function( data, options ) {
               "type" : "relation",
               "id"   : rels[i].id,
               "tags" : rels[i].tags || {},
-              "relations" : rels[i].relations || [],
+              "relations" :  relsmap["relation"][rels[i].id] || [],
               "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": rels[i].timestamp, "version": rels[i].version, "changeset": rels[i].changeset, "user": rels[i].user, "uid": rels[i].uid}),
             },
             "geometry"   : {
@@ -567,7 +569,7 @@ osmtogeojson.toGeojson = function( data, options ) {
               "type" : "way",
               "id"   : outer_way.id,
               "tags" : outer_way.tags || {},
-              "relations" : outer_way.relations || [],
+              "relations" : relsmap["way"][outer_way.id] || [],
               "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": outer_way.timestamp, "version": outer_way.version, "changeset": outer_way.changeset, "user": outer_way.user, "uid": outer_way.uid}),
             },
             "geometry"   : {
@@ -614,7 +616,7 @@ osmtogeojson.toGeojson = function( data, options ) {
           "type" : "way",
           "id"   : ways[i].id,
           "tags" : ways[i].tags || {},
-          "relations" : ways[i].relations || [],
+          "relations" : relsmap["way"][ways[i].id] || [],
           "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": ways[i].timestamp, "version": ways[i].version, "changeset": ways[i].changeset, "user": ways[i].user, "uid": ways[i].uid}),
         },
         "geometry"   : {
