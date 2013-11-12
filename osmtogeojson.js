@@ -4,7 +4,7 @@ if (typeof require !== "undefined") {
 
 var osmtogeojson = {};
 
-osmtogeojson.toGeojson = function( data, options ) {
+osmtogeojson = function( data, options ) {
 
   options = _.merge(
     {
@@ -679,5 +679,8 @@ osmtogeojson.toGeojson = function( data, options ) {
     return false;
   }
 };
+
+// for backwards compatibility
+osmtogeojson.toGeojson = osmtogeojson;
 
 if (typeof module !== 'undefined') module.exports = osmtogeojson;

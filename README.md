@@ -25,20 +25,20 @@ Usage
   
         npm install osmtogeojson
   
-        var osm = require('osmtogeojson');
-        osm.toGeojson(xml_data);
+        var osmtogeojson = require('osmtogeojson');
+        osmtogeojson(osm_data);
   
 * as a browser library:
   
         <script src='lodash.js'></script>
         <script src='osmtogeojson.js'></script>
   
-        osmtogeojson.toGeojson(xml_data);
+        osmtogeojson(osm_data);
 
 API
 ---
 
-### `.toGeojson( data, options )`
+### `osmtogeojson( data, options )`
 
 Converts OSM data into GeoJSON.
 

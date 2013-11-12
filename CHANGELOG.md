@@ -1,3 +1,8 @@
+1.5.0 (dev)
+-----
+* simpler API (module exports as a plain function), old `.toGeojson` still available as a fallback
+* further speed improvements
+
 1.4.0
 -----
 * fix various speed bottlenecks (xml parsing, geojson construction, …)

@@ -60,7 +60,7 @@ function convert(data) {
         process.stderr.write('This doesn\'t look like a recognized file format.\n');
         return opt.showHelp();
     }
-    var geojson = osmtogeojson.toGeojson(data, {
+    var geojson = osmtogeojson(data, {
         flatProperties: !enhanced_geojson
     });
     // this is much faster than a simple JSON.stringify of the whole geojson
