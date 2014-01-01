@@ -1,5 +1,5 @@
-_ = require("lodash");
-rewind = require("geojson-rewind");
+var _ = require("lodash");
+var rewind = require("geojson-rewind");
 
 var osmtogeojson = {};
 

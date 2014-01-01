@@ -1129,7 +1129,6 @@ describe("osm (json)", function () {
     };
     var result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(2);
-    expect(_.pluck(_.pluck(result.features,"properties"),"id")).to.eql([1,2]);
     expect(result.features[0].properties.id).to.eql(1);
     expect(result.features[1].properties.id).to.eql(2);
   });
