@@ -1,7 +1,9 @@
-1.5.0 (dev)
+2.0.0 (dev)
 -----
 * simpler API (module exports as a plain function), old `.toGeojson` still available as a fallback
+* output (multi)polygons with consistent winding orders
 * further speed improvements
+* use browserify for browser library (comes bundeled with dependencies)
 
 1.4.0
 -----
