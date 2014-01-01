@@ -30,7 +30,6 @@ Usage
   
 * as a browser library:
   
-        <script src='lodash.js'></script>
         <script src='osmtogeojson.js'></script>
   
         osmtogeojson(osm_data);

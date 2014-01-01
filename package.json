@@ -2,7 +2,7 @@
   "name": "osmtogeojson",
   "version": "1.4.0",
   "description": "convert OSM to geojson",
-  "main": "osmtogeojson.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha -R spec"
   },
