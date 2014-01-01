@@ -1,4 +1,5 @@
 _ = require("lodash");
+rewind = require("geojson-rewind");
 
 var osmtogeojson = {};
 
@@ -645,6 +646,8 @@ osmtogeojson = function( data, options ) {
         );
       });
     }
+    // fix polygon winding
+    geojson = rewind(geojson, true /*remove for geojson-rewind >0.1.0*/);
     return geojson;
   }
   function _isPolygonFeature( tags ) {
