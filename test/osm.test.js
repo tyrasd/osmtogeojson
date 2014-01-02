@@ -434,6 +434,7 @@ describe("osm (json)", function () {
   });
   it("multipolygon", function () {
     var json, geojson;
+    // valid multipolygon
     json = {
       elements: [
         {
@@ -688,6 +689,11 @@ describe("osm (json)", function () {
       ]
     };
     var result = osmtogeojson.toGeojson(json);
+    expect(result).to.eql(geojson);
+    // handle role-less members as outer ways
+    json.elements[0].members[3].role = "";
+    geojson.features[2].properties.relations[0].role = "";
+    result = osmtogeojson.toGeojson(json);
     expect(result).to.eql(geojson);
   });
   // tags & pois
