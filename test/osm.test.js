@@ -288,6 +288,7 @@ describe("osm (json)", function () {
   });
   it("simple multipolygon", function () {
     var json, geojson;
+    // valid simple multipolygon
     json = {
       elements: [
         {
@@ -400,6 +401,35 @@ describe("osm (json)", function () {
       ]
     };
     var result = osmtogeojson.toGeojson(json);
+    expect(result).to.eql(geojson);
+    // invalid simple multipolygon (no outer way)
+    json = {
+      elements: [
+        {
+          type:    "relation",
+          id:      1,
+          tags:    {"type":"multipolygon"},
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "outer"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "inner"
+            }
+          ]
+        }
+      ]
+    };
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+      ]
+    };
+    result = osmtogeojson.toGeojson(json);
     expect(result).to.eql(geojson);
   });
   it("multipolygon", function () {
