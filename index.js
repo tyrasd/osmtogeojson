@@ -148,6 +148,7 @@ osmtogeojson = function( data, options ) {
     return _convert2geoJSON(nodes,ways,rels);
   }
   function _convert2geoJSON(nodes,ways,rels) {
+
     // helper function that checks if there are any tags other than "created_by", "source", etc. or any tag provided in ignore_tags
     function has_interesting_tags(t, ignore_tags) {
       if (typeof ignore_tags !== "object")
@@ -160,6 +161,21 @@ osmtogeojson = function( data, options ) {
           return true;
       return false;
     };
+    // helper function to extract meta information
+    function build_meta_information(object) {
+      var res = {
+        "timestamp": object.timestamp,
+        "version": object.version,
+        "changeset": object.changeset,
+        "user": object.user,
+        "uid": object.uid
+      };
+      for (k in res)
+        if (res[k] === undefined)
+          delete res[k];
+      return res;
+    }
+
     // some data processing (e.g. filter nodes only used for ways)
     var nodeids = new Object();
     for (var i=0;i<nodes.length;i++) {
@@ -249,7 +265,7 @@ osmtogeojson = function( data, options ) {
           "id"   : pois[i].id,
           "tags" : pois[i].tags || {},
           "relations" : relsmap["node"][pois[i].id] || [],
-          "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": pois[i].timestamp, "version": pois[i].version, "changeset": pois[i].changeset, "user": pois[i].user, "uid": pois[i].uid}),
+          "meta": build_meta_information(pois[i])
         },
         "geometry"   : {
           "type" : "Point",
@@ -438,7 +454,7 @@ osmtogeojson = function( data, options ) {
               "id"   : rels[i].id,
               "tags" : rels[i].tags || {},
               "relations" :  relsmap["relation"][rels[i].id] || [],
-              "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": rels[i].timestamp, "version": rels[i].version, "changeset": rels[i].changeset, "user": rels[i].user, "uid": rels[i].uid}),
+              "meta": build_meta_information(rels[i])
             },
             "geometry"   : {
               "type" : "MultiPolygon",
@@ -491,7 +507,7 @@ osmtogeojson = function( data, options ) {
               "id"   : outer_way.id,
               "tags" : outer_way.tags || {},
               "relations" : relsmap["way"][outer_way.id] || [],
-              "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": outer_way.timestamp, "version": outer_way.version, "changeset": outer_way.changeset, "user": outer_way.user, "uid": outer_way.uid}),
+              "meta": build_meta_information(outer_way)
             },
             "geometry"   : {
               "type" : way_type,
@@ -538,7 +554,7 @@ osmtogeojson = function( data, options ) {
           "id"   : ways[i].id,
           "tags" : ways[i].tags || {},
           "relations" : relsmap["way"][ways[i].id] || [],
-          "meta": function(o){var res={}; for(k in o) if(o[k] != undefined) res[k]=o[k]; return res;}({"timestamp": ways[i].timestamp, "version": ways[i].version, "changeset": ways[i].changeset, "user": ways[i].user, "uid": ways[i].uid}),
+          "meta": build_meta_information(ways[i])
         },
         "geometry"   : {
           "type" : way_type,
