@@ -305,11 +305,26 @@ osmtogeojson = function( data, options ) {
         var simple_mp = false;
         if (outer_count == 1 && !has_interesting_tags(rels[i].tags, {"type":true}))
           simple_mp = true;
+        var feature = null;
         if (!simple_mp) {
+          feature = construct_multipolygon(rels[i], rels[i]);
+        } else {
+          // simple multipolygon
+          var outer_way = rels[i].members.filter(function(m) {return m.role === "outer";})[0];
+          outer_way = wayids[outer_way.ref];
+          if (outer_way === undefined)
+            continue; // abort if outer way object is not present
+          outer_way.is_multipolygon_outline = true;
+          feature = construct_multipolygon(outer_way, rels[i]);
+        }
+        if (feature === false)
+          continue; // abort if feature could not be constructed
+        geojsonpolygons.features.push(feature);
+        function construct_multipolygon(tag_object, rel) {
           var is_tainted = false;
           // prepare mp members
           var members;
-          members = rels[i].members.filter(function(m) {return m.type === "way";});
+          members = rel.members.filter(function(m) {return m.type === "way";});
           members = members.map(function(m) {
             var way = wayids[m.ref];
             if (way === undefined) { // check for missing ways
@@ -444,79 +459,31 @@ osmtogeojson = function( data, options ) {
           }));
 
           if (mp_coords.length == 0)
-            continue; // ignore multipolygons without coordinates
+            return false; // ignore multipolygons without coordinates
+          var mp_type = "MultiPolygon";
+          if (mp_coords.length === 1) {
+            mp_type = "Polygon";
+            mp_coords = mp_coords[0];
+          }
           // mp parsed, now construct the geoJSON
           var feature = {
             "type"       : "Feature",
-            "id"         : "relation/"+rels[i].id,
+            "id"         : tag_object.type+"/"+tag_object.id,
             "properties" : {
-              "type" : "relation",
-              "id"   : rels[i].id,
-              "tags" : rels[i].tags || {},
-              "relations" :  relsmap["relation"][rels[i].id] || [],
-              "meta": build_meta_information(rels[i])
+              "type" : tag_object.type,
+              "id"   : tag_object.id,
+              "tags" : tag_object.tags || {},
+              "relations" :  relsmap[tag_object.type][tag_object.id] || [],
+              "meta": build_meta_information(tag_object)
             },
             "geometry"   : {
-              "type" : "MultiPolygon",
+              "type" : mp_type,
               "coordinates" : mp_coords,
             }
           }
           if (is_tainted)
             feature.properties["tainted"] = true;
-          geojsonpolygons.features.push(feature);
-        } else {
-          // simple multipolygon
-          rels[i].tainted = false;
-          var outer_coords = new Array();
-          var inner_coords = new Array();
-          var outer_way = undefined;
-          for (var j=0;j<rels[i].members.length;j++) {
-            if ((rels[i].members[j].type == "way") &&
-                _.contains(["outer","inner"], rels[i].members[j].role)) {
-              var w = wayids[rels[i].members[j].ref];
-              if (typeof w == "undefined") {
-                rels[i].tainted = true;
-                continue;
-              }
-              var coords = new Array();
-              for (var k=0;k<w.nodes.length;k++) {
-                if (typeof w.nodes[k] == "object")
-                    coords.push([+w.nodes[k].lon, +w.nodes[k].lat]);
-                else
-                  rels[i].tainted = true;
-              }
-              if (rels[i].members[j].role == "outer") {
-                outer_coords.push(coords);
-                outer_way = w;
-                outer_way.is_multipolygon_outline = true;
-              } else if (rels[i].members[j].role == "inner") {
-                inner_coords.push(coords);
-              }
-            }
-          }
-          if (typeof outer_way == "undefined")
-            continue; // abort if outer way object is not present
-          if (outer_coords[0].length == 0)
-            continue; // abort if coordinates of outer way is not present
-          way_type = "Polygon";
-          var feature = {
-            "type"       : "Feature",
-            "id"         : "way/"+outer_way.id,
-            "properties" : {
-              "type" : "way",
-              "id"   : outer_way.id,
-              "tags" : outer_way.tags || {},
-              "relations" : relsmap["way"][outer_way.id] || [],
-              "meta": build_meta_information(outer_way)
-            },
-            "geometry"   : {
-              "type" : way_type,
-              "coordinates" : ([].concat(outer_coords,inner_coords)),
-            }
-          }
-          if (rels[i].tainted)
-            feature.properties["tainted"] = true;
-          geojsonpolygons.features.push(feature);
+          return feature;
         }
       }
     }

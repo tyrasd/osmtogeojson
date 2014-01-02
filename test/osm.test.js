@@ -889,13 +889,13 @@ describe("osm (json)", function () {
             meta: {}
           },
           geometry: {
-            type: "MultiPolygon",
-            coordinates: [[[
+            type: "Polygon",
+            coordinates: [[
               [2.0,1.0],
               [1.0,1.0],
               [2.0,2.0],
               [2.0,1.0]
-            ].reverse()]]
+            ].reverse()]
           }
         },
         {
@@ -1216,10 +1216,9 @@ describe("osm (json)", function () {
     result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
-    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[0].geometry.coordinates).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
-    /*
+
     // simple multipolygon
     json = {
       elements: [
@@ -1299,8 +1298,6 @@ describe("osm (json)", function () {
     expect(result.features[0].properties.id).to.equal(2);
     expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[0].geometry.coordinates).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
-    */
   });
   // non-trivial ring building (way order and direction)
   it("multipolygon: non-trivial ring building", function() {
@@ -1367,10 +1364,9 @@ describe("osm (json)", function () {
     result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
-    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[0].geometry.coordinates).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(4);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(4);
     // way directions
     json = {
       elements: [
@@ -1482,10 +1478,9 @@ describe("osm (json)", function () {
     result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
-    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[0].geometry.coordinates).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(7);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(7);
   });
   // unclosed rings
   it("multipolygon: unclosed ring", function() {
@@ -1548,10 +1543,9 @@ describe("osm (json)", function () {
     result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
-    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[0].geometry.coordinates).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(4);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(4);
     expect(result.features[0].properties.tainted).to.not.equal(true);
     // matching ways, but unclosed ring
     json = {
@@ -1612,10 +1606,9 @@ describe("osm (json)", function () {
     result = osmtogeojson.toGeojson(json);
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
-    expect(result.features[0].geometry.type).to.equal("MultiPolygon");
+    expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[0].geometry.coordinates).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0]).to.have.length(1);
-    expect(result.features[0].geometry.coordinates[0][0]).to.have.length(4);
+    expect(result.features[0].geometry.coordinates[0]).to.have.length(4);
     expect(result.features[0].properties.tainted).to.not.equal(true);
   });
   // overpass area
