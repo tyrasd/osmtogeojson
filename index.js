@@ -273,7 +273,7 @@ osmtogeojson = function( data, options ) {
         for (var j=0;j<rels[i].members.length;j++)
           if (rels[i].members[j].role == "outer")
             outer_count++;
-        _.each(rels[i].members, function(m) {
+        rels[i].members.forEach(function(m) {
           if (wayids[m.ref]) {
             // this even works in the following corner case:
             // a multipolygon amenity=xxx with outer line tagged amenity=yyy
@@ -293,8 +293,8 @@ osmtogeojson = function( data, options ) {
           var is_tainted = false;
           // prepare mp members
           var members;
-          members = _.filter(rels[i].members, function(m) {return m.type === "way";});
-          members = _.map(members, function(m) {
+          members = rels[i].members.filter(function(m) {return m.type === "way";});
+          members = members.map(function(m) {
             var way = wayids[m.ref];
             if (way === undefined) { // check for missing ways
               is_tainted = true;
@@ -304,7 +304,7 @@ osmtogeojson = function( data, options ) {
               id: m.ref,
               role: m.role || "outer",
               way: way,
-              nodes: _.filter(way.nodes, function(n) {
+              nodes: way.nodes.filter(function(n) {
                 if (n !== undefined)
                   return true;
                 is_tainted = true;
@@ -356,8 +356,8 @@ osmtogeojson = function( data, options ) {
             }
             return joined;
           }
-          outers = join(_.filter(members, function(m) {return m.role==="outer";}));
-          inners = join(_.filter(members, function(m) {return m.role==="inner";}));
+          outers = join(members.filter(function(m) {return m.role==="outer";}));
+          inners = join(members.filter(function(m) {return m.role==="inner";}));
           // sort rings
           var mp;
           function findOuter(inner) {
@@ -368,7 +368,7 @@ osmtogeojson = function( data, options ) {
               return false;
             }
             var mapCoordinates = function(from) {
-              return _.map(from, function(n) {
+              return from.map(function(n) {
                 return [+n.lat,+n.lon];
               });
             }
@@ -402,7 +402,7 @@ osmtogeojson = function( data, options ) {
                 return o;
             }
           }
-          mp = _.map(outers, function(o) {return [o];});
+          mp = outers.map(function(o) {return [o];});
           for (var j=0; j<inners.length; j++) {
             var o = findOuter(inners[j]);
             if (o !== undefined)
@@ -414,11 +414,11 @@ osmtogeojson = function( data, options ) {
           }
           // sanitize mp-coordinates (remove empty clusters or rings, {lat,lon,...} to [lon,lat]
           var mp_coords = [];
-          mp_coords = _.compact(_.map(mp, function(cluster) { 
-            var cl = _.compact(_.map(cluster, function(ring) {
+          mp_coords = _.compact(mp.map(function(cluster) { 
+            var cl = _.compact(cluster.map(function(ring) {
               if (ring.length < 4) // todo: is this correct: ring.length < 4 ?
                 return;
-              return _.compact(_.map(ring, function(node) {
+              return _.compact(ring.map(function(node) {
                 return [+node.lon,+node.lat];
               }));
             }));
@@ -562,7 +562,7 @@ osmtogeojson = function( data, options ) {
     geojson.features = geojson.features.concat(geojsonnodes.features);
     // optionally, flatten properties
     if (options.flatProperties) {
-      _.each(geojson.features, function(f) {
+      geojson.features.forEach(function(f) {
         f.properties = _.merge(
           f.properties.meta,
           f.properties.tags,
