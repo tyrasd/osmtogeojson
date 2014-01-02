@@ -18,12 +18,12 @@ Usage
 
 * as a command line tool:
   
-        npm install -g osmtogeojson
+        $ npm install -g osmtogeojson
         $ osmtogeojson file.osm > file.geojson
   
 * as a nodejs library:
   
-        npm install osmtogeojson
+        $ npm install osmtogeojson
   
         var osmtogeojson = require('osmtogeojson');
         osmtogeojson(osm_data);
