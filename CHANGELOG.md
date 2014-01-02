@@ -4,6 +4,7 @@
 * output (multi)polygons with consistent winding orders
 * further speed improvements
 * use browserify for browser library (comes bundeled with dependencies)
+* improve handling of simple multipolygons
 
 1.4.0
 -----
