@@ -37,7 +37,7 @@ if (!format) {
 // fall back to autodetection if still no format
 if (!format) format = 'auto';
 
-(argv._.length ? fs.createReadStream(argv._[0]) : process.stdin).pipe(concat(convert));
+(filename ? fs.createReadStream(filename) : process.stdin).pipe(concat(convert));
 
 function convert(data) {
     if (!data) data = ''; else data = data.toString();
@@ -66,6 +66,7 @@ function convert(data) {
     // this is much faster than a simple JSON.stringify of the whole geojson
     // object. also, this is less memory intensive and output starts right
     // after the conversion without any additional delay
+    process.stdout.on('error', function() {});
     process.stdout.write('{\n"type": "FeatureCollection",\n"features": [\n');
     geojson.features.forEach(function(f,i) {
         process.stdout.write(JSON.stringify(f, null, 4));
