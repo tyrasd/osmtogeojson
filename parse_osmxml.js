@@ -1,6 +1,6 @@
 /* converts OSM XML to OSM JSON using a fast streaming parser */
 var htmlparser = require('htmlparser2');
-var _ = require('lodash');
+var _ = require("./lodash.custom.js");
 
 var json = {
     "version": 0.6,

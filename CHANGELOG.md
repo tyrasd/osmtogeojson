@@ -1,3 +1,7 @@
+2.0.1
+-----
+* fix a dangling dependency (which led fresh installations to crash prematurely)
+
 2.0.0
 -----
 * simpler API (module exports as a plain function), old `.toGeojson` still available as a fallback
