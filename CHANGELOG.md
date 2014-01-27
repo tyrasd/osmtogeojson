@@ -1,4 +1,4 @@
-2.0.1
+2.0.2
 -----
 * fix a dangling dependency (which led fresh installations to crash prematurely)
 
