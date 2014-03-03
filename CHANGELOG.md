@@ -1,3 +1,7 @@
+2.0.3
+-----
+* fix unresolved xml entities in command line mode
+
 2.0.2
 -----
 * fix a dangling dependency (which led fresh installations to crash prematurely)

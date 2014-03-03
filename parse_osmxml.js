@@ -32,6 +32,9 @@ var p = new htmlparser.Parser({
             json.elements.push(buffer);
         }
     }
+}, {
+    decodeEntities: true,
+    xmlMode: true
 });
 
 module.exports = function(xml_str) { p.write(xml_str); p.end(); return json; }
