@@ -46,6 +46,14 @@ case 'json':
 case 'streamjson':
     datastream.pipe(JSONStream.parse())
     .on('root', function(data) {
+        // iron out some nasty floating point rounding errors
+        if (data.version) data.version = Math.round(data.version*1000)/1000;
+        data.elements.forEach(function(element) {
+            if (element.lat) element.lat = Math.round(element.lat*1E12)/1E12;
+            if (element.lon) element.lon = Math.round(element.lon*1E12)/1E12;
+            console.log(element)
+        });
+        // convert to geojson
         convert(data);
     })
     .on('error', function(err) {
