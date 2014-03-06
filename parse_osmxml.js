@@ -37,4 +37,9 @@ var p = new htmlparser.Parser({
     xmlMode: true
 });
 
-module.exports = function(xml_str) { p.write(xml_str); p.end(); return json; }
+p.parseFromString = function(xml_str) { p.write(xml_str); p.end(); return json; }
+p.getJSON = function() {
+    return json;
+}
+
+module.exports = p;

@@ -27,7 +27,8 @@
     "xmldom": "~0.1.16",
     "optimist": "~0.3.5",
     "concat-stream": "~1.0.1",
-    "htmlparser2": "3.5.1"
+    "htmlparser2": "3.5.1",
+    "JSONStream": "0.8.0"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
