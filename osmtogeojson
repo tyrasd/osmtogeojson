@@ -51,7 +51,6 @@ case 'streamjson':
         data.elements.forEach(function(element) {
             if (element.lat) element.lat = Math.round(element.lat*1E12)/1E12;
             if (element.lon) element.lon = Math.round(element.lon*1E12)/1E12;
-            console.log(element)
         });
         // convert to geojson
         convert(data);
