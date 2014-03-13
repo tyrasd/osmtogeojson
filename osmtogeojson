@@ -72,6 +72,7 @@ case 'streamxml':
         data = osmxmlParser.getJSON();
         convert(data);
     });
+    datastream.resume();
 break;
 default:
     // otherwise use leagacy non-streaming parsers
