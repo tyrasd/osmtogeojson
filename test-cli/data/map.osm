@@ -1,0 +1,428 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<osm version="0.6" generator="Overpass API">
+<note>The data included in this document is from www.openstreetmap.org. The data is made available under ODbL.</note>
+<meta osm_base="2014-03-13T12:44:02Z"/>
+
+  <node id="375952270" lat="46.4551482" lon="11.2578535" version="2" timestamp="2011-03-24T11:28:19Z" changeset="7654992" uid="115612" user="tyr_asd"/>
+  <node id="386073971" lat="46.4549719" lon="11.2571261" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073973" lat="46.4549942" lon="11.2574846" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073976" lat="46.4550395" lon="11.2574786" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073978" lat="46.4550453" lon="11.2575715" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073980" lat="46.4551715" lon="11.2576410" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073982" lat="46.4551787" lon="11.2577565" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073990" lat="46.4551937" lon="11.2572168" version="4" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073991" lat="46.4550776" lon="11.2572332" version="4" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073992" lat="46.4550871" lon="11.2573757" version="4" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073998" lat="46.4552032" lon="11.2573593" version="4" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386074028" lat="46.4551564" lon="11.2578379" version="1" timestamp="2009-04-27T17:28:44Z" changeset="993143" uid="115612" user="tyr_asd"/>
+  <node id="1215837458" lat="46.4550251" lon="11.2580442" version="2" timestamp="2013-01-13T22:55:50Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1215837587" lat="46.4549282" lon="11.2579603" version="2" timestamp="2013-01-13T22:55:50Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1215837728" lat="46.4551715" lon="11.2579094" version="2" timestamp="2013-01-13T22:55:50Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1215838041" lat="46.4550159" lon="11.2579365" version="2" timestamp="2013-01-13T22:55:51Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1215838214" lat="46.4548633" lon="11.2580035" version="2" timestamp="2013-01-13T22:55:51Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1215838405" lat="46.4551816" lon="11.2580235" version="2" timestamp="2013-01-13T22:55:52Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1215838572" lat="46.4548350" lon="11.2579312" version="1" timestamp="2011-03-24T11:27:39Z" changeset="7654992" uid="115612" user="tyr_asd"/>
+  <node id="1215838582" lat="46.4551070" lon="11.2580498" version="2" timestamp="2013-01-13T22:55:52Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846233" lat="46.4550506" lon="11.2576569" version="1" timestamp="2013-01-13T22:55:28Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846237" lat="46.4551126" lon="11.2580278" version="1" timestamp="2013-01-13T22:55:28Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846238" lat="46.4551161" lon="11.2580373" version="1" timestamp="2013-01-13T22:55:28Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2517666750" lat="46.4549454" lon="11.2577552" version="1" timestamp="2013-11-02T18:28:20Z" changeset="18679226" uid="1380953" user="Skombi"/>
+  <node id="2517666751" lat="46.4548927" lon="11.2569027" version="1" timestamp="2013-11-02T18:28:20Z" changeset="18679226" uid="1380953" user="Skombi"/>
+  <node id="372777376" lat="46.4555026" lon="11.2574519" version="4" timestamp="2013-04-26T07:39:34Z" changeset="15868943" uid="115612" user="tyr_asd"/>
+  <node id="372777383" lat="46.4555129" lon="11.2576358" version="3" timestamp="2013-01-13T22:56:04Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="372777415" lat="46.4556058" lon="11.2576677" version="1" timestamp="2009-04-11T18:43:37Z" changeset="409620" uid="115612" user="tyr_asd"/>
+  <node id="375952276" lat="46.4554286" lon="11.2578714" version="2" timestamp="2011-03-24T11:28:17Z" changeset="7654992" uid="115612" user="tyr_asd"/>
+  <node id="386073958" lat="46.4553814" lon="11.2573601" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073961" lat="46.4553036" lon="11.2573703" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073962" lat="46.4552827" lon="11.2570345" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073964" lat="46.4552155" lon="11.2570433" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073969" lat="46.4552187" lon="11.2570937" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073984" lat="46.4553249" lon="11.2577374" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073986" lat="46.4553143" lon="11.2575670" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386073988" lat="46.4553937" lon="11.2575566" version="5" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386074000" lat="46.4554875" lon="11.2572652" version="2" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386074004" lat="46.4555010" lon="11.2568351" version="2" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386074030" lat="46.4553983" lon="11.2578340" version="3" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386074045" lat="46.4555897" lon="11.2571616" version="4" timestamp="2013-01-13T22:56:07Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="386074059" lat="46.4555443" lon="11.2574237" version="3" timestamp="2013-01-13T22:56:08Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1215838118" lat="46.4552576" lon="11.2579036" version="2" timestamp="2013-01-13T22:55:51Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222907472" lat="46.4554532" lon="11.2568790" version="2" timestamp="2013-01-13T22:55:53Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222907542" lat="46.4553667" lon="11.2572186" version="2" timestamp="2013-01-13T22:55:53Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222907573" lat="46.4553232" lon="11.2569928" version="2" timestamp="2013-01-13T22:55:53Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222907621" lat="46.4553349" lon="11.2572833" version="2" timestamp="2013-01-13T22:55:54Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222907836" lat="46.4554554" lon="11.2570586" version="2" timestamp="2013-01-13T22:55:55Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222908013" lat="46.4554415" lon="11.2573066" version="2" timestamp="2013-01-13T22:55:55Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222908102" lat="46.4554992" lon="11.2568826" version="2" timestamp="2013-01-13T22:55:56Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222908185" lat="46.4553857" lon="11.2570496" version="2" timestamp="2013-01-13T22:55:56Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222908278" lat="46.4555039" lon="11.2570676" version="2" timestamp="2013-01-13T22:55:56Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="1222908564" lat="46.4555155" lon="11.2573247" version="2" timestamp="2013-01-13T22:55:58Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846268" lat="46.4553699" lon="11.2578919" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846277" lat="46.4554036" lon="11.2579014" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846278" lat="46.4554080" lon="11.2578309" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846280" lat="46.4554127" lon="11.2578065" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846281" lat="46.4554127" lon="11.2578166" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846289" lat="46.4554651" lon="11.2580121" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846312" lat="46.4555072" lon="11.2580266" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846319" lat="46.4555492" lon="11.2576431" version="1" timestamp="2013-01-13T22:55:29Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846323" lat="46.4555607" lon="11.2571676" version="1" timestamp="2013-01-13T22:55:30Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2109846326" lat="46.4555719" lon="11.2577161" version="1" timestamp="2013-01-13T22:55:30Z" changeset="14642447" uid="115612" user="tyr_asd"/>
+  <node id="2281802885" lat="46.4554200" lon="11.2579495" version="1" timestamp="2013-04-26T07:39:31Z" changeset="15868943" uid="115612" user="tyr_asd"/>
+  <node id="2281802888" lat="46.4554764" lon="11.2576008" version="1" timestamp="2013-04-26T07:39:31Z" changeset="15868943" uid="115612" user="tyr_asd"/>
+  <node id="2281802890" lat="46.4555422" lon="11.2579605" version="1" timestamp="2013-04-26T07:39:31Z" changeset="15868943" uid="115612" user="tyr_asd">
+    <tag k="crossing" v="uncontrolled"/>
+    <tag k="highway" v="crossing"/>
+  </node>
+  <node id="2281802893" lat="46.4555554" lon="11.2575984" version="1" timestamp="2013-04-26T07:39:31Z" changeset="15868943" uid="115612" user="tyr_asd"/>
+  <node id="2281802895" lat="46.4555623" lon="11.2579618" version="1" timestamp="2013-04-26T07:39:31Z" changeset="15868943" uid="115612" user="tyr_asd"/>
+  <node id="2281802897" lat="46.4555668" lon="11.2575240" version="1" timestamp="2013-04-26T07:39:31Z" changeset="15868943" uid="115612" user="tyr_asd">
+    <tag k="amenity" v="fountain"/>
+  </node>
+  <node id="2281802899" lat="46.4555997" lon="11.2574683" version="1" timestamp="2013-04-26T07:39:31Z" changeset="15868943" uid="115612" user="tyr_asd"/>
+  <node id="2281802901" lat="46.4556258" lon="11.2575528" version="1" timestamp="2013-04-26T07:39:32Z" changeset="15868943" uid="115612" user="tyr_asd"/>
+  <way id="33200366" version="2" timestamp="2011-03-24T11:28:17Z" changeset="7654992" uid="115612" user="tyr_asd">
+    <nd ref="375952252"/>
+    <nd ref="376426609"/>
+    <nd ref="375952259"/>
+    <nd ref="1215838572"/>
+    <nd ref="375952270"/>
+    <nd ref="375952276"/>
+    <tag k="bicycle" v="no"/>
+    <tag k="highway" v="pedestrian"/>
+  </way>
+  <way id="33748706" version="3" timestamp="2013-03-27T21:58:57Z" changeset="15520809" uid="115612" user="tyr_asd">
+    <nd ref="386073969"/>
+    <nd ref="386073971"/>
+    <nd ref="386073973"/>
+    <nd ref="386073976"/>
+    <nd ref="386073978"/>
+    <nd ref="2109846233"/>
+    <nd ref="386073980"/>
+    <nd ref="386073982"/>
+    <nd ref="386073984"/>
+    <nd ref="386073986"/>
+    <nd ref="386073988"/>
+    <nd ref="386073958"/>
+    <nd ref="386073961"/>
+    <nd ref="386073962"/>
+    <nd ref="386073964"/>
+    <nd ref="386073969"/>
+    <tag k="amenity" v="place_of_worship"/>
+    <tag k="building" v="yes"/>
+    <tag k="denomination" v="catholic"/>
+    <tag k="name" v="Pfarrkirche Sankt Michael"/>
+    <tag k="old_name" v="Kapuzinerkirche zur Heimsuchung Mariens"/>
+    <tag k="religion" v="christian"/>
+    <tag k="wheelchair" v="yes"/>
+  </way>
+  <way id="33748708" version="3" timestamp="2013-11-02T18:28:24Z" changeset="18679226" uid="1380953" user="Skombi">
+    <nd ref="1222908102"/>
+    <nd ref="386074004"/>
+    <nd ref="386074006"/>
+    <nd ref="386074008"/>
+    <nd ref="386074010"/>
+    <nd ref="386074012"/>
+    <nd ref="2517666751"/>
+    <nd ref="2109846195"/>
+    <nd ref="386074014"/>
+    <nd ref="386074016"/>
+    <nd ref="386074018"/>
+    <nd ref="386074020"/>
+    <nd ref="386074025"/>
+    <nd ref="386074028"/>
+    <nd ref="386074030"/>
+    <nd ref="2109846278"/>
+    <nd ref="2109846281"/>
+    <nd ref="2109846280"/>
+    <tag k="barrier" v="wall"/>
+  </way>
+  <way id="105582287" version="2" timestamp="2013-01-13T22:55:42Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="1215837934"/>
+    <nd ref="1215838582"/>
+    <nd ref="2109846236"/>
+    <nd ref="1215837668"/>
+    <nd ref="1215837761"/>
+    <nd ref="2109846241"/>
+    <nd ref="2109846242"/>
+    <nd ref="1215838036"/>
+    <nd ref="1215837934"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="33748707" version="3" timestamp="2013-01-13T22:55:49Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="386073990"/>
+    <nd ref="386073998"/>
+    <nd ref="386073992"/>
+    <nd ref="386073991"/>
+    <nd ref="386073990"/>
+  </way>
+  <way id="105582211" version="2" timestamp="2013-01-13T22:55:41Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="1215838041"/>
+    <nd ref="1215837728"/>
+    <nd ref="1215838405"/>
+    <nd ref="2109846238"/>
+    <nd ref="2109846237"/>
+    <nd ref="1215837458"/>
+    <nd ref="1215838041"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="105582213" version="1" timestamp="2011-03-24T11:27:44Z" changeset="7654992" uid="115612" user="tyr_asd">
+    <nd ref="1215838214"/>
+    <nd ref="1215837784"/>
+    <nd ref="1215838448"/>
+    <nd ref="1215837546"/>
+    <nd ref="1215838214"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="201032335" version="1" timestamp="2013-01-13T22:55:36Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="1215838041"/>
+    <nd ref="1215837458"/>
+    <nd ref="1215838546"/>
+    <nd ref="1215838270"/>
+    <nd ref="2109846218"/>
+    <nd ref="1215838496"/>
+    <nd ref="1215837587"/>
+    <nd ref="1215838041"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="244451208" version="1" timestamp="2013-11-02T18:28:20Z" changeset="18679226" uid="1380953" user="Skombi">
+    <nd ref="2517666753"/>
+    <nd ref="1222907767"/>
+    <nd ref="386073938"/>
+    <nd ref="386074018"/>
+    <nd ref="386074016"/>
+    <nd ref="386074014"/>
+    <nd ref="2109846195"/>
+    <nd ref="2517666751"/>
+    <nd ref="2517666750"/>
+    <nd ref="2517666757"/>
+    <nd ref="373239864"/>
+    <nd ref="373239869"/>
+    <nd ref="373239873"/>
+    <nd ref="373239876"/>
+    <nd ref="2517666753"/>
+    <tag k="landuse" v="orchard"/>
+  </way>
+  <way id="33052937" version="5" timestamp="2013-04-26T07:39:33Z" changeset="15868943" uid="115612" user="tyr_asd">
+    <nd ref="372777380"/>
+    <nd ref="2109846355"/>
+    <nd ref="2109846344"/>
+    <nd ref="2109846319"/>
+    <nd ref="372777383"/>
+    <nd ref="2109846289"/>
+    <nd ref="2109846312"/>
+    <nd ref="2109846301"/>
+    <nd ref="372777387"/>
+    <nd ref="372777390"/>
+    <nd ref="2109846367"/>
+    <nd ref="2109846368"/>
+    <nd ref="2109846370"/>
+    <nd ref="2109846374"/>
+    <nd ref="372777380"/>
+    <tag k="amenity" v="parking"/>
+    <tag k="capacity:disabled" v="2"/>
+    <tag k="fee" v="yes"/>
+    <tag k="type" v="surface"/>
+  </way>
+  <way id="33189032" version="8" timestamp="2013-09-06T15:43:42Z" changeset="17705306" uid="115612" user="tyr_asd">
+    <nd ref="383041771"/>
+    <nd ref="1215838260"/>
+    <nd ref="1215837519"/>
+    <nd ref="376426577"/>
+    <nd ref="2281802885"/>
+    <nd ref="375952276"/>
+    <nd ref="2281802888"/>
+    <nd ref="372777376"/>
+    <tag k="bicycle" v="yes"/>
+    <tag k="highway" v="pedestrian"/>
+    <tag k="name" v="Kapuzinerstraße - via Cappuccini"/>
+    <tag k="name:de" v="Kapuzinerstraße"/>
+    <tag k="name:it" v="via Cappuccini"/>
+  </way>
+  <way id="33748709" version="5" timestamp="2013-11-02T18:28:24Z" changeset="18679226" uid="1380953" user="Skombi">
+    <nd ref="386074038"/>
+    <nd ref="386074040"/>
+    <nd ref="2109846362"/>
+    <nd ref="2109846361"/>
+    <nd ref="2109846346"/>
+    <nd ref="2109846347"/>
+    <nd ref="386074045"/>
+    <nd ref="2109846333"/>
+    <nd ref="386074050"/>
+    <nd ref="386074052"/>
+    <nd ref="2109846354"/>
+    <nd ref="2109846353"/>
+    <nd ref="386074054"/>
+    <nd ref="386074055"/>
+    <nd ref="386074038"/>
+    <tag k="building" v="school"/>
+  </way>
+  <way id="33748710" version="5" timestamp="2013-09-20T03:07:49Z" changeset="17933081" uid="893327" user="mcheckimport">
+    <nd ref="386074046"/>
+    <nd ref="2109846331"/>
+    <nd ref="2109846338"/>
+    <nd ref="2109846343"/>
+    <nd ref="386074060"/>
+    <nd ref="2109846369"/>
+    <nd ref="386074062"/>
+    <nd ref="2109846371"/>
+    <nd ref="386074064"/>
+    <nd ref="386074065"/>
+    <nd ref="2109846376"/>
+    <nd ref="386074057"/>
+    <nd ref="386074066"/>
+    <nd ref="386074059"/>
+    <nd ref="2109846323"/>
+    <nd ref="386074046"/>
+    <tag k="amenity" v="school"/>
+    <tag k="barrier" v="wall"/>
+    <tag k="name" v="Volksschule"/>
+  </way>
+  <way id="105582312" version="2" timestamp="2013-01-13T22:55:40Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="1215838230"/>
+    <nd ref="1215837826"/>
+    <nd ref="1215838118"/>
+    <nd ref="2109846268"/>
+    <nd ref="1215838230"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="106227173" version="3" timestamp="2013-01-13T22:55:47Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="1222908564"/>
+    <nd ref="1222908013"/>
+    <nd ref="1222907621"/>
+    <nd ref="1222907573"/>
+    <tag k="access" v="private"/>
+    <tag k="highway" v="service"/>
+    <tag k="service" v="driveway"/>
+  </way>
+  <way id="106227181" version="2" timestamp="2013-01-13T22:55:42Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="1222908278"/>
+    <nd ref="386074000"/>
+    <nd ref="1222907542"/>
+    <nd ref="1222908185"/>
+    <nd ref="1222907836"/>
+    <nd ref="1222907472"/>
+    <nd ref="1222908102"/>
+    <nd ref="1222908278"/>
+    <tag k="building" v="yes"/>
+  </way>
+  <way id="201032299" version="1" timestamp="2013-01-13T22:55:35Z" changeset="14642447" uid="115612" user="tyr_asd">
+    <nd ref="1215838230"/>
+    <nd ref="2109846266"/>
+    <nd ref="2109846277"/>
+    <nd ref="2109846268"/>
+    <nd ref="1215838230"/>
+    <tag k="building" v="terrace"/>
+  </way>
+  <way id="201032366" version="2" timestamp="2013-04-26T07:39:33Z" changeset="15868943" uid="115612" user="tyr_asd">
+    <nd ref="372777397"/>
+    <nd ref="372777401"/>
+    <nd ref="2281802903"/>
+    <nd ref="372777405"/>
+    <nd ref="372777409"/>
+    <nd ref="2109846313"/>
+    <nd ref="2281802890"/>
+    <nd ref="2109846326"/>
+    <nd ref="372777415"/>
+    <nd ref="372777401"/>
+    <tag k="highway" v="service"/>
+    <tag k="oneway" v="yes"/>
+    <tag k="service" v="parking_aisle"/>
+  </way>
+  <way id="218973695" version="1" timestamp="2013-04-26T07:39:32Z" changeset="15868943" uid="115612" user="tyr_asd">
+    <nd ref="2281802888"/>
+    <nd ref="2281802893"/>
+    <nd ref="2281802901"/>
+    <nd ref="386074069"/>
+    <tag k="highway" v="pedestrian"/>
+  </way>
+  <way id="218973696" version="1" timestamp="2013-04-26T07:39:32Z" changeset="15868943" uid="115612" user="tyr_asd">
+    <nd ref="2281802922"/>
+    <nd ref="2281802918"/>
+    <nd ref="2281802915"/>
+    <nd ref="2281802909"/>
+    <nd ref="2281802907"/>
+    <nd ref="2281802903"/>
+    <nd ref="2281802895"/>
+    <nd ref="2281802890"/>
+    <nd ref="2281802885"/>
+    <tag k="highway" v="footway"/>
+  </way>
+  <way id="236856462" version="2" timestamp="2013-09-06T15:43:42Z" changeset="17705306" uid="115612" user="tyr_asd">
+    <nd ref="2448201583"/>
+    <nd ref="386074069"/>
+    <nd ref="2281802899"/>
+    <nd ref="372777376"/>
+    <tag k="bicycle" v="yes"/>
+    <tag k="highway" v="pedestrian"/>
+    <tag k="name" v="Hans Weber Tyrol Platz - piazza Hans Weber Tyrol"/>
+    <tag k="name:de" v="Hans Weber Tyrol Platz"/>
+    <tag k="name:it" v="piazza Hans Weber Tyrol"/>
+  </way>
+  <way id="236856817" version="1" timestamp="2013-09-06T15:43:40Z" changeset="17705306" uid="115612" user="tyr_asd">
+    <nd ref="372777376"/>
+    <nd ref="1222908564"/>
+    <nd ref="376051225"/>
+    <nd ref="376051237"/>
+    <tag k="bicycle" v="yes"/>
+    <tag k="highway" v="pedestrian"/>
+    <tag k="name" v="Kapuzinerstraße - via Cappuccini"/>
+    <tag k="name:de" v="Kapuzinerstraße"/>
+    <tag k="name:it" v="via Cappuccini"/>
+  </way>
+  <relation id="2385566" version="6" timestamp="2013-09-06T20:38:45Z" changeset="17709634" uid="115612" user="tyr_asd">
+    <member type="way" ref="236856462" role=""/>
+    <member type="way" ref="236856817" role=""/>
+    <member type="way" ref="236856463" role=""/>
+    <member type="way" ref="236856464" role=""/>
+    <member type="way" ref="105582208" role=""/>
+    <member type="way" ref="236856821" role=""/>
+    <member type="way" ref="33264971" role=""/>
+    <member type="way" ref="50074872" role=""/>
+    <member type="way" ref="236856819" role=""/>
+    <member type="way" ref="50074870" role=""/>
+    <member type="way" ref="48581911" role=""/>
+    <member type="way" ref="35128592" role=""/>
+    <member type="way" ref="35128593" role=""/>
+    <member type="way" ref="50074868" role=""/>
+    <member type="way" ref="35203131" role=""/>
+    <member type="way" ref="35203132" role=""/>
+    <member type="way" ref="51353021" role=""/>
+    <member type="way" ref="35203163" role=""/>
+    <member type="way" ref="178708361" role=""/>
+    <member type="way" ref="49713945" role=""/>
+    <member type="way" ref="49713937" role=""/>
+    <member type="way" ref="49713940" role=""/>
+    <member type="way" ref="48509163" role=""/>
+    <member type="way" ref="50988555" role=""/>
+    <member type="way" ref="125483406" role=""/>
+    <member type="way" ref="217836826" role=""/>
+    <tag k="network" v="lwn"/>
+    <tag k="ref" v="540"/>
+    <tag k="route" v="hiking"/>
+    <tag k="type" v="route"/>
+  </relation>
+  <relation id="121733" version="1" timestamp="2009-04-27T17:28:49Z" changeset="993143" uid="115612" user="tyr_asd">
+    <member type="way" ref="33748707" role="inner"/>
+    <member type="way" ref="33748706" role="outer"/>
+    <tag k="type" v="multipolygon"/>
+  </relation>
+  <relation id="1165342" version="8" timestamp="2014-02-01T16:48:10Z" changeset="20319634" uid="1380953" user="Skombi">
+    <member type="way" ref="244451208" role="inner"/>
+    <member type="way" ref="244451209" role="inner"/>
+    <member type="way" ref="244451210" role="inner"/>
+    <member type="way" ref="259380818" role="outer"/>
+    <member type="way" ref="76179006" role="inner"/>
+    <member type="way" ref="152450182" role="inner"/>
+    <member type="way" ref="76179002" role="inner"/>
+    <member type="way" ref="33200348" role="inner"/>
+    <member type="way" ref="33265457" role="inner"/>
+    <member type="way" ref="152450197" role="inner"/>
+    <member type="way" ref="152450228" role="inner"/>
+    <member type="way" ref="244445045" role="inner"/>
+    <member type="way" ref="201079957" role="inner"/>
+    <member type="way" ref="33748710" role="inner"/>
+    <tag k="description" v="St. Michael Eppan: residential area"/>
+    <tag k="landuse" v="residential"/>
+    <tag k="type" v="multipolygon"/>
+  </relation>
+
+</osm>

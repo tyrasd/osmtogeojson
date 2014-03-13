@@ -1,0 +1,31 @@
+{
+  "elements": [
+    {
+      "type": "way",
+      "id": 1,
+      "nodes": [
+        2,
+        3,
+        4
+      ]
+    },
+    {
+      "type": "node",
+      "id": 2,
+      "lat": 0,
+      "lon": 1
+    },
+    {
+      "type": "node",
+      "id": 3,
+      "lat": 0,
+      "lon": 1.1
+    },
+    {
+      "type": "node",
+      "id": 4,
+      "lat": 0.1,
+      "lon": 1.2
+    }
+  ]
+}

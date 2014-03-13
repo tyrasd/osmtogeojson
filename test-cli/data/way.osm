@@ -1,0 +1,10 @@
+<osm>
+  <way id='1'>
+    <nd ref='2' />
+    <nd ref='3' />
+    <nd ref='4' />
+  </way>
+  <node id='2' lat='0.0' lon='1.0' />
+  <node id='3' lat='0.0' lon='1.1' />
+  <node id='4' lat='0.1' lon='1.2' />
+</osm>
