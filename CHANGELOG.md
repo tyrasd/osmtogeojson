@@ -1,4 +1,8 @@
-2.0.3
+2.0.5
+-----
+* support input files larger than 256 MB. #17
+
+2.0.4
 -----
 * fix unresolved xml entities in command line mode
 
