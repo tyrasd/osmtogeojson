@@ -35,6 +35,12 @@ if (!format) {
     if (filename.match(/\.xml$/i)) format = 'osm';
     if (filename.match(/\.json$/i)) format = 'json';
 }
+// fall back to the native JSON parser if the file is small enough
+// (unfortunately, the streaming JSON parser isn't very fast)
+if (format === 'json' && filename) {
+    if (fs.statSync(filename).size < 268435577)
+        format = 'nativejson';
+}
 // fall back to autodetection if still no format
 if (!format) format = 'auto';
 
