@@ -95,6 +95,7 @@ osmtogeojson = function( data, options ) {
         nodes[i].tags = tags;
     });
     // ways
+    var centroid;
     _.each( xml.getElementsByTagName('way'), function( way, i ) {
       var tags = {};
       var wnodes = [];
@@ -117,6 +118,12 @@ osmtogeojson = function( data, options ) {
         ways[i].nodes = wnodes;
       if (!_.isEmpty(tags))
         ways[i].tags = tags;
+      if (centroid = way.getElementsByTagName('center')) {
+        var pseudoNode = _.clone(ways[i]);
+        copy_attribute(centroid[0], pseudoNode, 'lat');
+        copy_attribute(centroid[0], pseudoNode, 'lon');
+        nodes.push(pseudoNode);
+      }
     });
     // relations
     _.each( xml.getElementsByTagName('relation'), function( relation, i ) {
@@ -144,6 +151,12 @@ osmtogeojson = function( data, options ) {
         rels[i].members = members;
       if (!_.isEmpty(tags))
         rels[i].tags = tags;
+      if (centroid = relation.getElementsByTagName('center')) {
+        var pseudoNode = _.clone(rels[i]);
+        copy_attribute(centroid[0], pseudoNode, 'lat');
+        copy_attribute(centroid[0], pseudoNode, 'lon');
+        nodes.push(pseudoNode);
+      }
     });
     return _convert2geoJSON(nodes,ways,rels);
   }
@@ -259,9 +272,9 @@ osmtogeojson = function( data, options ) {
         continue; // lon and lat are required for showing a point
       geojsonnodes.features.push({
         "type"       : "Feature",
-        "id"         : "node/"+pois[i].id,
+        "id"         : pois[i].type+"/"+pois[i].id,
         "properties" : {
-          "type" : "node",
+          "type" : pois[i].type,
           "id"   : pois[i].id,
           "tags" : pois[i].tags || {},
           "relations" : relsmap["node"][pois[i].id] || [],
