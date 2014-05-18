@@ -118,10 +118,10 @@ osmtogeojson = function( data, options ) {
         ways[i].nodes = wnodes;
       if (!_.isEmpty(tags))
         ways[i].tags = tags;
-      if (centroid = way.getElementsByTagName('center')) {
+      if (centroid = way.getElementsByTagName('center')[0]) {
         var pseudoNode = _.clone(ways[i]);
-        copy_attribute(centroid[0], pseudoNode, 'lat');
-        copy_attribute(centroid[0], pseudoNode, 'lon');
+        copy_attribute(centroid, pseudoNode, 'lat');
+        copy_attribute(centroid, pseudoNode, 'lon');
         nodes.push(pseudoNode);
       }
     });
@@ -151,10 +151,10 @@ osmtogeojson = function( data, options ) {
         rels[i].members = members;
       if (!_.isEmpty(tags))
         rels[i].tags = tags;
-      if (centroid = relation.getElementsByTagName('center')) {
+      if (centroid = relation.getElementsByTagName('center')[0]) {
         var pseudoNode = _.clone(rels[i]);
-        copy_attribute(centroid[0], pseudoNode, 'lat');
-        copy_attribute(centroid[0], pseudoNode, 'lon');
+        copy_attribute(centroid, pseudoNode, 'lat');
+        copy_attribute(centroid, pseudoNode, 'lon');
         nodes.push(pseudoNode);
       }
     });
