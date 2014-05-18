@@ -2650,3 +2650,33 @@ describe("other", function () {
   });
 
 });
+
+describe("overpass geometry types", function () {
+  // center geometry
+  it("center (xml)", function () {
+    var xml, geojson;
+
+    // a way
+    xml = "<osm><way id='1'><center lat='1.234' lon='4.321' /></way></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Point");
+    expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+
+    // a relation
+    xml = "<osm><relation id='1'><center lat='1.234' lon='4.321' /></relation></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[0].geometry.type).to.eql("Point");
+    expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+  });
+
+});
