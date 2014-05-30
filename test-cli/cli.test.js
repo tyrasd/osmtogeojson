@@ -299,3 +299,21 @@ test('json file (subformats)', function (t) {
   testCLI(t, "./osmtogeojson ./test-cli/data/map.json -f streamjson", compare_results);
     
 });
+
+test('parameters: -n', function (t) {
+
+  var xml = "<osm><node id='1' lat='1.234' lon='4.321'><tag k='num' v='2' /></node></osm>";
+
+  t.plan(2);
+  testCLI(t,
+    'echo "'+xml+'" | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features[0].properties.num, '2');
+  });
+  testCLI(t,
+    'echo "'+xml+'" | ./osmtogeojson -n',
+    function (geojson) {
+      t.equal(geojson.features[0].properties.num, 2);
+  });
+    
+});
