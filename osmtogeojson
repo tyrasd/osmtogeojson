@@ -132,7 +132,7 @@ function output(geojson) {
     process.stdout.write('{\n"type": "FeatureCollection",\n"features": [\n');
     geojson.features.forEach(function(f,i) {
         if (argv.n)
-            f = geojsonNumeric(f);
+            f = geojsonNumeric(f,argv.e);
         process.stdout.write(JSON.stringify(f, null, 4));
         if (i != geojson.features.length-1)
             process.stdout.write(',\n');

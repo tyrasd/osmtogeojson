@@ -322,7 +322,7 @@ test('parameters: -e', function (t) {
 
   var xml = "<osm><node id='1' version='2' lat='1.234' lon='4.321'><tag k='k' v='v' /></node></osm>";
 
-  t.plan(4);
+  t.plan(6);
   testCLI(t,
     'echo "'+xml+'" | ./osmtogeojson',
     function (geojson) {
@@ -334,6 +334,12 @@ test('parameters: -e', function (t) {
     function (geojson) {
       t.equal(geojson.features[0].properties.tags.k, 'v');
       t.equal(geojson.features[0].properties.meta.version, '2');
+  });
+  testCLI(t,
+    'echo "'+xml+'" | ./osmtogeojson -en',
+    function (geojson) {
+      t.equal(geojson.features[0].properties.tags.k, 'v');
+      t.equal(geojson.features[0].properties.meta.version, 2);
   });
     
 });
