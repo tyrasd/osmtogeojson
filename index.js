@@ -10,6 +10,7 @@ osmtogeojson = function( data, options ) {
 
   options = _.merge(
     {
+      verbose: true,
       flatProperties: false,
       uninterestingTags: {
         "source": true,
@@ -179,8 +180,10 @@ osmtogeojson = function( data, options ) {
     // some data processing (e.g. filter nodes only used for ways)
     var nodeids = new Object();
     for (var i=0;i<nodes.length;i++) {
-      if (nodes[i].lat === undefined)
+      if (nodes[i].lat === undefined) {
+        if (options.verbose) console.warn('Node',nodes[i].id,'ignored because it has no coordinates');
         continue; // ignore nodes without coordinates (e.g. returned by an ids_only query)
+      }
       nodeids[nodes[i].id] = nodes[i];
     }
     var poinids = new Object();
@@ -190,8 +193,10 @@ osmtogeojson = function( data, options ) {
         poinids[nodes[i].id] = true;
     }
     for (var i=0;i<rels.length;i++) {
-      if (!_.isArray(rels[i].members))
+      if (!_.isArray(rels[i].members)) {
+        if (options.verbose) console.warn('Relation',rels[i].id,'ignored because it has no members');
         continue; // ignore relations without members (e.g. returned by an ids_only query)
+      }
       for (var j=0;j<rels[i].members.length;j++) {
         if (rels[i].members[j].type == "node")
           poinids[rels[i].members[j].ref] = true;
@@ -200,8 +205,10 @@ osmtogeojson = function( data, options ) {
     var wayids = new Object();
     var waynids = new Object();
     for (var i=0;i<ways.length;i++) {
-      if (!_.isArray(ways[i].nodes))
+      if (!_.isArray(ways[i].nodes)) {
+        if (options.verbose) console.warn('Way',ways[i].id,'ignored because it has no nodes');
         continue; // ignore ways without nodes (e.g. returned by an ids_only query)
+      }
       wayids[ways[i].id] = ways[i];
       for (var j=0;j<ways[i].nodes.length;j++) {
         waynids[ways[i].nodes[j]] = true;
@@ -216,14 +223,18 @@ osmtogeojson = function( data, options ) {
     }
     var relids = new Array();
     for (var i=0;i<rels.length;i++) {
-      if (!_.isArray(rels[i].members))
+      if (!_.isArray(rels[i].members)) {
+        if (options.verbose) console.warn('Relation',rels[i].id,'ignored because it has no members');
         continue; // ignore relations without members (e.g. returned by an ids_only query)
+      }
       relids[rels[i].id] = rels[i];
     }
     var relsmap = {node: {}, way: {}, relation: {}};
     for (var i=0;i<rels.length;i++) {
-      if (!_.isArray(rels[i].members))
+      if (!_.isArray(rels[i].members)) {
+        if (options.verbose) console.warn('Relation',rels[i].id,'ignored because it has no members');
         continue; // ignore relations without members (e.g. returned by an ids_only query)
+      }
       for (var j=0;j<rels[i].members.length;j++) {
         var m;
         switch (rels[i].members[j].type) {
@@ -237,7 +248,10 @@ osmtogeojson = function( data, options ) {
             m = relids[rels[i].members[j].ref];
           break;
         }
-        if (!m) continue;
+        if (!m) {
+          if (options.verbose) console.warn('Relation',rels[i].id,'member',rels[i].members[j].id,'ignored because it has an invalid type');
+          continue;
+        }
         var m_type = rels[i].members[j].type;
         var m_ref = rels[i].members[j].ref;
         if (typeof relsmap[m_type][m_ref] === "undefined")
@@ -255,8 +269,10 @@ osmtogeojson = function( data, options ) {
       "type"     : "FeatureCollection",
       "features" : new Array()};
     for (i=0;i<pois.length;i++) {
-      if (typeof pois[i].lon == "undefined" || typeof pois[i].lat == "undefined")
+      if (typeof pois[i].lon == "undefined" || typeof pois[i].lat == "undefined") {
+        if (options.verbose) console.warn('POI',pois[i].id,'ignored because it lacks coordinates');
         continue; // lon and lat are required for showing a point
+      }
       geojsonnodes.features.push({
         "type"       : "Feature",
         "id"         : "node/"+pois[i].id,
@@ -283,12 +299,16 @@ osmtogeojson = function( data, options ) {
     for (var i=0;i<rels.length;i++) {
       if ((typeof rels[i].tags != "undefined") &&
           (rels[i].tags["type"] == "multipolygon" || rels[i].tags["type"] == "boundary")) {
-        if (!_.isArray(rels[i].members))
+        if (!_.isArray(rels[i].members)) {
+          if (options.verbose) console.warn('Relation',rels[i].id,'ignored because it has no members');
           continue; // ignore relations without members (e.g. returned by an ids_only query)
+        }
         var outer_count = 0;
         for (var j=0;j<rels[i].members.length;j++)
           if (rels[i].members[j].role == "outer")
             outer_count++;
+          else if (options.verbose && rels[i].members[j].role != "inner")
+            console.warn('Multipolygon',rels[i].id,'member',rels[i].members[j].ref,'ignored because it has an invalid role: "' + rels[i].members[j].role + '"');
         rels[i].members.forEach(function(m) {
           if (wayids[m.ref]) {
             // this even works in the following corner case:
@@ -300,8 +320,10 @@ osmtogeojson = function( data, options ) {
               wayids[m.ref].is_multipolygon_outline = true;
           }
         });
-        if (outer_count == 0)
+        if (outer_count == 0) {
+          if (options.verbose) console.warn('Multipolygon',rels[i].id,'ignored because it has no outer ways');
           continue; // ignore multipolygons without outer ways
+        }
         var simple_mp = false;
         if (outer_count == 1 && !has_interesting_tags(rels[i].tags, {"type":true}))
           simple_mp = true;
@@ -312,13 +334,17 @@ osmtogeojson = function( data, options ) {
           // simple multipolygon
           var outer_way = rels[i].members.filter(function(m) {return m.role === "outer";})[0];
           outer_way = wayids[outer_way.ref];
-          if (outer_way === undefined)
+          if (outer_way === undefined) {
+            if (options.verbose) console.warn('Simple multipolygon',rels[i].id,'ignored because outer way is missing');
             continue; // abort if outer way object is not present
+          }
           outer_way.is_multipolygon_outline = true;
           feature = construct_multipolygon(outer_way, rels[i]);
         }
-        if (feature === false)
+        if (feature === false) {
+          if (options.verbose) console.warn('Multipolygon',rels[i].id,'ignored because it has invalid geometry');
           continue; // abort if feature could not be constructed
+        }
         geojsonpolygons.features.push(feature);
         function construct_multipolygon(tag_object, rel) {
           var is_tainted = false;
@@ -328,6 +354,7 @@ osmtogeojson = function( data, options ) {
           members = members.map(function(m) {
             var way = wayids[m.ref];
             if (way === undefined) { // check for missing ways
+              if (options.verbose) console.warn('Multipolygon',tag_object.id,'tainted by a missing way', m.ref);
               is_tainted = true;
               return;
             }
@@ -339,6 +366,7 @@ osmtogeojson = function( data, options ) {
                 if (n !== undefined)
                   return true;
                 is_tainted = true;
+                if (options.verbose) console.warn('Multipolygon',tag_object.id,'tainted by a way',m.ref,'with a missing node');
                 return false;
               })
             };
@@ -379,8 +407,10 @@ osmtogeojson = function( data, options ) {
                     what = how = null;
                   }
                 }
-                if (!what)
+                if (!what) {
+                  if (options.verbose) console.warn('Multipolygon',tag_object.id,'contains unclosed ring geometry');
                   break; // Invalid geometry (dangling way, unclosed ring)
+                }
                 ways.splice(i, 1);
                 how.apply(current, what);
               }
@@ -403,8 +433,8 @@ osmtogeojson = function( data, options ) {
                 return [+n.lat,+n.lon];
               });
             }
-            // stolen from iD/geo.js, 
-            // based on https://github.com/substack/point-in-polygon, 
+            // stolen from iD/geo.js,
+            // based on https://github.com/substack/point-in-polygon,
             // ray-casting algorithm based on http://www.ecse.rpi.edu/Homepages/wrf/Research/Short_Notes/pnpoly.html
             var pointInPolygon = function(point, polygon) {
               var x = point[0], y = point[1], inside = false;
@@ -439,27 +469,34 @@ osmtogeojson = function( data, options ) {
             if (o !== undefined)
               mp[o].push(inners[j]);
             else
+              if (options.verbose) console.warn('Multipolygon',tag_object.id,'contains an inner ring with no containing outer');
               // so, no outer ring for this inner ring is found.
               // We're going to ignore holes in empty space.
               ;
           }
           // sanitize mp-coordinates (remove empty clusters or rings, {lat,lon,...} to [lon,lat]
           var mp_coords = [];
-          mp_coords = _.compact(mp.map(function(cluster) { 
+          mp_coords = _.compact(mp.map(function(cluster) {
             var cl = _.compact(cluster.map(function(ring) {
-              if (ring.length < 4) // todo: is this correct: ring.length < 4 ?
+              if (ring.length < 4) { // todo: is this correct: ring.length < 4 ?
+                if (options.verbose) console.warn('Multipolygon',tag_object.id,'contains a ring with less than four nodes');
                 return;
+              }
               return _.compact(ring.map(function(node) {
                 return [+node.lon,+node.lat];
               }));
             }));
-            if (cl.length == 0)
+            if (cl.length == 0) {
+              if (options.verbose) console.warn('Multipolygon',tag_object.id,'contains an empty ring cluster');
               return;
+            }
             return cl;
           }));
 
-          if (mp_coords.length == 0)
+          if (mp_coords.length == 0) {
+            if (options.verbose) console.warn('Multipolygon',tag_object.id,'contains no coordinates');
             return false; // ignore multipolygons without coordinates
+          }
           var mp_type = "MultiPolygon";
           if (mp_coords.length === 1) {
             mp_type = "Polygon";
@@ -481,16 +518,20 @@ osmtogeojson = function( data, options ) {
               "coordinates" : mp_coords,
             }
           }
-          if (is_tainted)
+          if (is_tainted) {
+            if (options.verbose) console.warn('Multipolygon',tag_object.id,'is tainted');
             feature.properties["tainted"] = true;
+          }
           return feature;
         }
       }
     }
     // process lines and polygons
     for (var i=0;i<ways.length;i++) {
-      if (!_.isArray(ways[i].nodes))
+      if (!_.isArray(ways[i].nodes)) {
+        if (options.verbose) console.warn('Way',ways[i].id,'ignored because it has no nodes');
         continue; // ignore ways without nodes (e.g. returned by an ids_only query)
+      }
       if (ways[i].is_multipolygon_outline)
         continue; // ignore ways which are already rendered as (part of) a multipolygon
       ways[i].tainted = false;
@@ -499,11 +540,15 @@ osmtogeojson = function( data, options ) {
       for (j=0;j<ways[i].nodes.length;j++) {
         if (typeof ways[i].nodes[j] == "object")
           coords.push([+ways[i].nodes[j].lon, +ways[i].nodes[j].lat]);
-        else
+        else {
+          if (options.verbose) console.warn('Way',ways[i].id,'is tainted by an invalid node');
           ways[i].tainted = true;
+        }
       }
-      if (coords.length <= 1) // invalid way geometry
+      if (coords.length <= 1) { // invalid way geometry
+        if (options.verbose) console.warn('Way',ways[i].id,'ignored because it contains too few nodes');
         continue;
+      }
       var way_type = "LineString"; // default
       if (typeof ways[i].nodes[0] != "undefined" && // way has its nodes loaded
         ways[i].nodes[0] === ways[i].nodes[ways[i].nodes.length-1] && // ... and forms a closed ring
@@ -528,8 +573,10 @@ osmtogeojson = function( data, options ) {
           "coordinates" : coords,
         }
       }
-      if (ways[i].tainted)
+      if (ways[i].tainted) {
+        if (options.verbose) console.warn('Multipolygon',ways[i].id,'is tainted');
         feature.properties["tainted"] = true;
+      }
       if (way_type == "LineString")
         geojsonlines.features.push(feature);
       else
@@ -583,7 +630,7 @@ osmtogeojson = function( data, options ) {
       if ( pfk.excluded_values && pfk.excluded_values[val] !== true )
         return true;
     }
-    // if no tags matched, this ain't no area. 
+    // if no tags matched, this ain't no area.
     return false;
   }
 };
