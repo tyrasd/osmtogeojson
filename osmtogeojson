@@ -2,10 +2,11 @@
 
 var osmtogeojson = require('./'),
     opt = require('optimist')
-        .usage('Usage: $0 [-f format] [-e] FILE')
+        .usage('Usage: $0 [-f format] [-e] [-v] FILE')
         .string('f').describe('f', 'file format. if not given, will be detected from filename. supported values: osm, json')
         .boolean('e').describe('e', 'enhanced properties. if set, the resulting GeoJSON feature\'s properties will contain more structured information')
         .boolean('n').describe('n', 'numeric properties. if set, the resulting GeoJSON feature\'s properties will be numbers if possible')
+        .boolean('v').describe('v', 'verbose mode. output diagnostic information during processing')
         .boolean('version').describe('version','display software version')
         .boolean('help').describe('help','print this help message'),
     argv = opt.argv,
@@ -119,7 +120,8 @@ function legacyParsers(data) {
 
 function convert(data) {
     var geojson = osmtogeojson(data, {
-        flatProperties: !enhanced_geojson
+        flatProperties: !enhanced_geojson,
+        verbose: argv.v
     });
     output(geojson);
 }
