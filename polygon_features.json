@@ -55,9 +55,9 @@
     },
     "power": {
         "included_values": {
+            "plant": true,
+            "substation": true,
             "generator": true,
-            "station": true,
-            "sub_station": true,
             "transformer": true
         }
     },
