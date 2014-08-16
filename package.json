@@ -32,13 +32,17 @@
     "optimist": "~0.3.5",
     "concat-stream": "~1.0.1",
     "htmlparser2": "3.5.1",
-    "JSONStream": "0.8.0"
+    "JSONStream": "0.8.0",
+    "osm-read": "0.5.0"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
     "mocha": "~1.12.0",
     "tape": "~2.10.2",
     "faucet": "~0.0.1"
+  },
+  "browser": {
+    "osm-read": "./node_modules/osm-read/lib/pbfParser.js"
   },
   "engines": {
     "node": ">=0.5"

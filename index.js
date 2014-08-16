@@ -1,12 +1,14 @@
 var _ = require("./lodash.custom.js");
 var rewind = require("geojson-rewind");
 
+var parseOsmPbf = require('./parse_osmpbf.js');
+
 // see https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
 var polygonFeatures = require("./polygon_features.json");
 
 var osmtogeojson = {};
 
-osmtogeojson = function( data, options ) {
+osmtogeojson = function( data, options, pbfCallback ) {
 
   options = _.merge(
     {
@@ -32,6 +34,11 @@ osmtogeojson = function( data, options ) {
   if ( ((typeof XMLDocument !== "undefined") && data instanceof XMLDocument ||
         (typeof XMLDocument === "undefined") && data.childNodes) )
     result = _osmXML2geoJSON(data);
+  else if (data.nodes && data.ways && data.rels)
+    // prepared data object that can be passed directly without cloning
+    result = _convert2geoJSON(data.nodes,data.ways,data.rels);
+  else if (data instanceof ArrayBuffer)
+    _osmPbf2geoJSON(data, pbfCallback);
   else
     result = _overpassJSON2geoJSON(data);
   return result;
@@ -147,6 +154,16 @@ osmtogeojson = function( data, options ) {
         rels[i].tags = tags;
     });
     return _convert2geoJSON(nodes,ways,rels);
+  }
+  function _osmPbf2geoJSON(pbf, callback) {
+    parseOsmPbf(pbf, function (err, data) {
+      var geoJSON;
+      if (err) {
+        callback(err);
+      }
+      geoJSON = _convert2geoJSON(data.nodes,data.ways,data.rels);
+      callback(null, geoJSON);
+    });
   }
   function _convert2geoJSON(nodes,ways,rels) {
 
