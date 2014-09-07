@@ -49,6 +49,27 @@ osmtogeojson = function( data, options ) {
       pseudoNode.__is_center_placeholder = true;
       nodes.push(pseudoNode);
     }
+    function boundsGeometry(object) {
+      var pseudoWay = _.clone(object);
+      pseudoWay.nodes = [];
+      function addPseudoNode(lat,lon,i) {
+        var pseudoNode = {
+          type:"node",
+          id:""+pseudoWay.id+"p"+i,
+          lat: lat,
+          lon: lon
+        }
+        pseudoWay.nodes.push(pseudoNode.id);
+        nodes.push(pseudoNode);
+      }
+      addPseudoNode(pseudoWay.bounds.minlat,pseudoWay.bounds.minlon,1);
+      addPseudoNode(pseudoWay.bounds.maxlat,pseudoWay.bounds.minlon,2);
+      addPseudoNode(pseudoWay.bounds.maxlat,pseudoWay.bounds.maxlon,3);
+      addPseudoNode(pseudoWay.bounds.minlat,pseudoWay.bounds.maxlon,4);
+      pseudoWay.nodes.push(pseudoWay.nodes[0]);
+      pseudoWay.__is_bounds_placeholder = true;
+      ways.push(pseudoWay);
+    }
     // create copies of individual json objects to make sure the original data doesn't get altered
     // todo: cloning is slow: see if this can be done differently!
     for (var i=0;i<json.elements.length;i++) {
@@ -63,6 +84,8 @@ osmtogeojson = function( data, options ) {
         ways.push(way);
         if (way.center)
           centerGeometry(way);
+        if (way.bounds)
+          boundsGeometry(way);
       break;
       case "relation":
         var rel = _.clone(json.elements[i]);
@@ -70,6 +93,8 @@ osmtogeojson = function( data, options ) {
         rels.push(rel);
         if (rel.center) 
           centerGeometry(rel);
+        if (rel.bounds)
+          boundsGeometry(rel);
       break;
       default:
       // type=area (from coord-query) is an example for this case.
@@ -94,6 +119,27 @@ osmtogeojson = function( data, options ) {
       pseudoNode.__is_center_placeholder = true;
       nodes.push(pseudoNode);
     }
+    function boundsGeometry(object, bounds) {
+      var pseudoWay = _.clone(object);
+      pseudoWay.nodes = [];
+      function addPseudoNode(lat,lon,i) {
+        var pseudoNode = {
+          type:"node",
+          id:""+pseudoWay.id+"p"+i,
+          lat: lat,
+          lon: lon
+        }
+        pseudoWay.nodes.push(pseudoNode.id);
+        nodes.push(pseudoNode);
+      }
+      addPseudoNode(bounds.getAttribute('minlat'),bounds.getAttribute('minlon'),1);
+      addPseudoNode(bounds.getAttribute('maxlat'),bounds.getAttribute('minlon'),2);
+      addPseudoNode(bounds.getAttribute('maxlat'),bounds.getAttribute('maxlon'),3);
+      addPseudoNode(bounds.getAttribute('minlat'),bounds.getAttribute('maxlon'),4);
+      pseudoWay.nodes.push(pseudoWay.nodes[0]);
+      pseudoWay.__is_bounds_placeholder = true;
+      ways.push(pseudoWay);
+    }
     // nodes
     _.each( xml.getElementsByTagName('node'), function( node, i ) {
       var tags = {};
@@ -115,7 +161,7 @@ osmtogeojson = function( data, options ) {
         nodes[i].tags = tags;
     });
     // ways
-    var centroid;
+    var centroid,bounds;
     _.each( xml.getElementsByTagName('way'), function( way, i ) {
       var tags = {};
       var wnodes = [];
@@ -140,6 +186,8 @@ osmtogeojson = function( data, options ) {
         ways[i].tags = tags;
       if (centroid = way.getElementsByTagName('center')[0])
         centerGeometry(ways[i],centroid);
+      if (bounds = way.getElementsByTagName('bounds')[0])
+        boundsGeometry(ways[i],bounds);
     });
     // relations
     _.each( xml.getElementsByTagName('relation'), function( relation, i ) {
@@ -169,6 +217,8 @@ osmtogeojson = function( data, options ) {
         rels[i].tags = tags;
       if (centroid = relation.getElementsByTagName('center')[0])
         centerGeometry(rels[i],centroid);
+      if (bounds = relation.getElementsByTagName('bounds')[0])
+        boundsGeometry(rels[i],bounds);
     });
     return _convert2geoJSON(nodes,ways,rels);
   }
@@ -581,17 +631,21 @@ osmtogeojson = function( data, options ) {
       var way_type = "LineString"; // default
       if (typeof ways[i].nodes[0] != "undefined" && // way has its nodes loaded
         ways[i].nodes[0] === ways[i].nodes[ways[i].nodes.length-1] && // ... and forms a closed ring
-        typeof ways[i].tags != "undefined" && // ... and has tags
-        _isPolygonFeature(ways[i].tags) // ... and tags say it is a polygon
+        (
+          typeof ways[i].tags != "undefined" && // ... and has tags
+          _isPolygonFeature(ways[i].tags) // ... and tags say it is a polygon
+          || // or is a placeholder for a bounds geometry
+          ways[i].__is_bounds_placeholder
+        )
       ) {
         way_type = "Polygon";
         coords = [coords];
       }
       var feature = {
         "type"       : "Feature",
-        "id"         : "way/"+ways[i].id,
+        "id"         : ways[i].type+"/"+ways[i].id,
         "properties" : {
-          "type" : "way",
+          "type" : ways[i].type,
           "id"   : ways[i].id,
           "tags" : ways[i].tags || {},
           "relations" : relsmap["way"][ways[i].id] || [],
@@ -606,6 +660,8 @@ osmtogeojson = function( data, options ) {
         if (options.verbose) console.warn('Way',ways[i].type+'/'+ways[i].id,'is tainted');
         feature.properties["tainted"] = true;
       }
+      if (ways[i].__is_bounds_placeholder)
+        feature.properties["geometry"] = "bounds";
       if (way_type == "LineString")
         geojsonlines.features.push(feature);
       else

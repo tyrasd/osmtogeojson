@@ -28,6 +28,13 @@ var p = new htmlparser.Parser({
                 lat: attr.lat,
                 lon: attr.lon
             };
+        } else if (name === "bounds") {
+            buffer.bounds = {
+                minlat: attr.minlat,
+                minlon: attr.minlon,
+                maxlat: attr.maxlat,
+                maxlon: attr.maxlon
+            };
         }
     },
     ontext: function(text) {

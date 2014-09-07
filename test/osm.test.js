@@ -2726,4 +2726,78 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].properties.geometry).to.eql("center");
   });
 
+  // bounds geometry
+  it("bounds (xml)", function () {
+    var xml, geojson;
+
+    // a way
+    xml = "<osm><way id='1'><bounds minlat='1.234' minlon='4.321' maxlat='2.234' maxlon='5.321'/></way></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+
+    // a relation
+    xml = "<osm><relation id='1'><bounds minlat='1.234' minlon='4.321' maxlat='2.234' maxlon='5.321'/></relation></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+  });
+  it("bounds (json)", function () {
+    var json, geojson;
+
+    // a way
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          bounds: {
+            minlat:  1.234,
+            minlon:  4.321,
+            maxlat:  2.234,
+            maxlon:  5.321
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+
+    // a relation
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          bounds: {
+            minlat:  1.234,
+            minlon:  4.321,
+            maxlat:  2.234,
+            maxlon:  5.321
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+  });
+
 });
