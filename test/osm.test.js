@@ -2678,5 +2678,48 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].geometry.type).to.eql("Point");
     expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
   });
+  it("center (json)", function () {
+    var json, geojson;
+
+    // a way
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          center: {
+            lat:  1.234,
+            lon:  4.321
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Point");
+    expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+
+    // a relation
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          center: {
+            lat:  1.234,
+            lon:  4.321
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[0].geometry.type).to.eql("Point");
+    expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+  });
 
 });

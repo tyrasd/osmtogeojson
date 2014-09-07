@@ -53,11 +53,23 @@ osmtogeojson = function( data, options ) {
         var way = _.clone(json.elements[i]);
         way.nodes = _.clone(way.nodes);
         ways.push(way);
+        if (way.center) {
+          var pseudoNode = _.clone(way);
+          pseudoNode.lat = way.center.lat;
+          pseudoNode.lon = way.center.lon;
+          nodes.push(pseudoNode);
+        }
       break;
       case "relation":
         var rel = _.clone(json.elements[i]);
         rel.members = _.clone(rel.members);
         rels.push(rel);
+        if (rel.center) {
+          var pseudoNode = _.clone(rel);
+          pseudoNode.lat = rel.center.lat;
+          pseudoNode.lon = rel.center.lon;
+          nodes.push(pseudoNode);
+        }
       break;
       default:
       // type=area (from coord-query) is an example for this case.
