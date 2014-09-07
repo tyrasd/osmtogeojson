@@ -41,6 +41,14 @@ osmtogeojson = function( data, options ) {
     var nodes = new Array();
     var ways  = new Array();
     var rels  = new Array();
+    // helper functions
+    function centerGeometry(object) {
+      var pseudoNode = _.clone(object);
+      pseudoNode.lat = object.center.lat;
+      pseudoNode.lon = object.center.lon;
+      pseudoNode.__is_center_placeholder = true;
+      nodes.push(pseudoNode);
+    }
     // create copies of individual json objects to make sure the original data doesn't get altered
     // todo: cloning is slow: see if this can be done differently!
     for (var i=0;i<json.elements.length;i++) {
@@ -53,23 +61,15 @@ osmtogeojson = function( data, options ) {
         var way = _.clone(json.elements[i]);
         way.nodes = _.clone(way.nodes);
         ways.push(way);
-        if (way.center) {
-          var pseudoNode = _.clone(way);
-          pseudoNode.lat = way.center.lat;
-          pseudoNode.lon = way.center.lon;
-          nodes.push(pseudoNode);
-        }
+        if (way.center)
+          centerGeometry(way);
       break;
       case "relation":
         var rel = _.clone(json.elements[i]);
         rel.members = _.clone(rel.members);
         rels.push(rel);
-        if (rel.center) {
-          var pseudoNode = _.clone(rel);
-          pseudoNode.lat = rel.center.lat;
-          pseudoNode.lon = rel.center.lon;
-          nodes.push(pseudoNode);
-        }
+        if (rel.center) 
+          centerGeometry(rel);
       break;
       default:
       // type=area (from coord-query) is an example for this case.
@@ -78,15 +78,22 @@ osmtogeojson = function( data, options ) {
     return _convert2geoJSON(nodes,ways,rels);
   }
   function _osmXML2geoJSON(xml) {
+    // sort elements
+    var nodes = new Array();
+    var ways  = new Array();
+    var rels  = new Array();
     // helper function
     function copy_attribute( x, o, attr ) {
       if (x.hasAttribute(attr))
         o[attr] = x.getAttribute(attr);
     }
-    // sort elements
-    var nodes = new Array();
-    var ways  = new Array();
-    var rels  = new Array();
+    function centerGeometry(object, centroid) {
+      var pseudoNode = _.clone(object);
+      copy_attribute(centroid, pseudoNode, 'lat');
+      copy_attribute(centroid, pseudoNode, 'lon');
+      pseudoNode.__is_center_placeholder = true;
+      nodes.push(pseudoNode);
+    }
     // nodes
     _.each( xml.getElementsByTagName('node'), function( node, i ) {
       var tags = {};
@@ -131,12 +138,8 @@ osmtogeojson = function( data, options ) {
         ways[i].nodes = wnodes;
       if (!_.isEmpty(tags))
         ways[i].tags = tags;
-      if (centroid = way.getElementsByTagName('center')[0]) {
-        var pseudoNode = _.clone(ways[i]);
-        copy_attribute(centroid, pseudoNode, 'lat');
-        copy_attribute(centroid, pseudoNode, 'lon');
-        nodes.push(pseudoNode);
-      }
+      if (centroid = way.getElementsByTagName('center')[0])
+        centerGeometry(ways[i],centroid);
     });
     // relations
     _.each( xml.getElementsByTagName('relation'), function( relation, i ) {
@@ -164,12 +167,8 @@ osmtogeojson = function( data, options ) {
         rels[i].members = members;
       if (!_.isEmpty(tags))
         rels[i].tags = tags;
-      if (centroid = relation.getElementsByTagName('center')[0]) {
-        var pseudoNode = _.clone(rels[i]);
-        copy_attribute(centroid, pseudoNode, 'lat');
-        copy_attribute(centroid, pseudoNode, 'lon');
-        nodes.push(pseudoNode);
-      }
+      if (centroid = relation.getElementsByTagName('center')[0])
+        centerGeometry(rels[i],centroid);
     });
     return _convert2geoJSON(nodes,ways,rels);
   }
@@ -298,7 +297,7 @@ osmtogeojson = function( data, options ) {
         if (options.verbose) console.warn('POI',pois[i].type+'/'+pois[i].id,'ignored because it lacks coordinates');
         continue; // lon and lat are required for showing a point
       }
-      geojsonnodes.features.push({
+      var feature = {
         "type"       : "Feature",
         "id"         : pois[i].type+"/"+pois[i].id,
         "properties" : {
@@ -312,7 +311,10 @@ osmtogeojson = function( data, options ) {
           "type" : "Point",
           "coordinates" : [+pois[i].lon, +pois[i].lat],
         }
-      });
+      };
+      if (pois[i].__is_center_placeholder)
+        feature.properties["geometry"] = "center";
+      geojsonnodes.features.push(feature);
     }
     var geojsonlines = {
       "type"     : "FeatureCollection",

@@ -2666,6 +2666,7 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].id).to.eql("way/1");
     expect(geojson.features[0].geometry.type).to.eql("Point");
     expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+    expect(geojson.features[0].properties.geometry).to.eql("center");
 
     // a relation
     xml = "<osm><relation id='1'><center lat='1.234' lon='4.321' /></relation></osm>";
@@ -2677,6 +2678,7 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].id).to.eql("relation/1");
     expect(geojson.features[0].geometry.type).to.eql("Point");
     expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+    expect(geojson.features[0].properties.geometry).to.eql("center");
   });
   it("center (json)", function () {
     var json, geojson;
@@ -2700,6 +2702,7 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].id).to.eql("way/1");
     expect(geojson.features[0].geometry.type).to.eql("Point");
     expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+    expect(geojson.features[0].properties.geometry).to.eql("center");
 
     // a relation
     json = {
@@ -2720,6 +2723,7 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].id).to.eql("relation/1");
     expect(geojson.features[0].geometry.type).to.eql("Point");
     expect(geojson.features[0].geometry.coordinates).to.eql([4.321,1.234]);
+    expect(geojson.features[0].properties.geometry).to.eql("center");
   });
 
 });
