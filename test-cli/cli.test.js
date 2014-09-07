@@ -300,6 +300,25 @@ test('json file (subformats)', function (t) {
     
 });
 
+test('overpass geometry types', function (t) {
+
+  t.plan(3);
+
+  var xml = 
+    '<osm>'+
+      '<way id="89227521"><center lat="49.2491429" lon="6.6639613"/></way>'+
+      '<relation id="19227521"><center lat="19.2491429" lon="1.6639613"/></relation>'+
+    '</osm>';
+
+  testCLI(t,
+    'echo \''+xml+'\' | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features.length, 2);
+      t.equal(geojson.features[0].geometry.type, 'Point');
+      t.equal(geojson.features[1].geometry.type, 'Point');
+  });
+});
+
 test('parameters: -n', function (t) {
 
   var xml = "<osm><node id='1' lat='1.234' lon='4.321'><tag k='num' v='2' /></node></osm>";

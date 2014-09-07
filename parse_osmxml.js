@@ -23,6 +23,11 @@ var p = new htmlparser.Parser({
         } else if (name === "member") {
             if (!buffer.members) buffer.members = [];
             buffer.members.push(attr);
+        } else if (name === "center") {
+            buffer.center = {
+                lat: attr.lat,
+                lon: attr.lon
+            };
         }
     },
     ontext: function(text) {
