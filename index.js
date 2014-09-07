@@ -146,19 +146,20 @@ osmtogeojson = function( data, options ) {
       _.each( node.getElementsByTagName('tag'), function( tag ) {
         tags[tag.getAttribute('k')] = tag.getAttribute('v');
       });
-      nodes[i] = {
+      var nodeObject = {
         'type': 'node'
       };
-      copy_attribute( node, nodes[i], 'id' );
-      copy_attribute( node, nodes[i], 'lat' );
-      copy_attribute( node, nodes[i], 'lon' );
-      copy_attribute( node, nodes[i], 'version' );
-      copy_attribute( node, nodes[i], 'timestamp' );
-      copy_attribute( node, nodes[i], 'changeset' );
-      copy_attribute( node, nodes[i], 'uid' );
-      copy_attribute( node, nodes[i], 'user' );
+      copy_attribute( node, nodeObject, 'id' );
+      copy_attribute( node, nodeObject, 'lat' );
+      copy_attribute( node, nodeObject, 'lon' );
+      copy_attribute( node, nodeObject, 'version' );
+      copy_attribute( node, nodeObject, 'timestamp' );
+      copy_attribute( node, nodeObject, 'changeset' );
+      copy_attribute( node, nodeObject, 'uid' );
+      copy_attribute( node, nodeObject, 'user' );
       if (!_.isEmpty(tags))
-        nodes[i].tags = tags;
+        nodeObject.tags = tags;
+      nodes.push(nodeObject);
     });
     // ways
     var centroid,bounds;
@@ -171,23 +172,24 @@ osmtogeojson = function( data, options ) {
       _.each( way.getElementsByTagName('nd'), function( nd, i ) {
         wnodes[i] = nd.getAttribute('ref');
       });
-      ways[i] = {
+      var wayObject = {
         "type": "way"
       };
-      copy_attribute( way, ways[i], 'id' );
-      copy_attribute( way, ways[i], 'version' );
-      copy_attribute( way, ways[i], 'timestamp' );
-      copy_attribute( way, ways[i], 'changeset' );
-      copy_attribute( way, ways[i], 'uid' );
-      copy_attribute( way, ways[i], 'user' );
+      copy_attribute( way, wayObject, 'id' );
+      copy_attribute( way, wayObject, 'version' );
+      copy_attribute( way, wayObject, 'timestamp' );
+      copy_attribute( way, wayObject, 'changeset' );
+      copy_attribute( way, wayObject, 'uid' );
+      copy_attribute( way, wayObject, 'user' );
       if (wnodes.length > 0)
-        ways[i].nodes = wnodes;
+        wayObject.nodes = wnodes;
       if (!_.isEmpty(tags))
-        ways[i].tags = tags;
+        wayObject.tags = tags;
       if (centroid = way.getElementsByTagName('center')[0])
-        centerGeometry(ways[i],centroid);
+        centerGeometry(wayObject,centroid);
       if (bounds = way.getElementsByTagName('bounds')[0])
-        boundsGeometry(ways[i],bounds);
+        boundsGeometry(wayObject,bounds);
+      ways.push(wayObject);
     });
     // relations
     _.each( xml.getElementsByTagName('relation'), function( relation, i ) {
@@ -202,23 +204,24 @@ osmtogeojson = function( data, options ) {
         copy_attribute( member, members[i], 'role' );
         copy_attribute( member, members[i], 'type' );
       });
-      rels[i] = {
+      var relObject = {
         "type": "relation"
       }
-      copy_attribute( relation, rels[i], 'id' );
-      copy_attribute( relation, rels[i], 'version' );
-      copy_attribute( relation, rels[i], 'timestamp' );
-      copy_attribute( relation, rels[i], 'changeset' );
-      copy_attribute( relation, rels[i], 'uid' );
-      copy_attribute( relation, rels[i], 'user' );
+      copy_attribute( relation, relObject, 'id' );
+      copy_attribute( relation, relObject, 'version' );
+      copy_attribute( relation, relObject, 'timestamp' );
+      copy_attribute( relation, relObject, 'changeset' );
+      copy_attribute( relation, relObject, 'uid' );
+      copy_attribute( relation, relObject, 'user' );
       if (members.length > 0)
-        rels[i].members = members;
+        relObject.members = members;
       if (!_.isEmpty(tags))
-        rels[i].tags = tags;
+        relObject.tags = tags;
       if (centroid = relation.getElementsByTagName('center')[0])
-        centerGeometry(rels[i],centroid);
+        centerGeometry(relObject,centroid);
       if (bounds = relation.getElementsByTagName('bounds')[0])
-        boundsGeometry(rels[i],bounds);
+        boundsGeometry(relObject,bounds);
+      rels.push(relObject);
     });
     return _convert2geoJSON(nodes,ways,rels);
   }
