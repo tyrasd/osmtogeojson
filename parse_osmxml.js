@@ -23,6 +23,18 @@ var p = new htmlparser.Parser({
         } else if (name === "member") {
             if (!buffer.members) buffer.members = [];
             buffer.members.push(attr);
+        } else if (name === "center") {
+            buffer.center = {
+                lat: attr.lat,
+                lon: attr.lon
+            };
+        } else if (name === "bounds") {
+            buffer.bounds = {
+                minlat: attr.minlat,
+                minlon: attr.minlon,
+                maxlat: attr.maxlat,
+                maxlon: attr.maxlon
+            };
         }
     },
     ontext: function(text) {

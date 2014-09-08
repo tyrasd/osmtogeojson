@@ -300,6 +300,71 @@ test('json file (subformats)', function (t) {
     
 });
 
+test('overpass geometry types', function (t) {
+
+  var xml,json;
+  t.plan(3*4);
+
+  // center output mode (xml)
+  xml = 
+    '<osm>'+
+      '<way id="89227521"><center lat="49.2491429" lon="6.6639613"/></way>'+
+      '<relation id="19227521"><center lat="19.2491429" lon="1.6639613"/></relation>'+
+    '</osm>';
+
+  testCLI(t,
+    'echo \''+xml+'\' | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features.length, 2);
+      t.equal(geojson.features[0].geometry.type, 'Point');
+      t.equal(geojson.features[1].geometry.type, 'Point');
+  });
+  // center output mode (json)
+  json = 
+    '{ "elements": ['+
+      '{"type":"way", "id":"1", "center":{"lat":1.23,"lon":3.21} },'+
+      '{"type":"relation", "id":"2", "center":{"lat":5.23,"lon":6.21} }'+
+    '] }';
+
+  testCLI(t,
+    'echo \''+json+'\' | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features.length, 2);
+      t.equal(geojson.features[0].geometry.type, 'Point');
+      t.equal(geojson.features[1].geometry.type, 'Point');
+  });
+
+  // bounds output mode (xml)
+  xml = 
+    '<osm>'+
+      '<way id="89227521"><bounds minlat="49.2490528" minlon="6.6638484" maxlat="49.2492329" maxlon="6.6640742"/></way>'+
+      '<relation id="19227521"><bounds minlat="19.2490528" minlon="1.6638484" maxlat="19.2492329" maxlon="1.6640742"/></relation>'+
+    '</osm>';
+
+  testCLI(t,
+    'echo \''+xml+'\' | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features.length, 2);
+      t.equal(geojson.features[0].geometry.type, 'Polygon');
+      t.equal(geojson.features[1].geometry.type, 'Polygon');
+  });
+  // bounds output mode (json)
+  json = 
+    '{ "elements": ['+
+      '{"type":"way", "id":"1", "bounds":{"minlat":1.23,"minlon":3.21,"maxlat":11.23,"maxlon":13.21} },'+
+      '{"type":"relation", "id":"2", "bounds":{"minlat":5.23,"minlon":6.21,"maxlat":15.23,"maxlon":16.21} }'+
+    '] }';
+
+  testCLI(t,
+    'echo \''+json+'\' | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features.length, 2);
+      t.equal(geojson.features[0].geometry.type, 'Polygon');
+      t.equal(geojson.features[1].geometry.type, 'Polygon');
+  });
+
+});
+
 test('parameters: -n', function (t) {
 
   var xml = "<osm><node id='1' lat='1.234' lon='4.321'><tag k='num' v='2' /></node></osm>";
