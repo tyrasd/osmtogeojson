@@ -1,3 +1,9 @@
+2.1.0
+-----
+* implemented support for Overpass API geometry types "center" and "bounds"
+* new command line option `-n` to make properties numeric
+* added verbose option/mode that displays some debug info to the console/stderr
+
 2.0.5
 -----
 * support input files larger than 256 MB. #17
