@@ -140,6 +140,27 @@ osmtogeojson = function( data, options ) {
       pseudoWay.__is_bounds_placeholder = true;
       ways.push(pseudoWay);
     }
+    function fullGeometryWay(way, nds) {
+      function addFullGeometryNode(lat,lon,id) {
+        // todo? add shortcut such that has_interesting_tags doesn't have to be called 
+        // later on; because we already know that these nodes are by not interesting
+        var geometryNode = {
+          type:"node",
+          id:  id,
+          lat: lat,
+          lon: lon
+        }
+        nodes.push(geometryNode);
+      }
+      _.each( nds, function( nd, i ) {
+        addFullGeometryNode(
+          nd.getAttribute('lat'),
+          nd.getAttribute('lon'),
+          way.nodes[i]
+        );
+      });
+      //way.__has_full_geometry = true;
+    }
     // nodes
     _.each( xml.getElementsByTagName('node'), function( node, i ) {
       var tags = {};
@@ -187,7 +208,9 @@ osmtogeojson = function( data, options ) {
         wayObject.tags = tags;
       if (centroid = way.getElementsByTagName('center')[0])
         centerGeometry(wayObject,centroid);
-      if (bounds = way.getElementsByTagName('bounds')[0])
+      if (wnodes.length > 0 && way.getElementsByTagName('nd')[0].getAttribute('lat'))
+        fullGeometryWay(wayObject, way.getElementsByTagName('nd'));
+      else if (bounds = way.getElementsByTagName('bounds')[0])
         boundsGeometry(wayObject,bounds);
       ways.push(wayObject);
     });

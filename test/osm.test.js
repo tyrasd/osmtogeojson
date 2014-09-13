@@ -2800,4 +2800,89 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].properties.geometry).to.eql("bounds");
   });
 
+  // full geometry
+  it("full (xml)", function () {
+    var xml, geojson;
+
+    // a way
+    xml = "<osm><way id='1'>"
+        + "<bounds minlat='0' minlon='0' maxlat='1' maxlon='1'/>"
+        + "<nd ref='1' lat='0' lon='0' />"
+        + "<nd ref='2' lat='0' lon='1' />"
+        + "<nd ref='3' lat='1' lon='1' />"
+        + "<nd ref='1' lat='0' lon='0' />"
+        + "<tag k='area' v='yes' />"
+        + "</way></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
+    //expect(geojson.features[0].properties.geometry).to.eql("full");
+
+    // a relation
+    return;// todo
+    xml = "<osm><relation id='1'><bounds minlat='1.234' minlon='4.321' maxlat='2.234' maxlon='5.321'/></relation></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+  });
+  it("bounds (json)", function () {
+    var json, geojson;
+
+    // a way
+    return;// todo
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          bounds: {
+            minlat:  1.234,
+            minlon:  4.321,
+            maxlat:  2.234,
+            maxlon:  5.321
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+
+    // a relation
+    return;// todo
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          bounds: {
+            minlat:  1.234,
+            minlon:  4.321,
+            maxlat:  2.234,
+            maxlon:  5.321
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+  });
+
 });
