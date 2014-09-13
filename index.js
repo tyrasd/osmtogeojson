@@ -161,6 +161,56 @@ osmtogeojson = function( data, options ) {
       });
       //way.__has_full_geometry = true;
     }
+    function fullGeometryRelation(rel, members) {
+      function addFullGeometryNode(lat,lon,id) {
+        var geometryNode = {
+          type:"node",
+          id:  id,
+          lat: lat,
+          lon: lon
+        }
+        nodes.push(geometryNode);
+      }
+      function addFullGeometryWay(nds,id) {
+        var geometryWay = {
+          type: "way",
+          id:   id,
+          nodes:[]
+        }
+        function addFullGeometryWayPseudoNode(lat,lon) {
+          // todo? do not save the same pseudo node multiple times
+          var geometryPseudoNode = {
+            type:"node",
+            id:  "_relation/"+rel.id+"full@"+lat+"/"+lon,
+            lat: lat,
+            lon: lon
+          }
+          geometryWay.nodes.push(geometryPseudoNode.id);
+          nodes.push(geometryPseudoNode);
+        }
+        _.each(nds, function(nd) {
+          addFullGeometryWayPseudoNode(
+            nd.getAttribute('lat'),
+            nd.getAttribute('lon')
+          );
+        });
+        ways.push(geometryWay);
+      }
+      _.each( members, function( member, i ) {
+        if (rel.members[i].type == "node") {
+          addFullGeometryNode(
+            member.getAttribute('lat'),
+            member.getAttribute('lon'),
+            rel.members[i].ref
+          );
+        } else if (rel.members[i].type == "way") {
+          addFullGeometryWay(
+            member.getElementsByTagName('nd'),
+            rel.members[i].ref
+          );
+        }
+      });
+    }
     // nodes
     _.each( xml.getElementsByTagName('node'), function( node, i ) {
       var tags = {};
@@ -190,8 +240,11 @@ osmtogeojson = function( data, options ) {
       _.each( way.getElementsByTagName('tag'), function( tag ) {
         tags[tag.getAttribute('k')] = tag.getAttribute('v');
       });
+      var has_full_geometry = false;
       _.each( way.getElementsByTagName('nd'), function( nd, i ) {
         wnodes[i] = nd.getAttribute('ref');
+        if (!has_full_geometry && nd.getAttribute('lat'))
+          has_full_geometry = true;
       });
       var wayObject = {
         "type": "way"
@@ -208,7 +261,7 @@ osmtogeojson = function( data, options ) {
         wayObject.tags = tags;
       if (centroid = way.getElementsByTagName('center')[0])
         centerGeometry(wayObject,centroid);
-      if (wnodes.length > 0 && way.getElementsByTagName('nd')[0].getAttribute('lat'))
+      if (has_full_geometry)
         fullGeometryWay(wayObject, way.getElementsByTagName('nd'));
       else if (bounds = way.getElementsByTagName('bounds')[0])
         boundsGeometry(wayObject,bounds);
@@ -221,11 +274,16 @@ osmtogeojson = function( data, options ) {
       _.each( relation.getElementsByTagName('tag'), function( tag ) {
         tags[tag.getAttribute('k')] = tag.getAttribute('v');
       });
+      var has_full_geometry = false;
       _.each( relation.getElementsByTagName('member'), function( member, i ) {
         members[i] = {};
         copy_attribute( member, members[i], 'ref' );
         copy_attribute( member, members[i], 'role' );
         copy_attribute( member, members[i], 'type' );
+        if (!has_full_geometry && 
+             (members[i].type == 'node' && member.getAttribute('lat')) ||
+             (members[i].type == 'way'  && member.getElementsByTagName('nd').length>0) )
+          has_full_geometry = true;
       });
       var relObject = {
         "type": "relation"
@@ -242,7 +300,9 @@ osmtogeojson = function( data, options ) {
         relObject.tags = tags;
       if (centroid = relation.getElementsByTagName('center')[0])
         centerGeometry(relObject,centroid);
-      if (bounds = relation.getElementsByTagName('bounds')[0])
+      if (has_full_geometry)
+        fullGeometryRelation(relObject, relation.getElementsByTagName('member'));
+      else if (bounds = relation.getElementsByTagName('bounds')[0])
         boundsGeometry(relObject,bounds);
       rels.push(relObject);
     });

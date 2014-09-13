@@ -2821,19 +2821,38 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].id).to.eql("way/1");
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
     expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
-    //expect(geojson.features[0].properties.geometry).to.eql("full");
 
     // a relation
-    return;// todo
-    xml = "<osm><relation id='1'><bounds minlat='1.234' minlon='4.321' maxlat='2.234' maxlon='5.321'/></relation></osm>";
+    xml = "<osm><relation id='1'>"
+        + "<bounds minlat='0' minlon='0' maxlat='1' maxlon='1'/>"
+        + "<member type='way' ref='1' role='outer'>"
+        +   "<nd lat='0' lon='0' />"
+        +   "<nd lat='0' lon='1' />"
+        +   "<nd lat='1' lon='1' />"
+        +   "<nd lat='1' lon='0' />"
+        +   "<nd lat='0' lon='0' />"
+        + "</member>"
+        + "<member type='way' ref='2' role='outer'>"
+        +   "<nd lat='1.1' lon='1.1' />"
+        +   "<nd lat='1.1' lon='1.2' />"
+        +   "<nd lat='1.2' lon='1.2' />"
+        +   "<nd lat='1.1' lon='1.1' />"
+        + "</member>"
+        + "<member type='node' ref='1' role='admin_centre' lat='0.5' lon='0.5'/>"
+        + "<tag k='type' v='boundary' />"
+        + "</relation></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
     geojson = osmtogeojson.toGeojson(xml);
 
-    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("relation/1");
-    expect(geojson.features[0].geometry.type).to.eql("Polygon");
-    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+    expect(geojson.features[0].geometry.type).to.eql("MultiPolygon");
+    expect(geojson.features[0].geometry.coordinates.length).to.eql(2);
+    expect(geojson.features[0].geometry.coordinates[0][0].length+
+           geojson.features[0].geometry.coordinates[1][0].length).to.eql(9);
+    expect(geojson.features[1].id).to.eql("node/1");
+    expect(geojson.features[1].geometry.coordinates[0]).to.eql(0.5);
   });
   it("bounds (json)", function () {
     var json, geojson;
