@@ -2851,10 +2851,11 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].geometry.coordinates.length).to.eql(2);
     expect(geojson.features[0].geometry.coordinates[0][0].length+
            geojson.features[0].geometry.coordinates[1][0].length).to.eql(9);
+    expect(geojson.features[0].properties.tainted).to.not.eql(true);
     expect(geojson.features[1].id).to.eql("node/1");
     expect(geojson.features[1].geometry.coordinates[0]).to.eql(0.5);
   });
-  it("bounds (json)", function () {
+  it("full (json)", function () {
     var json, geojson;
 
     // a way
@@ -2876,10 +2877,10 @@ describe("overpass geometry types", function () {
             1
           ],
           geometry: [
-            { "lat": 0, "lon": 0 },
-            { "lat": 0, "lon": 1 },
-            { "lat": 1, "lon": 1 },
-            { "lat": 0, "lon": 0 }
+            { lat: 0, lon: 0 },
+            { lat: 0, lon: 1 },
+            { lat: 1, lon: 1 },
+            { lat: 0, lon: 0 }
           ],
           tags: {
             "area": "yes"
@@ -2895,27 +2896,66 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
 
     // a relation
-    return;// todo
     json = {
       elements: [
         {
           type: "relation",
           id:   1,
+          tags: {
+            "type": "boundary"
+          },
           bounds: {
-            minlat:  1.234,
-            minlon:  4.321,
-            maxlat:  2.234,
-            maxlon:  5.321
-          }
+            minlat: 0,
+            minlon: 0,
+            maxlat: 1,
+            maxlon: 1
+          },
+          members: [
+            {
+              type: "way",
+              ref: 1,
+              role: "outer",
+              geometry: [
+                { lat: 0, lon: 0 },
+                { lat: 0, lon: 1 },
+                { lat: 1, lon: 1 },
+                { lat: 1, lon: 0 },
+                { lat: 0, lon: 0 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 2,
+              role: "outer",
+              geometry: [
+                { lat: 1.1, lon: 1.1 },
+                { lat: 1.1, lon: 1.2 },
+                { lat: 1.2, lon: 1.2 },
+                { lat: 1.1, lon: 1.1 }
+              ]
+            },
+            {
+              type: "node",
+              ref: 1,
+              role: "admin_centre",
+              lat: 0.5,
+              lon: 0.5
+            }
+          ]
         }
       ]
     };
     geojson = osmtogeojson.toGeojson(json);
 
-    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("relation/1");
-    expect(geojson.features[0].geometry.type).to.eql("Polygon");
-    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+    expect(geojson.features[0].geometry.type).to.eql("MultiPolygon");
+    expect(geojson.features[0].geometry.coordinates.length).to.eql(2);
+    expect(geojson.features[0].geometry.coordinates[0][0].length+
+           geojson.features[0].geometry.coordinates[1][0].length).to.eql(9);
+    expect(geojson.features[0].properties.tainted).to.not.eql(true);
+    expect(geojson.features[1].id).to.eql("node/1");
+    expect(geojson.features[1].geometry.coordinates[0]).to.eql(0.5);
   });
 
 });

@@ -90,6 +90,56 @@ osmtogeojson = function( data, options ) {
         );
       });
     }
+    function fullGeometryRelation(rel) {
+      function addFullGeometryNode(lat,lon,id) {
+        var geometryNode = {
+          type:"node",
+          id:  id,
+          lat: lat,
+          lon: lon
+        }
+        nodes.push(geometryNode);
+      }
+      function addFullGeometryWay(geometry,id) {
+        var geometryWay = {
+          type: "way",
+          id:   id,
+          nodes:[]
+        }
+        function addFullGeometryWayPseudoNode(lat,lon) {
+          // todo? do not save the same pseudo node multiple times
+          var geometryPseudoNode = {
+            type:"node",
+            id:  "_relation/"+rel.id+"full@"+lat+"/"+lon,
+            lat: lat,
+            lon: lon
+          }
+          geometryWay.nodes.push(geometryPseudoNode.id);
+          nodes.push(geometryPseudoNode);
+        }
+        geometry.forEach(function(nd) {
+          addFullGeometryWayPseudoNode(
+            nd.lat,
+            nd.lon
+          );
+        });
+        ways.push(geometryWay);
+      }
+      rel.members.forEach(function(member, i) {
+        if (member.type == "node") {
+          addFullGeometryNode(
+            member.lat,
+            member.lon,
+            member.ref
+          );
+        } else if (member.type == "way") {
+          addFullGeometryWay(
+            member.geometry,
+            member.ref
+          );
+        }
+      });
+    }
     // create copies of individual json objects to make sure the original data doesn't get altered
     // todo: cloning is slow: see if this can be done differently!
     for (var i=0;i<json.elements.length;i++) {
@@ -113,9 +163,15 @@ osmtogeojson = function( data, options ) {
         var rel = _.clone(json.elements[i]);
         rel.members = _.clone(rel.members);
         rels.push(rel);
+        var has_full_geometry = rel.members && rel.members.some(function (member) {
+          return member.type == "node" && member.lat ||
+                 member.type == "way"  && member.geometry
+        });
         if (rel.center) 
           centerGeometry(rel);
-        if (rel.bounds)
+        if (has_full_geometry)
+          fullGeometryRelation(rel);
+        else if (rel.bounds)
           boundsGeometry(rel);
       break;
       default:
