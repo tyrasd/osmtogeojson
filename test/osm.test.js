@@ -2858,17 +2858,31 @@ describe("overpass geometry types", function () {
     var json, geojson;
 
     // a way
-    return;// todo
     json = {
       elements: [
         {
           type: "way",
           id:   1,
           bounds: {
-            minlat:  1.234,
-            minlon:  4.321,
-            maxlat:  2.234,
-            maxlon:  5.321
+            minlat: 0,
+            minlon: 0,
+            maxlat: 1,
+            maxlon: 1
+          },
+          nodes: [
+            1,
+            2,
+            3,
+            1
+          ],
+          geometry: [
+            { "lat": 0, "lon": 0 },
+            { "lat": 0, "lon": 1 },
+            { "lat": 1, "lon": 1 },
+            { "lat": 0, "lon": 0 }
+          ],
+          tags: {
+            "area": "yes"
           }
         }
       ]
@@ -2878,7 +2892,7 @@ describe("overpass geometry types", function () {
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
-    expect(geojson.features[0].properties.geometry).to.eql("bounds");
+    expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
 
     // a relation
     return;// todo

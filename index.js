@@ -70,6 +70,26 @@ osmtogeojson = function( data, options ) {
       pseudoWay.__is_bounds_placeholder = true;
       ways.push(pseudoWay);
     }
+    function fullGeometryWay(way) {
+      function addFullGeometryNode(lat,lon,id) {
+        // todo? add shortcut such that has_interesting_tags doesn't have to be called 
+        // later on; because we already know that these nodes are by not interesting
+        var geometryNode = {
+          type:"node",
+          id:  id,
+          lat: lat,
+          lon: lon
+        }
+        nodes.push(geometryNode);
+      }
+      way.geometry.forEach(function(nd, i) {
+        addFullGeometryNode(
+          nd.lat,
+          nd.lon,
+          way.nodes[i]
+        );
+      });
+    }
     // create copies of individual json objects to make sure the original data doesn't get altered
     // todo: cloning is slow: see if this can be done differently!
     for (var i=0;i<json.elements.length;i++) {
@@ -84,7 +104,9 @@ osmtogeojson = function( data, options ) {
         ways.push(way);
         if (way.center)
           centerGeometry(way);
-        if (way.bounds)
+        if (way.geometry)
+          fullGeometryWay(way);
+        else if (way.bounds)
           boundsGeometry(way);
       break;
       case "relation":
@@ -159,7 +181,6 @@ osmtogeojson = function( data, options ) {
           way.nodes[i]
         );
       });
-      //way.__has_full_geometry = true;
     }
     function fullGeometryRelation(rel, members) {
       function addFullGeometryNode(lat,lon,id) {
