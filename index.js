@@ -55,7 +55,7 @@ osmtogeojson = function( data, options ) {
       function addPseudoNode(lat,lon,i) {
         var pseudoNode = {
           type:"node",
-          id:""+pseudoWay.id+"p"+i,
+          id:  "_"+pseudoWay.type+"/"+pseudoWay.id+"bounds"+i,
           lat: lat,
           lon: lon
         }
@@ -125,7 +125,7 @@ osmtogeojson = function( data, options ) {
       function addPseudoNode(lat,lon,i) {
         var pseudoNode = {
           type:"node",
-          id:""+pseudoWay.id+"p"+i,
+          id:  "_"+pseudoWay.type+"/"+pseudoWay.id+"bounds"+i,
           lat: lat,
           lon: lon
         }
