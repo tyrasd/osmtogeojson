@@ -101,6 +101,10 @@ osmtogeojson = function( data, options ) {
         nodes.push(geometryNode);
       }
       function addFullGeometryWay(geometry,id) {
+        // shared multipolygon ways cannot be defined multiple times with the same id.
+        if (ways.some(function (way) { // todo: this is slow :(
+          return way.type == "way" && way.id == id;
+        })) return;
         var geometryWay = {
           type: "way",
           id:   id,
@@ -110,7 +114,7 @@ osmtogeojson = function( data, options ) {
           // todo? do not save the same pseudo node multiple times
           var geometryPseudoNode = {
             type:"node",
-            id:  "_relation/"+rel.id+"full@"+lat+"/"+lon,
+            id:  "_anonymous@"+lat+"/"+lon,
             lat: lat,
             lon: lon
           }
@@ -229,6 +233,7 @@ osmtogeojson = function( data, options ) {
           lon: lon
         }
         nodes.push(geometryNode);
+        return geometryNode.id;
       }
       _.each( nds, function( nd, i ) {
         addFullGeometryNode(
@@ -249,6 +254,10 @@ osmtogeojson = function( data, options ) {
         nodes.push(geometryNode);
       }
       function addFullGeometryWay(nds,id) {
+        // shared multipolygon ways cannot be defined multiple times with the same id.
+        if (ways.some(function (way) { // todo: this is slow :(
+          return way.type == "way" && way.id == id;
+        })) return;
         var geometryWay = {
           type: "way",
           id:   id,
@@ -258,7 +267,7 @@ osmtogeojson = function( data, options ) {
           // todo? do not save the same pseudo node multiple times
           var geometryPseudoNode = {
             type:"node",
-            id:  "_relation/"+rel.id+"full@"+lat+"/"+lon,
+            id:  "_anonymous@"+lat+"/"+lon,
             lat: lat,
             lon: lon
           }
