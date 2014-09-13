@@ -2854,6 +2854,127 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].properties.tainted).to.not.eql(true);
     expect(geojson.features[1].id).to.eql("node/1");
     expect(geojson.features[1].geometry.coordinates[0]).to.eql(0.5);
+
+    // two more complex relations
+    xml = "<osm>"
+        + "<relation id='1'>"
+        + "<member type='way' ref='1' role='outer'>"
+        +   "<nd lat='0' lon='0' />"
+        +   "<nd lat='0' lon='1' />"
+        + "</member>"
+        + "<member type='way' ref='2' role='outer'>"
+        +   "<nd lat='0' lon='1' />"
+        +   "<nd lat='1' lon='1' />"
+        + "</member>"
+        + "<member type='way' ref='3' role='outer'>"
+        +   "<nd lat='1' lon='1' />"
+        +   "<nd lat='0' lon='0' />"
+        + "</member>"
+        + "<tag k='type' v='multipolygon' />"
+        + "</relation>"
+        + "<relation id='2'>"
+        + "<member type='way' ref='4' role='outer'>"
+        +   "<nd lat='0' lon='0' />"
+        +   "<nd lat='1' lon='0' />"
+        + "</member>"
+        + "<member type='way' ref='5' role='outer'>"
+        +   "<nd lat='1' lon='0' />"
+        +   "<nd lat='1' lon='1' />"
+        + "</member>"
+        + "<member type='way' ref='3' role='outer'>"
+        +   "<nd lat='1' lon='1' />"
+        +   "<nd lat='0' lon='0' />"
+        + "</member>"
+        + "<tag k='type' v='multipolygon' />"
+        + "</relation>"
+        + "</osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {
+            "type": "multipolygon"
+          },
+          members: [
+            {
+              type: "way",
+              ref: 1,
+              role: "outer",
+              geometry: [
+                { lat: 0, lon: 0 },
+                { lat: 0, lon: 1 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 2,
+              role: "outer",
+              geometry: [
+                { lat: 0, lon: 1 },
+                { lat: 1, lon: 1 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 3,
+              role: "outer",
+              geometry: [
+                { lat: 1, lon: 1 },
+                { lat: 0, lon: 0 }
+              ]
+            }
+          ]
+        },
+        {
+          type: "relation",
+          id:   2,
+          tags: {
+            "type": "multipolygon"
+          },
+          members: [
+            {
+              type: "way",
+              ref: 4,
+              role: "outer",
+              geometry: [
+                { lat: 0, lon: 0 },
+                { lat: 1, lon: 0 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 5,
+              role: "outer",
+              geometry: [
+                { lat: 1, lon: 0 },
+                { lat: 1, lon: 1 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 3,
+              role: "outer",
+              geometry: [
+                { lat: 1, lon: 1 },
+                { lat: 0, lon: 0 }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+
+    expect(geojson.features.length).to.eql(2);
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].geometry.coordinates.length).to.eql(1);
+    expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
+    expect(geojson.features[1].geometry.type).to.eql("Polygon");
+    expect(geojson.features[1].geometry.coordinates.length).to.eql(1);
+    expect(geojson.features[1].geometry.coordinates[0].length).to.eql(4);
   });
   it("full (json)", function () {
     var json, geojson;
@@ -2956,6 +3077,93 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].properties.tainted).to.not.eql(true);
     expect(geojson.features[1].id).to.eql("node/1");
     expect(geojson.features[1].geometry.coordinates[0]).to.eql(0.5);
+
+    // two more complex relations
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {
+            "type": "multipolygon"
+          },
+          members: [
+            {
+              type: "way",
+              ref: 1,
+              role: "outer",
+              geometry: [
+                { lat: 0, lon: 0 },
+                { lat: 0, lon: 1 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 2,
+              role: "outer",
+              geometry: [
+                { lat: 0, lon: 1 },
+                { lat: 1, lon: 1 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 3,
+              role: "outer",
+              geometry: [
+                { lat: 1, lon: 1 },
+                { lat: 0, lon: 0 }
+              ]
+            }
+          ]
+        },
+        {
+          type: "relation",
+          id:   2,
+          tags: {
+            "type": "multipolygon"
+          },
+          members: [
+            {
+              type: "way",
+              ref: 4,
+              role: "outer",
+              geometry: [
+                { lat: 0, lon: 0 },
+                { lat: 1, lon: 0 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 5,
+              role: "outer",
+              geometry: [
+                { lat: 1, lon: 0 },
+                { lat: 1, lon: 1 }
+              ]
+            },
+            {
+              type: "way",
+              ref: 3,
+              role: "outer",
+              geometry: [
+                { lat: 1, lon: 1 },
+                { lat: 0, lon: 0 }
+              ]
+            }
+          ]
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(2);
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].geometry.coordinates.length).to.eql(1);
+    expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
+    expect(geojson.features[1].geometry.type).to.eql("Polygon");
+    expect(geojson.features[1].geometry.coordinates.length).to.eql(1);
+    expect(geojson.features[1].geometry.coordinates[0].length).to.eql(4);
   });
 
 });
