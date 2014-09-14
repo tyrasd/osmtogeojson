@@ -19,7 +19,14 @@ var p = new htmlparser.Parser({
             buffer.tags[attr.k] = attr.v;
         } else if (name === "nd") {
             if (!buffer.nodes) buffer.nodes = [];
-            buffer.nodes.push(attr.ref);
+            var index = buffer.nodes.push(attr.ref)-1;
+            if (attr.lat) {
+                if (!buffer.geometry) buffer.geometry = [];
+                buffer.geometry[index] = {
+                    lat: attr.lat,
+                    lon: attr.lon
+                }
+            }
         } else if (name === "member") {
             if (!buffer.members) buffer.members = [];
             buffer.members.push(attr);
@@ -42,6 +49,12 @@ var p = new htmlparser.Parser({
     onclosetag: function(name) {
         if (name === "node" || name === "way" || name === "relation" || name === "area") {
             json.elements.push(buffer);
+        }
+        if (name === "member") {
+            if (buffer.geometry) {
+                buffer.members[buffer.members.length-1].geometry = buffer.geometry;
+                delete buffer.geometry;
+            }
         }
     }
 }, {
