@@ -83,11 +83,13 @@ osmtogeojson = function( data, options ) {
         nodes.push(geometryNode);
       }
       way.geometry.forEach(function(nd, i) {
-        addFullGeometryNode(
-          nd.lat,
-          nd.lon,
-          way.nodes[i]
-        );
+        if (nd) {
+          addFullGeometryNode(
+            nd.lat,
+            nd.lon,
+            way.nodes[i]
+          );
+        }
       });
     }
     function fullGeometryRelation(rel) {
@@ -122,25 +124,33 @@ osmtogeojson = function( data, options ) {
           nodes.push(geometryPseudoNode);
         }
         geometry.forEach(function(nd) {
-          addFullGeometryWayPseudoNode(
-            nd.lat,
-            nd.lon
-          );
+          if (nd) {
+            addFullGeometryWayPseudoNode(
+              nd.lat,
+              nd.lon
+            );
+          } else {
+            geometryWay.nodes.push(undefined);
+          }
         });
         ways.push(geometryWay);
       }
       rel.members.forEach(function(member, i) {
         if (member.type == "node") {
-          addFullGeometryNode(
-            member.lat,
-            member.lon,
-            member.ref
-          );
+          if (member.lat) {
+            addFullGeometryNode(
+              member.lat,
+              member.lon,
+              member.ref
+            );
+          }
         } else if (member.type == "way") {
-          addFullGeometryWay(
-            member.geometry,
-            member.ref
-          );
+          if (member.geometry) {
+            addFullGeometryWay(
+              member.geometry,
+              member.ref
+            );
+          }
         }
       });
     }
@@ -236,11 +246,13 @@ osmtogeojson = function( data, options ) {
         return geometryNode.id;
       }
       _.each( nds, function( nd, i ) {
-        addFullGeometryNode(
-          nd.getAttribute('lat'),
-          nd.getAttribute('lon'),
-          way.nodes[i]
-        );
+        if (nd.getAttribute('lat')) {
+          addFullGeometryNode(
+            nd.getAttribute('lat'),
+            nd.getAttribute('lon'),
+            way.nodes[i]
+          );
+        }
       });
     }
     function fullGeometryRelation(rel, members) {
@@ -275,25 +287,33 @@ osmtogeojson = function( data, options ) {
           nodes.push(geometryPseudoNode);
         }
         _.each(nds, function(nd) {
-          addFullGeometryWayPseudoNode(
-            nd.getAttribute('lat'),
-            nd.getAttribute('lon')
-          );
+          if (nd.getAttribute('lat')) {
+            addFullGeometryWayPseudoNode(
+              nd.getAttribute('lat'),
+              nd.getAttribute('lon')
+            );
+          } else {
+            geometryWay.nodes.push(undefined);
+          }
         });
         ways.push(geometryWay);
       }
       _.each( members, function( member, i ) {
         if (rel.members[i].type == "node") {
-          addFullGeometryNode(
-            member.getAttribute('lat'),
-            member.getAttribute('lon'),
-            rel.members[i].ref
-          );
+          if (member.getAttribute('lat')) {
+            addFullGeometryNode(
+              member.getAttribute('lat'),
+              member.getAttribute('lon'),
+              rel.members[i].ref
+            );
+          }
         } else if (rel.members[i].type == "way") {
-          addFullGeometryWay(
-            member.getElementsByTagName('nd'),
-            rel.members[i].ref
-          );
+          if (member.getElementsByTagName('nd').length > 0) {
+            addFullGeometryWay(
+              member.getElementsByTagName('nd'),
+              rel.members[i].ref
+            );
+          }
         }
       });
     }
