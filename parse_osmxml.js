@@ -18,14 +18,17 @@ var p = new htmlparser.Parser({
             if (!buffer.tags) buffer.tags = {};
             buffer.tags[attr.k] = attr.v;
         } else if (name === "nd") {
+            // regular way nodes
             if (!buffer.nodes) buffer.nodes = [];
-            var index = buffer.nodes.push(attr.ref)-1;
+            buffer.nodes.push(attr.ref);
+            if (!buffer.geometry) buffer.geometry = [];
             if (attr.lat) {
-                if (!buffer.geometry) buffer.geometry = [];
-                buffer.geometry[index] = {
+                buffer.geometry.push({
                     lat: attr.lat,
                     lon: attr.lon
-                }
+                });
+            } else {
+                buffer.geometry.push(null);
             }
         } else if (name === "member") {
             if (!buffer.members) buffer.members = [];
