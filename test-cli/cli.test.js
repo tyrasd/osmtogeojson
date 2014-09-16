@@ -303,7 +303,7 @@ test('json file (subformats)', function (t) {
 test('overpass geometry types', function (t) {
 
   var xml,json;
-  t.plan(3*4);
+  t.plan(3*2+3*2+4*2+5*2);
 
   // center output mode (xml)
   xml = 
@@ -363,6 +363,71 @@ test('overpass geometry types', function (t) {
       t.equal(geojson.features[1].geometry.type, 'Polygon');
   });
 
+  // full geometry (xml)
+  xml = 
+    '<osm>' +
+      '<way id="89227521"><nd ref="1" lat="0" lon="0" /><nd ref="2" lat="1" lon="1" /><nd ref="3" lat="2" lon="2" /></way>'+
+      '<relation id="1"><bounds minlat="0" minlon="0" maxlat="1" maxlon="1"/><member type="way" ref="1" role="outer"><nd lat="0" lon="0" /><nd lat="0" lon="1" /><nd lat="1" lon="1" /><nd lat="1" lon="0" /><nd lat="0" lon="0" /></member><member type="way" ref="2" role="outer"><nd lat="0.1" lon="0.1" /><nd lat="0.1" lon="0.2" /><nd lat="0.2" lon="0.2" /><nd lat="0.1" lon="0.1" /></member><tag k="type" v="boundary" /></relation>'+
+    '</osm>';
+
+  testCLI(t,
+    'echo "'+xml+'" | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features.length, 2);
+      t.equal(geojson.features[0].geometry.type, 'MultiPolygon');
+      t.equal(geojson.features[1].geometry.type, 'LineString');
+      t.equal(geojson.features[1].geometry.coordinates.length, 3);
+  });
+  // full geometry (json)
+  json =
+    '{ "elements": ['+
+      '{"type":"way", "id":"1", "nodes": [1,2,3], "geometry": [{"lat":0,"lon":0}, {"lat":1,"lon":1}, {"lat":2,"lon":2}] },'+
+      '{"type":"relation", "id":"2", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},{"lat":1,"lon":1}] }, {"type": "way", "ref": "4", "role":"outer", "geometry": [{"lat":1,"lon":1},{"lat":0,"lon":0}] } ] }'+
+    '] }';
+  testCLI(t,
+    'echo \''+json+'\' | ./osmtogeojson',
+    function (geojson) {
+      t.equal(geojson.features.length, 2);
+      t.equal(geojson.features[0].geometry.type, 'Polygon');
+      t.equal(geojson.features[1].geometry.type, 'LineString');
+      t.equal(geojson.features[1].geometry.coordinates.length, 3);
+  });
+
+  // full geometry, tainted (xml)
+  xml = 
+    '<osm>' +
+      '<way id="89227521"><nd ref="1" lat="0" lon="0" /><nd ref="2" lat="1" lon="1" /><nd /></way>'+
+      '<relation id="1"><member type="way" ref="1" role="outer"><nd lat="0" lon="0" /><nd lat="0" lon="1" /><nd lat="1" lon="1" /><nd /><nd lat="0" lon="0" /></member><tag k="type" v="multipolygon" /></relation>'+
+      '<relation id="2"><member type="way" ref="1" role="outer"><nd lat="0" lon="0" /><nd lat="0" lon="1" /><nd lat="1" lon="1" /><nd lat="1" lon="0"/><nd lat="0" lon="0" /></member><member type="way" ref="777" role="inner" /><tag k="type" v="multipolygon" /></relation>'+
+      '<relation id="3"><member type="way" ref="1" role="outer"><nd lat="0" lon="0" /><nd lat="0" lon="1" /><nd lat="1" lon="1" /><nd lat="1" lon="0"/><nd lat="0" lon="0" /></member><member type="node" ref="9" role="" /><tag k="type" v="multipolygon" /></relation>'+
+    '</osm>';
+
+  testCLI(t,
+    'echo "'+xml+'" | ./osmtogeojson -e',
+    function (geojson) {
+      t.equal(geojson.features.length, 4);
+      t.equal(geojson.features[0].properties.tainted, true);
+      t.equal(geojson.features[1].properties.tainted, true);
+      t.equal(geojson.features[2].properties.tainted, true);
+      t.equal(geojson.features[3].properties.tainted, true);
+  });
+  // full geometry, tainted (json)
+  json =
+    '{ "elements": ['+
+      '{"type":"way", "id":"1", "nodes": [1,2,3], "geometry": [{"lat":0,"lon":0}, {"lat":1,"lon":1}, null] },'+
+      '{"type":"relation", "id":"2", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},null,{"lat":1,"lon":0},{"lat":0,"lon":0}] } ] },'+
+      '{"type":"relation", "id":"2", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},{"lat":1,"lon":1},{"lat":1,"lon":0},{"lat":0,"lon":0}] }, { "type": "way", "ref": 777, "role": "inner", "geometry": null } ] },'+
+      '{"type":"relation", "id":"2", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},{"lat":1,"lon":1},{"lat":1,"lon":0},{"lat":0,"lon":0}] }, { "type": "node", "ref": 9, "role": "" } ] }'+
+    '] }';
+  testCLI(t,
+    'echo \''+json+'\' | ./osmtogeojson -e',
+    function (geojson) {
+      t.equal(geojson.features.length, 4);
+      t.equal(geojson.features[0].properties.tainted, true);
+      t.equal(geojson.features[1].properties.tainted, true);
+      t.equal(geojson.features[2].properties.tainted, true);
+      t.equal(geojson.features[3].properties.tainted, true);
+  });
 });
 
 test('parameters: -n', function (t) {
