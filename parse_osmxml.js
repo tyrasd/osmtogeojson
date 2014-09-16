@@ -9,19 +9,30 @@ var json = {
 var buffer = {};
 var p = new htmlparser.Parser({
     onopentag: function(name, attr) {
-        if (name === "node" || name === "way" || name === "relation" || name === "area") {
+        switch (name) {
+        case "node":
+        case "way":
+        case "relation":
             buffer = {
-                type: name
+                type: name,
+                tags: {}
             }
             _.merge(buffer, attr);
-        } else if (name === "tag") {
-            if (!buffer.tags) buffer.tags = {};
+            if (name === "way") {
+                buffer.nodes = [];
+                buffer.geometry = [];
+            }
+            if (name === "relation") {
+                buffer.members = [];
+                buffer.nodes = [];
+                buffer.geometry = [];
+            }
+        break;
+        case "tag":
             buffer.tags[attr.k] = attr.v;
-        } else if (name === "nd") {
-            // regular way nodes
-            if (!buffer.nodes) buffer.nodes = [];
+        break;
+        case "nd":
             buffer.nodes.push(attr.ref);
-            if (!buffer.geometry) buffer.geometry = [];
             if (attr.lat) {
                 buffer.geometry.push({
                     lat: attr.lat,
@@ -30,15 +41,17 @@ var p = new htmlparser.Parser({
             } else {
                 buffer.geometry.push(null);
             }
-        } else if (name === "member") {
-            if (!buffer.members) buffer.members = [];
+        break;
+        case "member":
             buffer.members.push(attr);
-        } else if (name === "center") {
+        break;
+        case "center":
             buffer.center = {
                 lat: attr.lat,
                 lon: attr.lon
             };
-        } else if (name === "bounds") {
+        break;
+        case "bounds":
             buffer.bounds = {
                 minlat: attr.minlat,
                 minlon: attr.minlon,
@@ -51,12 +64,17 @@ var p = new htmlparser.Parser({
     },
     onclosetag: function(name) {
         if (name === "node" || name === "way" || name === "relation" || name === "area") {
+            // remove empty geometry or nodes arrays
+            if (buffer.geometry && buffer.geometry.every(function(g) {return g===null;}))
+                delete buffer.geometry;
+            if (name === "relation")
+                delete buffer.nodes;
             json.elements.push(buffer);
         }
         if (name === "member") {
             if (buffer.geometry) {
                 buffer.members[buffer.members.length-1].geometry = buffer.geometry;
-                delete buffer.geometry;
+                buffer.geometry = [];
             }
         }
     }
