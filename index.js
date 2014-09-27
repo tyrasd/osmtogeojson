@@ -82,6 +82,11 @@ osmtogeojson = function( data, options ) {
         }
         nodes.push(geometryNode);
       }
+      if (!_.isArray(way.nodes)) {
+        way.nodes = way.geometry.map(function(nd) {
+          return "_anonymous@"+nd.lat+"/"+nd.lon;
+        });
+      }
       way.geometry.forEach(function(nd, i) {
         if (nd) {
           addFullGeometryNode(
@@ -245,6 +250,12 @@ osmtogeojson = function( data, options ) {
         nodes.push(geometryNode);
         return geometryNode.id;
       }
+      if (!_.isArray(way.nodes)) {
+        way.nodes = [];
+        _.each( nds, function( nd, i ) {
+          way.nodes.push("_anonymous@"+nd.getAttribute('lat')+"/"+nd.getAttribute('lon'));
+        });
+      }
       _.each( nds, function( nd, i ) {
         if (nd.getAttribute('lat')) {
           addFullGeometryNode(
@@ -348,7 +359,9 @@ osmtogeojson = function( data, options ) {
       });
       var has_full_geometry = false;
       _.each( way.getElementsByTagName('nd'), function( nd, i ) {
-        wnodes[i] = nd.getAttribute('ref');
+        var id;
+        if (id = nd.getAttribute('ref'))
+          wnodes[i] = id;
         if (!has_full_geometry && nd.getAttribute('lat'))
           has_full_geometry = true;
       });

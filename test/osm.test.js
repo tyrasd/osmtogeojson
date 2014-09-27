@@ -2822,6 +2822,25 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
     expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
 
+    // a way (ref-less nodes)
+    xml = "<osm><way id='1'>"
+        + "<bounds minlat='0' minlon='0' maxlat='1' maxlon='1'/>"
+        + "<nd lat='0' lon='0' />"
+        + "<nd lat='0' lon='1' />"
+        + "<nd lat='1' lon='1' />"
+        + "<nd lat='0' lon='0' />"
+        + "<tag k='area' v='yes' />"
+        + "</way></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
+    expect(geojson.features[0].geometry.coordinates[0][2][0]).to.eql(1);
+
     // a relation
     xml = "<osm><relation id='1'>"
         + "<bounds minlat='0' minlon='0' maxlat='1' maxlon='1'/>"
@@ -2921,6 +2940,37 @@ describe("overpass geometry types", function () {
             3,
             1
           ],
+          geometry: [
+            { lat: 0, lon: 0 },
+            { lat: 0, lon: 1 },
+            { lat: 1, lon: 1 },
+            { lat: 0, lon: 0 }
+          ],
+          tags: {
+            "area": "yes"
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("Polygon");
+    expect(geojson.features[0].geometry.coordinates[0].length).to.eql(4);
+
+    // a way (ref-less)
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          bounds: {
+            minlat: 0,
+            minlon: 0,
+            maxlat: 1,
+            maxlon: 1
+          },
           geometry: [
             { lat: 0, lon: 0 },
             { lat: 0, lon: 1 },
