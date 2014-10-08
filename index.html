@@ -12,10 +12,14 @@ this page is based on https://github.com/aaronlidman/osm-and-geojson (c)Aaron Li
     <script type="text/javascript">
         function toGeo(e) {
             e.preventDefault();
-            var xml = document.getElementById('osmxml').value || "<osm></osm>",
+            var data = document.getElementById('osmxml').value || "<osm></osm>",
                 geojson;
-            xml = $.parseXML(xml);
-            geojson = osmtogeojson.toGeojson(xml);
+            try {
+                data = $.parseXML(data);
+            } catch(e) {
+                data = JSON.parse(data);
+            }
+            geojson = osmtogeojson(data);
             document.getElementById('geojson').value = JSON.stringify(geojson, null, 4);
             console.log(geojson);
         }
@@ -135,11 +139,11 @@ this page is based on https://github.com/aaronlidman/osm-and-geojson (c)Aaron Li
 <body>
         <a href="https://github.com/tyrasd/osmtogeojson"><img style="position: absolute; top: 0; right: 0; border: 0;" src="https://s3.amazonaws.com/github/ribbons/forkme_right_red_aa0000.png" alt="Fork me on GitHub"></a>
         <div id="top">
-            <span id="name">osmtogeojson</span> converts OSM XML to GeoJSON.
+            <span id="name">osmtogeojson</span> converts OSM data to GeoJSON.
         </div>
         <div id="example">
             <div id="left">
-                <h3>OSM XML</h3>
+                <h3>OSM data</h3>
                 <textarea id="osmxml" contenteditable="true"></textarea>
             </div>
             <div id="right">
@@ -149,7 +153,7 @@ this page is based on https://github.com/aaronlidman/osm-and-geojson (c)Aaron Li
             <a class="button" href="" id="toGeo">convert to GeoJSON &rarr;</a>
         </div>
         <div id="about">
-            <p>osmtogeojson is a Javascript module for converting OSM XML to GeoJSON. It works in the browser, nodejs and can also be used as a command line tool. This OSM conversion code was written for and is maintained by the <a href="http://github.com/tyrasd/overpass-ide">overpass-turbo</a> project.</p>
+            <p>osmtogeojson is a Javascript module for converting OSM data (OSM XML or Overpass JSON) to GeoJSON. It works in the browser, nodejs and can also be used as a command line tool. This OSM conversion code was written for and is maintained by the <a href="http://github.com/tyrasd/overpass-ide">overpass-turbo</a> project.</p>
             <span style="font-weight: bold;">Usage: </span>
             <ul>
                 <li>In the browser:
