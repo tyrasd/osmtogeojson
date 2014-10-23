@@ -1,3 +1,7 @@
+2.2.0
+-----
+* support for Overpass API "full" geometry
+
 2.1.0
 -----
 * implemented support for Overpass API geometry types "center" and "bounds"
