@@ -6,7 +6,7 @@ Converts [OSM](http://openstreetmap.org) [data](http://wiki.openstreetmap.org/wi
 * stable
 * real OSM [polygon detection](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
 * proper OSM multipolygon support
-* full support for extended [Overpass API geometry](http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Print_.28out.29) modes
+* full support for extended Overpass API [geometry modes](http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Print_.28out.29)
 * well [tested](https://github.com/tyrasd/osmtogeojson/tree/gh-pages/test/) and proven
 * fast
 
