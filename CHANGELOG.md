@@ -1,3 +1,7 @@
+2.2.1
+-----
+* fix bug with ref-less, clipped full geometry ways in JSON mode
+
 2.2.0
 -----
 * support for Overpass API "full" geometry
