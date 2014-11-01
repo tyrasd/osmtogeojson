@@ -3161,6 +3161,23 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].geometry.coordinates.length).to.eql(2);
     expect(geojson.features[0].properties.tainted).to.eql(true);
 
+    // a way (ref-less)
+    xml = "<osm><way id='1'>"
+        + "<nd />"
+        + "<nd lat='1' lon='1' />"
+        + "<nd lat='2' lon='2' />"
+        + "<nd />"
+        + "</way></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("LineString");
+    expect(geojson.features[0].geometry.coordinates.length).to.eql(2);
+    expect(geojson.features[0].properties.tainted).to.eql(true);
+
     // relations
     xml = "<osm>"
         + "<relation id='1'>"
@@ -3216,6 +3233,29 @@ describe("overpass geometry types", function () {
             3,
             4
           ],
+          geometry: [
+            null,
+            { lat: 1, lon: 2 },
+            { lat: 2, lon: 2 },
+            null
+          ]
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.type).to.eql("LineString");
+    expect(geojson.features[0].geometry.coordinates.length).to.eql(2);
+    expect(geojson.features[0].properties.tainted).to.eql(true);
+
+    // a way (ref-less)
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
           geometry: [
             null,
             { lat: 1, lon: 2 },

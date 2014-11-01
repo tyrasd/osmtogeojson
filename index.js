@@ -84,7 +84,10 @@ osmtogeojson = function( data, options ) {
       }
       if (!_.isArray(way.nodes)) {
         way.nodes = way.geometry.map(function(nd) {
-          return "_anonymous@"+nd.lat+"/"+nd.lon;
+          if (nd !== null) // have to skip ref-less nodes
+            return "_anonymous@"+nd.lat+"/"+nd.lon;
+          else
+            return "_anonymous@unknown_location";
         });
       }
       way.geometry.forEach(function(nd, i) {
