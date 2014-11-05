@@ -76,5 +76,6 @@
     "military": true,
     "ruins": true,
     "area:highway": true,
-    "craft": true
+    "craft": true,
+    "golf": true
 }
