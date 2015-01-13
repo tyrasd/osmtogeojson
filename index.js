@@ -187,7 +187,7 @@ osmtogeojson = function( data, options ) {
         rels.push(rel);
         var has_full_geometry = rel.members && rel.members.some(function (member) {
           return member.type == "node" && member.lat ||
-                 member.type == "way"  && member.geometry
+                 member.type == "way"  && member.geometry && member.geometry.length > 0
         });
         if (rel.center) 
           centerGeometry(rel);
