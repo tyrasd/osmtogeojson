@@ -1,4 +1,4 @@
-2.2.2
+2.2.3
 -----
 * updates to polygon detection: natural=cliff is not automatically an area, golf=* is rendered as polygons
 * speed optimizations for xml input in CLI mode #34
