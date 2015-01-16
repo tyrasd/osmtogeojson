@@ -10,6 +10,7 @@
     "natural": {
         "excluded_values": {
             "coastline": true,
+            "cliff": true,
             "ridge": true,
             "arete": true,
             "tree_row": true
