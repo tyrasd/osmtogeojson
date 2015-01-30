@@ -72,13 +72,12 @@ osmtogeojson = function( data, options ) {
     }
     function fullGeometryWay(way) {
       function addFullGeometryNode(lat,lon,id) {
-        // todo? add shortcut such that has_interesting_tags doesn't have to be called 
-        // later on; because we already know that these nodes are by not interesting
         var geometryNode = {
           type:"node",
           id:  id,
           lat: lat,
-          lon: lon
+          lon: lon,
+          __is_uninteresting: true
         }
         nodes.push(geometryNode);
       }
@@ -126,7 +125,8 @@ osmtogeojson = function( data, options ) {
             type:"node",
             id:  "_anonymous@"+lat+"/"+lon,
             lat: lat,
-            lon: lon
+            lon: lon,
+            __is_uninteresting: true
           }
           geometryWay.nodes.push(geometryPseudoNode.id);
           nodes.push(geometryPseudoNode);
@@ -242,13 +242,12 @@ osmtogeojson = function( data, options ) {
     }
     function fullGeometryWay(way, nds) {
       function addFullGeometryNode(lat,lon,id) {
-        // todo? add shortcut such that has_interesting_tags doesn't have to be called 
-        // later on; because we already know that these nodes are by not interesting
         var geometryNode = {
           type:"node",
           id:  id,
           lat: lat,
-          lon: lon
+          lon: lon,
+          __is_uninteresting: true
         }
         nodes.push(geometryNode);
         return geometryNode.id;
@@ -295,7 +294,8 @@ osmtogeojson = function( data, options ) {
             type:"node",
             id:  "_anonymous@"+lat+"/"+lon,
             lat: lat,
-            lon: lon
+            lon: lon,
+            __is_uninteresting: true
           }
           geometryWay.nodes.push(geometryPseudoNode.id);
           nodes.push(geometryPseudoNode);
@@ -499,8 +499,9 @@ osmtogeojson = function( data, options ) {
     }
     var pois = new Array();
     for (var i=0;i<nodes.length;i++) {
-      if ((!waynids[nodes[i].id]) ||
-          (poinids[nodes[i].id]))
+      if (((!waynids[nodes[i].id]) ||
+          (poinids[nodes[i].id])) &&
+          !nodes[i].__is_uninteresting)
         pois.push(nodes[i]);
     }
     var relids = new Array();

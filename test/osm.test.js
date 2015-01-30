@@ -3141,6 +3141,67 @@ describe("overpass geometry types", function () {
   });
 
   // tainted full geometry
+  it("full, mixed content (xml)", function () {
+    var xml, geojson;
+
+    // do not include full geometry nd's as node in output
+    xml = "<osm><way id='1'>"
+        + "<nd ref='1' lat='0' lon='0' />"
+        + "<nd ref='2' lat='1' lon='1' />"
+        + "<nd ref='3' lat='2' lon='2' />"
+        + "</way>"
+        + "<node id='2' lat='1' lon='1'>"
+        + "<tag k='foo' v='bar' />"
+        + "</node></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = osmtogeojson.toGeojson(xml);
+
+    expect(geojson.features.length).to.eql(2);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[1].id).to.eql("node/2");
+    expect(geojson.features[1].properties.tags.foo).to.eql("bar");
+  });
+  it("full, mixed content (json)", function () {
+    var json, geojson;
+
+    // do not include full geometry nd's as node in output
+    json = {
+      elements: [
+        {
+          type: "way",
+          id:   1,
+          nodes: [
+            1,
+            2,
+            3
+          ],
+          geometry: [
+            { lat: 0, lon: 0 },
+            { lat: 1, lon: 1 },
+            { lat: 2, lon: 2 }
+          ]
+        },
+        {
+          type: "node",
+          id: 2,
+          lat: 1,
+          lon: 1,
+          tags: {
+            "foo": "bar"
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(2);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[1].id).to.eql("node/2");
+    expect(geojson.features[1].properties.tags.foo).to.eql("bar");
+  });
+
+  // tainted full geometry
   it("full, tainted (xml)", function () {
     var xml, geojson;
 
