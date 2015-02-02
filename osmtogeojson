@@ -7,6 +7,7 @@ var osmtogeojson = require('./'),
         .boolean('e').describe('e', 'enhanced properties. if set, the resulting GeoJSON feature\'s properties will contain more structured information')
         .boolean('n').describe('n', 'numeric properties. if set, the resulting GeoJSON feature\'s properties will be numbers if possible')
         .boolean('v').describe('v', 'verbose mode. output diagnostic information during processing')
+        .boolean('m').describe('m', 'Minify output json (Remove identation and linebreak)')
         .boolean('version').describe('version','display software version')
         .boolean('help').describe('help','print this help message'),
     argv = opt.argv,
@@ -131,13 +132,29 @@ function output(geojson) {
     // object. also, this is less memory intensive and output starts right
     // after the conversion without any additional delay
     process.stdout.on('error', function() {});
-    process.stdout.write('{\n"type": "FeatureCollection",\n"features": [\n');
-    geojson.features.forEach(function(f,i) {
-        if (argv.n)
-            f = geojsonNumeric(f,argv.e);
-        process.stdout.write(JSON.stringify(f, null, 4));
-        if (i != geojson.features.length-1)
-            process.stdout.write(',\n');
-    });
-    process.stdout.write('\n]\n}\n');
+
+    if (argv.m)
+    {
+        process.stdout.write('{"type": "FeatureCollection","features": [');
+        geojson.features.forEach(function(f,i) {
+            if (argv.n)
+                f = geojsonNumeric(f,argv.e);
+            process.stdout.write(JSON.stringify(f));
+            if (i != geojson.features.length-1)
+                process.stdout.write(',');
+        });
+        process.stdout.write(']}');
+    }
+    else
+    {
+        process.stdout.write('{\n"type": "FeatureCollection",\n"features": [\n');
+        geojson.features.forEach(function(f,i) {
+            if (argv.n)
+                f = geojsonNumeric(f,argv.e);
+            process.stdout.write(JSON.stringify(f, null, 2));
+            if (i != geojson.features.length-1)
+                process.stdout.write(',\n');
+        });
+        process.stdout.write('\n]\n}\n');
+    }
 }
