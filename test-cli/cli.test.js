@@ -473,3 +473,32 @@ test('parameters: -e', function (t) {
   });
     
 });
+
+test('parameters: -m', function (t) {
+
+  var xml = "<osm><node id='1' version='2' lat='1.234' lon='4.321'><tag k='k' v='v' /></node></osm>";
+
+  function testCLI_raw(test, command, cb) {
+    exec(command, function(error, stdout, stderr) {
+      if (error) {
+        test.fail("unable to execute test");
+        console.error(error, stderr.toString());
+        return;
+      }
+      cb(stdout.toString());
+    });
+  }
+
+  t.plan(2);
+  testCLI_raw(t,
+    'echo "'+xml+'" | ./osmtogeojson',
+    function (text) {
+      t.equal(text.match(/\n/g).length, 21);
+  });
+  testCLI_raw(t,
+    'echo "'+xml+'" | ./osmtogeojson -m',
+    function (text) {
+      t.equal(text.match(/\n/g), null);
+  });
+    
+});

@@ -1,6 +1,6 @@
 {
   "name": "osmtogeojson",
-  "version": "2.2.4",
+  "version": "2.2.5",
   "description": "convert OSM to geojson",
   "main": "index.js",
   "scripts": {

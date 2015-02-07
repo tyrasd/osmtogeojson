@@ -1,3 +1,7 @@
+2.2.5
+-----
+add `-m` parameter that minifies output json
+
 2.2.4
 -----
 fixed a bug where full geometry information caused additional Point features in the output
