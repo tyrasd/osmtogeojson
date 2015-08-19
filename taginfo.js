@@ -1,15 +1,14 @@
 var poly_tags = require("./polygon_features.json");
 
-
 var structure = {
     "data_format": 1,
     "data_url": "https://raw.githubusercontent.com/tyrasd/osmtogeojson/taginfo/project.json",
     "data_updated": (new Date()).toISOString().replace(/[-:]|\.\d+/g,''),
     "project": {
-        "name": "osmtogeojson",
-        "description": "Converts OSM data to GeoJSON. Tags used to detect if a closed OSM way is to be output as a GeoJSON polygon rather than a LineString.",
-        "project_url": "http://tyrasd.github.io/osmtogeojson/",
-        "doc_url": "https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features",
+        "name": "Polygon Features",
+        "description": "Tags used to detect if an OSM object is to be considered a polygon or a line. (As implemented in osmtogeojson and overpass turbo.)",
+        "project_url": "https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features",
+        //"doc_url": "...",
         //"icon_url": "...",
         "contact_name": "Martin Raifer",
         "contact_email": "tyr.asd@gmail.com"
@@ -20,6 +19,18 @@ var structure = {
             "value": "no",
             "object_types": ["way"],
             "description": "if area=no is present, a closed way is never be considered a polygon."
+        },
+        {
+            "key": "type",
+            "value": "multipolygon",
+            "object_types": ["relation"],
+            "description": "Multipolygon relations are always polygons."
+        },
+        {
+            "key": "type",
+            "value": "boundary",
+            "object_types": ["relation"],
+            "description": "Boundary relations are always polygons."
         }
     ]
 };

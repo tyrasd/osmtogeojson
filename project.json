@@ -1,12 +1,11 @@
 {
     "data_format": 1,
     "data_url": "https://raw.githubusercontent.com/tyrasd/osmtogeojson/taginfo/project.json",
-    "data_updated": "20150819T064010Z",
+    "data_updated": "20150819T140942Z",
     "project": {
-        "name": "osmtogeojson",
-        "description": "Converts OSM data to GeoJSON. Tags used to detect if a closed OSM way is to be output as a GeoJSON polygon rather than a LineString.",
-        "project_url": "http://tyrasd.github.io/osmtogeojson/",
-        "doc_url": "https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features",
+        "name": "Polygon Features",
+        "description": "Tags used to detect if an OSM object is to be considered a polygon or a line. (As implemented in osmtogeojson and overpass turbo.)",
+        "project_url": "https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features",
         "contact_name": "Martin Raifer",
         "contact_email": "tyr.asd@gmail.com"
     },
@@ -18,6 +17,22 @@
                 "way"
             ],
             "description": "if area=no is present, a closed way is never be considered a polygon."
+        },
+        {
+            "key": "type",
+            "value": "multipolygon",
+            "object_types": [
+                "relation"
+            ],
+            "description": "Multipolygon relations are always polygons."
+        },
+        {
+            "key": "type",
+            "value": "boundary",
+            "object_types": [
+                "relation"
+            ],
+            "description": "Boundary relations are always polygons."
         },
         {
             "key": "building",
