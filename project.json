@@ -1,0 +1,410 @@
+{
+    "data_format": 1,
+    "data_url": "https://raw.githubusercontent.com/tyrasd/osmtogeojson/taginfo/project.json",
+    "data_updated": "20150819T064010Z",
+    "project": {
+        "name": "osmtogeojson",
+        "description": "Converts OSM data to GeoJSON. Tags used to detect if a closed OSM way is to be output as a GeoJSON polygon rather than a LineString.",
+        "project_url": "http://tyrasd.github.io/osmtogeojson/",
+        "doc_url": "https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features",
+        "contact_name": "Martin Raifer",
+        "contact_email": "tyr.asd@gmail.com"
+    },
+    "tags": [
+        {
+            "key": "area",
+            "value": "no",
+            "object_types": [
+                "way"
+            ],
+            "description": "if area=no is present, a closed way is never be considered a polygon."
+        },
+        {
+            "key": "building",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "highway",
+            "value": "services",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "highway",
+            "value": "rest_area",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "highway",
+            "value": "escape",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "natural",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon (except for some specific tag values)."
+        },
+        {
+            "key": "natural",
+            "value": "coastline",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "natural",
+            "value": "cliff",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "natural",
+            "value": "ridge",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "natural",
+            "value": "arete",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "natural",
+            "value": "tree_row",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "landuse",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "waterway",
+            "value": "riverbank",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "waterway",
+            "value": "dock",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "waterway",
+            "value": "boatyard",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "waterway",
+            "value": "dam",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "amenity",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "leisure",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "barrier",
+            "value": "city_wall",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "barrier",
+            "value": "ditch",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "barrier",
+            "value": "hedge",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "barrier",
+            "value": "retaining_wall",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "barrier",
+            "value": "wall",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "barrier",
+            "value": "spikes",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "railway",
+            "value": "station",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "railway",
+            "value": "turntable",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "railway",
+            "value": "roundhouse",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "railway",
+            "value": "platform",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "area",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "boundary",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "man_made",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon (except for some specific tag values)."
+        },
+        {
+            "key": "man_made",
+            "value": "cutline",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "man_made",
+            "value": "embankment",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "man_made",
+            "value": "pipeline",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "power",
+            "value": "plant",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "power",
+            "value": "substation",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "power",
+            "value": "generator",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "power",
+            "value": "transformer",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "place",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "shop",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "aeroway",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon (except for some specific tag values)."
+        },
+        {
+            "key": "aeroway",
+            "value": "taxiway",
+            "object_types": [
+                "way"
+            ],
+            "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
+        },
+        {
+            "key": "tourism",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "historic",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "public_transport",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "office",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "building:part",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "military",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "ruins",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "area:highway",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "craft",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "golf",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag key is present, a closed way will be considered a polygon."
+        }
+    ]
+}
