@@ -1,0 +1,26 @@
+{
+  "name": "osmtogeojson",
+  "main": "osmtogeojson.js",
+  "version": "2.2.5",
+  "homepage": "http://tyrasd.github.io/osmtogeojson",
+  "authors": [
+    "Martin Raifer"
+  ],
+  "description": "convert OSM to geojson",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "OSM",
+    "geoJSON",
+    "GIS"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
