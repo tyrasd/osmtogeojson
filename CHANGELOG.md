@@ -1,3 +1,7 @@
+2.2.6
+-----
+add bower support #45
+
 2.2.5
 -----
 add `-m` parameter that minifies output json
