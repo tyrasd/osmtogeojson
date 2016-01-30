@@ -1,3 +1,7 @@
+2.2.7
+-----
+fix a bug where loading certain complex `out geom` content resulted in invalid polygon geometries
+
 2.2.6
 -----
 add bower support #45

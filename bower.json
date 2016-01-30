@@ -1,7 +1,7 @@
 {
   "name": "osmtogeojson",
   "main": "osmtogeojson.js",
-  "version": "2.2.6",
+  "version": "2.2.7",
   "homepage": "http://tyrasd.github.io/osmtogeojson",
   "authors": [
     "Martin Raifer"
