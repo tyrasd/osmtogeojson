@@ -455,7 +455,7 @@ osmtogeojson = function( data, options ) {
         "user": object.user,
         "uid": object.uid
       };
-      for (k in res)
+      for (var k in res)
         if (res[k] === undefined)
           delete res[k];
       return res;
