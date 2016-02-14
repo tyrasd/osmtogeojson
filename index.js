@@ -2,7 +2,18 @@ var _ = require("./lodash.custom.js");
 var rewind = require("geojson-rewind");
 
 // see https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
-var polygonFeatures = require("./polygon_features.json");
+var polygonFeatures = {};
+require("osm-polygon-features").forEach(function(tags) {
+  if (tags.polygon === "all")
+    polygonFeatures[tags.key] = true;
+  else {
+    var list = (tags.polygon === "whitelist") ? "included_values" : "excluded_values",
+        tagValuesObj = {};
+    tags.values.forEach(function(value) { tagValuesObj[value] = true; });
+    polygonFeatures[tags.key] = {};
+    polygonFeatures[tags.key][list] = tagValuesObj;
+  }
+});
 
 var osmtogeojson = {};
 
