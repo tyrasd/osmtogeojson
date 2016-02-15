@@ -1,3 +1,5 @@
+"use strict";
+
 var _ = require("./lodash.custom.js");
 var rewind = require("geojson-rewind");
 
@@ -838,7 +840,7 @@ osmtogeojson = function( data, options ) {
         continue; // ignore ways which are already rendered as (part of) a multipolygon
       ways[i].tainted = false;
       ways[i].hidden = false;
-      coords = new Array();
+      var coords = new Array();
       for (j=0;j<ways[i].nodes.length;j++) {
         if (typeof ways[i].nodes[j] == "object")
           coords.push([+ways[i].nodes[j].lon, +ways[i].nodes[j].lat]);
