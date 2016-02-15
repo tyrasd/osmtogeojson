@@ -1,6 +1,4 @@
-before_script:
-  - "npm install"
-script: npm test
+language: node_js
 # whitelist
 branches:
   only:
