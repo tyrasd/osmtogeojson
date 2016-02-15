@@ -1,5 +1,3 @@
-"use strict";
-
 var _ = require("./lodash.custom.js");
 var rewind = require("geojson-rewind");
 
