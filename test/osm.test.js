@@ -3493,7 +3493,6 @@ describe("overpass geometry types", function () {
 
     geojson = osmtogeojson.toGeojson(xml);
 
-    console.log(geojson)
     expect(geojson.features[0].id).to.eql("relation/1");
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
     expect(geojson.features[0].geometry.coordinates.length).to.eql(1);
