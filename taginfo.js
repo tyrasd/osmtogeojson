@@ -1,8 +1,8 @@
-var poly_tags = require("./polygon_features.json");
+var poly_tags = require("osm-polygon-features");
 
 var structure = {
     "data_format": 1,
-    "data_url": "https://raw.githubusercontent.com/tyrasd/osmtogeojson/taginfo/project.json",
+    "data_url": "https://raw.githubusercontent.com/tyrasd/osm-polygon-features/taginfo/project.json",
     "data_updated": (new Date()).toISOString().replace(/[-:]|\.\d+/g,''),
     "project": {
         "name": "Polygon Features",
@@ -35,42 +35,45 @@ var structure = {
     ]
 };
 
-for (var key in poly_tags) {
-    var rule = poly_tags[key];
-    if (rule === true) {
+poly_tags.forEach(function(tag) {
+    var key = tag.key;
+    switch (tag.polygon) {
+    case "all":
         structure.tags.push({
             "key": key,
             "object_types": ["area"],
             "description": "if this tag key is present, a closed way will be considered a polygon."
         });
-    } else if (rule.included_values !== undefined) {
-        for (var value in rule.included_values) {
+    break;
+    case "whitelist":
+        tag.values.forEach(function(value) {
             structure.tags.push({
                 "key": key,
                 "value": value,
                 "object_types": ["area"],
                 "description": "if this tag is present, a closed way will be considered a polygon."
             });
-        }
-    } else if (rule.excluded_values !== undefined) {
+        });
+    break;
+    case "blacklist":
         structure.tags.push({
             "key": key,
             "object_types": ["area"],
             "description": "if this tag key is present, a closed way will be considered a polygon (except for some specific tag values)."
         });
-        for (var value in rule.excluded_values) {
+        tag.values.forEach(function(value) {
             structure.tags.push({
                 "key": key,
                 "value": value,
                 "object_types": ["way"],
                 "description": "doesn't trigger polygon detection, even though other values of the same tag key do."
             });
-        }
-    } else {
+        });
+    break;
+    default:
         console.error("invalid rule for key", key);
     }
-
-}
+});
 
 process.stdout.write(
     JSON.stringify(structure, null, 4)

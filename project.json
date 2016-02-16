@@ -1,7 +1,7 @@
 {
     "data_format": 1,
-    "data_url": "https://raw.githubusercontent.com/tyrasd/osmtogeojson/taginfo/project.json",
-    "data_updated": "20150819T140942Z",
+    "data_url": "https://raw.githubusercontent.com/tyrasd/osm-polygon-features/taginfo/project.json",
+    "data_updated": "20160216T165043Z",
     "project": {
         "name": "Polygon Features",
         "description": "Tags used to detect if an OSM object is to be considered a polygon or a line. (As implemented in osmtogeojson and overpass turbo.)",
@@ -60,6 +60,14 @@
         {
             "key": "highway",
             "value": "escape",
+            "object_types": [
+                "area"
+            ],
+            "description": "if this tag is present, a closed way will be considered a polygon."
+        },
+        {
+            "key": "highway",
+            "value": "elevator",
             "object_types": [
                 "area"
             ],
