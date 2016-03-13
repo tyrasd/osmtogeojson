@@ -19,6 +19,7 @@ var osmtogeojson = {};
 
 osmtogeojson = function( data, options ) {
 
+  if (options.verbose) console.warn('Options=' + JSON.stringify(options));
   options = _.merge(
     {
       verbose: false,

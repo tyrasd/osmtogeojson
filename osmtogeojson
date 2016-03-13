@@ -121,7 +121,7 @@ function legacyParsers(data) {
 
 function convert(data) {
     var geojson = osmtogeojson(data, {
-        flatProperties: !enhanced_geojson,
+        flatProperties: enhanced_geojson,
         verbose: argv.v
     });
     output(geojson);
