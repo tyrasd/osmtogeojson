@@ -3505,7 +3505,7 @@ describe("overpass geometry types", function () {
 describe("duplicate elements", function () {
 
   // duplicate
-  it("duplicate node", function () {
+  it("node", function () {
     var json, geojson;
 
     // do not include full geometry nd's as node in output
@@ -3542,7 +3542,7 @@ describe("duplicate elements", function () {
     expect(geojson.features[0].properties.tags.dupe).to.be.ok(); // undefined value is expected
   });
 
-  it("duplicate node, different version", function () {
+  it("node, different version", function () {
     var json, geojson;
 
     // do not include full geometry nd's as node in output
@@ -3581,7 +3581,7 @@ describe("duplicate elements", function () {
     expect(geojson.features[0].properties.tags.dupe).to.eql("x");
   });
 
-  it("duplicate way", function () {
+  it("way", function () {
     var json, geojson;
 
     // do not include full geometry nd's as node in output
@@ -3623,8 +3623,72 @@ describe("duplicate elements", function () {
     expect(geojson.features[0].geometry.coordinates).to.have.length(2);
   });
 
+  it("relation", function () {
+    var json, geojson;
+
+    // do not include full geometry nd's as node in output
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id: 1,
+          version: 2,
+          members: [{type: "way", ref: 1, role: "outer"}],
+          tags: {
+            "type": "multipolygon",
+            "foo": "2"
+          }
+        },
+        {
+          type: "relation",
+          id: 1,
+          version: 1,
+          members: [{type: "way", ref: 2, role: "outer"}],
+          tags: {
+            "type": "multipolygon",
+            "foo": "1"
+          }
+        },
+        {
+          type: "way",
+          id: 1,
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "way",
+          id: 2,
+          nodes: [1,2,3,1]
+        },
+        {
+          type: "node",
+          id: 1,
+          lat: 1,
+          lon: 1
+        },
+        {
+          type: "node",
+          id: 2,
+          lat: 2,
+          lon: 2
+        },
+        {
+          type: "node",
+          id: 3,
+          lat: 2,
+          lon: 1
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(2);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[1].id).to.eql("way/2");
+    expect(geojson.features[0].properties.meta.version).to.eql(2);
+    expect(geojson.features[0].properties.tags.foo).to.eql("2");
+  });
+
   // todo:
-  // * relation
   // * mixed full-geom + native ??
   // * custom callback
 

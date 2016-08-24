@@ -498,13 +498,11 @@ osmtogeojson = function( data, options ) {
         poinids[node.id] = true;
     }
     for (var i=0;i<rels.length;i++) {
-      if (!_.isArray(rels[i].members)) {
-        if (options.verbose) console.warn('Relation',rels[i].type+'/'+rels[i].id,'ignored because it has no members');
-        continue; // ignore relations without members (e.g. returned by an ids_only query)
-      }
-      for (var j=0;j<rels[i].members.length;j++) {
-        if (rels[i].members[j].type == "node")
-          poinids[rels[i].members[j].ref] = true;
+      if (_.isArray(rels[i].members)) {
+        for (var j=0;j<rels[i].members.length;j++) {
+          if (rels[i].members[j].type == "node")
+            poinids[rels[i].members[j].ref] = true;
+        }
       }
     }
     var wayids = new Object();
@@ -531,43 +529,45 @@ osmtogeojson = function( data, options ) {
     }
     var relids = new Array();
     for (var i=0;i<rels.length;i++) {
-      if (!_.isArray(rels[i].members)) {
-        if (options.verbose) console.warn('Relation',rels[i].type+'/'+rels[i].id,'ignored because it has no members');
-        continue; // ignore relations without members (e.g. returned by an ids_only query)
+      var rel = rels[i];
+      if (relids[rel.id]) {
+        // handle input data duplication
+        rel = options.deduplicator(rel, relids[rel.id]);
       }
-      relids[rels[i].id] = rels[i];
+      relids[rel.id] = rel;
     }
     var relsmap = {node: {}, way: {}, relation: {}};
-    for (var i=0;i<rels.length;i++) {
-      if (!_.isArray(rels[i].members)) {
-        if (options.verbose) console.warn('Relation',rels[i].type+'/'+rels[i].id,'ignored because it has no members');
+    for (var id in relids) {
+      var rel = relids[id];
+      if (!_.isArray(rel.members)) {
+        if (options.verbose) console.warn('Relation',rel.type+'/'+rel.id,'ignored because it has no members');
         continue; // ignore relations without members (e.g. returned by an ids_only query)
       }
-      for (var j=0;j<rels[i].members.length;j++) {
+      for (var j=0;j<rel.members.length;j++) {
         var m;
-        switch (rels[i].members[j].type) {
+        switch (rel.members[j].type) {
           case "node":
-            m = nodeids[rels[i].members[j].ref];
+            m = nodeids[rel.members[j].ref];
           break;
           case "way":
-            m = wayids[rels[i].members[j].ref];
+            m = wayids[rel.members[j].ref];
           break;
           case "relation":
-            m = relids[rels[i].members[j].ref];
+            m = relids[rel.members[j].ref];
           break;
         }
         if (!m) {
-          if (options.verbose) console.warn('Relation',rels[i].type+'/'+rels[i].id,'member',rels[i].members[j].type+'/'+rels[i].members[j].id,'ignored because it has an invalid type');
+          if (options.verbose) console.warn('Relation',rel.type+'/'+rel.id,'member',rel.members[j].type+'/'+rel.members[j].id,'ignored because it has an invalid type');
           continue;
         }
-        var m_type = rels[i].members[j].type;
-        var m_ref = rels[i].members[j].ref;
+        var m_type = rel.members[j].type;
+        var m_ref = rel.members[j].ref;
         if (typeof relsmap[m_type][m_ref] === "undefined")
           relsmap[m_type][m_ref] = [];
         relsmap[m_type][m_ref].push({
-          "role" : rels[i].members[j].role,
-          "rel" : rels[i].id,
-          "reltags" : rels[i].tags,
+          "role" : rel.members[j].role,
+          "rel" : rel.id,
+          "reltags" : rel.tags,
         });
       }
     }
@@ -608,6 +608,11 @@ osmtogeojson = function( data, options ) {
       "features" : new Array()};
     // process multipolygons
     for (var i=0;i<rels.length;i++) {
+      // todo: refactor such that this loops over relids instead of rels?
+      if (relids[rels[i].id] !== rels[i]) {
+        // skip relation because it's a deduplication artifact
+        continue;
+      }
       if ((typeof rels[i].tags != "undefined") &&
           (rels[i].tags["type"] == "multipolygon" || rels[i].tags["type"] == "boundary")) {
         if (!_.isArray(rels[i].members)) {
