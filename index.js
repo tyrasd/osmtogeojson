@@ -637,7 +637,6 @@ osmtogeojson = function( data, options ) {
           continue; // ignore multipolygons without outer ways
         }
         var simple_mp = false;
-        var mp_geometry = '';
         if (outer_count == 1 && !has_interesting_tags(rels[i].tags, {"type":true}))
           simple_mp = true;
         var feature = null;
