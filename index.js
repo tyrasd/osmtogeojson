@@ -492,12 +492,7 @@ osmtogeojson = function( data, options ) {
         // handle input data duplication
         node = options.deduplicator(node, nodeids[node.id]);
       }
-      if (node.lat === undefined) {
-        if (options.verbose) console.warn('Node',node.type+'/'+node.id,'ignored because it has no coordinates');
-        continue; // ignore nodes without coordinates (e.g. returned by an ids_only query)
-      }
       nodeids[node.id] = node;
-
       if (typeof node.tags != 'undefined' &&
           has_interesting_tags(node.tags)) // this checks if the node has any tags other than "created_by"
         poinids[node.id] = true;
@@ -520,20 +515,19 @@ osmtogeojson = function( data, options ) {
         // handle input data duplication
         way = options.deduplicator(way, wayids[way.id]);
       }
-      if (!_.isArray(way.nodes)) {
-        if (options.verbose) console.warn('Way',ways[i].type+'/'+ways[i].id,'ignored because it has no nodes');
-        continue; // ignore ways without nodes (e.g. returned by an ids_only query)
-      }
       wayids[way.id] = way;
-      for (var j=0;j<way.nodes.length;j++) {
-        waynids[way.nodes[j]] = true;
-        way.nodes[j] = nodeids[way.nodes[j]];
+      if (_.isArray(way.nodes)) {
+        for (var j=0;j<way.nodes.length;j++) {
+          waynids[way.nodes[j]] = true;
+          way.nodes[j] = nodeids[way.nodes[j]];
+        }
       }
     }
     var pois = new Array();
     for (var id in nodeids) {
+      var node = nodeids[id];
       if (!waynids[id] || poinids[id])
-        pois.push(nodeids[id]);
+        pois.push(node);
     }
     var relids = new Array();
     for (var i=0;i<rels.length;i++) {
