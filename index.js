@@ -15,6 +15,20 @@ require("osm-polygon-features").forEach(function(tags) {
   }
 });
 
+// default deduplication helper function
+function default_deduplicator(objectA, objectB) {
+  // default deduplication handler:
+  // if object versions differ, use highest available version
+  if ((objectA.version || objectB.version) &&
+      (objectA.version !== objectB.version)) {
+    return (objectA.version || 0) > (objectB.version || 0)
+      ? objectA
+      : objectB;
+  }
+  // otherwise: return merged obj properties
+  return _.merge(objectA, objectB);
+}
+
 var osmtogeojson = {};
 
 osmtogeojson = function( data, options ) {
@@ -35,6 +49,7 @@ osmtogeojson = function( data, options ) {
         "tiger:upload_uuid": true
       },
       polygonFeatures: polygonFeatures,
+      deduplicator: default_deduplicator
     },
     options
   );
@@ -87,8 +102,7 @@ osmtogeojson = function( data, options ) {
           type:"node",
           id:  id,
           lat: lat,
-          lon: lon,
-          __is_uninteresting: true
+          lon: lon
         }
         nodes.push(geometryNode);
       }
@@ -136,8 +150,7 @@ osmtogeojson = function( data, options ) {
             type:"node",
             id:  "_anonymous@"+lat+"/"+lon,
             lat: lat,
-            lon: lon,
-            __is_uninteresting: true
+            lon: lon
           }
           geometryWay.nodes.push(geometryPseudoNode.id);
           nodes.push(geometryPseudoNode);
@@ -258,8 +271,7 @@ osmtogeojson = function( data, options ) {
           type:"node",
           id:  id,
           lat: lat,
-          lon: lon,
-          __is_uninteresting: true
+          lon: lon
         }
         nodes.push(geometryNode);
         return geometryNode.id;
@@ -306,8 +318,7 @@ osmtogeojson = function( data, options ) {
             type:"node",
             id:  "_anonymous@"+lat+"/"+lon,
             lat: lat,
-            lon: lon,
-            __is_uninteresting: true
+            lon: lon
           }
           geometryWay.nodes.push(geometryPseudoNode.id);
           nodes.push(geometryPseudoNode);
@@ -474,18 +485,22 @@ osmtogeojson = function( data, options ) {
 
     // some data processing (e.g. filter nodes only used for ways)
     var nodeids = new Object();
-    for (var i=0;i<nodes.length;i++) {
-      if (nodes[i].lat === undefined) {
-        if (options.verbose) console.warn('Node',nodes[i].type+'/'+nodes[i].id,'ignored because it has no coordinates');
-        continue; // ignore nodes without coordinates (e.g. returned by an ids_only query)
-      }
-      nodeids[nodes[i].id] = nodes[i];
-    }
     var poinids = new Object();
     for (var i=0;i<nodes.length;i++) {
-      if (typeof nodes[i].tags != 'undefined' &&
-          has_interesting_tags(nodes[i].tags)) // this checks if the node has any tags other than "created_by"
-        poinids[nodes[i].id] = true;
+      var node = nodes[i];
+      if (node.lat === undefined) {
+        if (options.verbose) console.warn('Node',node.type+'/'+node.id,'ignored because it has no coordinates');
+        continue; // ignore nodes without coordinates (e.g. returned by an ids_only query)
+      }
+      if (nodeids[node.id] !== undefined) {
+        // handle input data duplication
+        node = options.deduplicator(node, nodeids[node.id]);
+      }
+      nodeids[node.id] = node;
+
+      if (typeof node.tags != 'undefined' &&
+          has_interesting_tags(node.tags)) // this checks if the node has any tags other than "created_by"
+        poinids[node.id] = true;
     }
     for (var i=0;i<rels.length;i++) {
       if (!_.isArray(rels[i].members)) {
@@ -511,11 +526,9 @@ osmtogeojson = function( data, options ) {
       }
     }
     var pois = new Array();
-    for (var i=0;i<nodes.length;i++) {
-      if (((!waynids[nodes[i].id]) ||
-          (poinids[nodes[i].id])) &&
-          !nodes[i].__is_uninteresting)
-        pois.push(nodes[i]);
+    for (var id in nodeids) {
+      if (!waynids[id] || poinids[id])
+        pois.push(nodeids[id]);
     }
     var relids = new Array();
     for (var i=0;i<rels.length;i++) {
