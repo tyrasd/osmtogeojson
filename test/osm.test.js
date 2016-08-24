@@ -3505,32 +3505,7 @@ describe("overpass geometry types", function () {
 describe("duplicate elements", function () {
 
   // duplicate
-  it("duplicate node (xml)", function () {
-    return;
-    var xml, geojson;
-
-    // do not include full geometry nd's as node in output
-    xml = "<osm>"
-          + "<node id='1' lat='1' lon='1'>"
-            + "<tag k='foo' v='bar' />"
-            + "<tag k='dupe' v='x' />"
-          + "</node>"
-          + "<node id='1' lat='1' lon='1'>"
-            + "<tag k='asd' v='fasd' />"
-            + "<tag k='dupe' v='y' />"
-          + "</node>"
-        + "</osm>";
-    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
-
-    geojson = osmtogeojson.toGeojson(xml);
-
-    expect(geojson.features.length).to.eql(1);
-    expect(geojson.features[0].id).to.eql("node/1");
-    expect(geojson.features[0].properties.tags.foo).to.eql("bar");
-    expect(geojson.features[0].properties.tags.asd).to.eql("fasd");
-    expect(geojson.features[0].properties.tags.dupe).to.be.ok(); // undefined value is expected
-  });
-  it("duplicate node (json)", function () {
+  it("duplicate node", function () {
     var json, geojson;
 
     // do not include full geometry nd's as node in output
@@ -3567,32 +3542,7 @@ describe("duplicate elements", function () {
     expect(geojson.features[0].properties.tags.dupe).to.be.ok(); // undefined value is expected
   });
 
-  it("duplicate node, different version (xml)", function () {
-    return;
-    var xml, geojson;
-
-    // do not include full geometry nd's as node in output
-    xml = "<osm>"
-          + "<node id='1' version='2' lat='1' lon='1'>"
-            + "<tag k='foo' v='bar' />"
-            + "<tag k='dupe' v='x' />"
-          + "</node>"
-          + "<node id='1' version='1' lat='1' lon='1'>"
-            + "<tag k='asd' v='fasd' />"
-            + "<tag k='dupe' v='y' />"
-          + "</node>"
-        + "</osm>";
-    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
-
-    geojson = osmtogeojson.toGeojson(xml);
-
-    expect(geojson.features.length).to.eql(1);
-    expect(geojson.features[0].id).to.eql("node/1");
-    expect(geojson.features[0].properties.tags.asd).to.be(undefined);
-    expect(geojson.features[0].properties.tags.foo).to.eql("bar");
-    expect(geojson.features[0].properties.tags.dupe).to.eql("x");
-  });
-  it("duplicate node, different version (json)", function () {
+  it("duplicate node, different version", function () {
     var json, geojson;
 
     // do not include full geometry nd's as node in output
@@ -3631,5 +3581,51 @@ describe("duplicate elements", function () {
     expect(geojson.features[0].properties.tags.dupe).to.eql("x");
   });
 
+  it("duplicate way", function () {
+    var json, geojson;
+
+    // do not include full geometry nd's as node in output
+    json = {
+      elements: [
+        {
+          type: "way",
+          id: 1,
+          nodes: [1,2],
+          tags: {
+            "foo": "bar",
+            "dupe": "x"
+          }
+        },
+        {
+          type: "way",
+          id: 1,
+          nodes: [1,2]
+        },
+        {
+          type: "node",
+          id: 1,
+          lat: 1,
+          lon: 1
+        },
+        {
+          type: "node",
+          id: 2,
+          lat: 2,
+          lon: 2
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json);
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("way/1");
+    expect(geojson.features[0].properties.tags.foo).to.eql("bar");
+    expect(geojson.features[0].geometry.coordinates).to.have.length(2);
+  });
+
+  // todo:
+  // * relation
+  // * mixed full-geom + native ??
+  // * custom callback
 
 });
