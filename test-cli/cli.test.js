@@ -34,7 +34,7 @@ test('empty piped osm', function (t) {
       t.equal(geojson.features.length, 0);
       t.end();
   });
-    
+
 });
 
 test('empty piped json', function (t) {
@@ -45,7 +45,7 @@ test('empty piped json', function (t) {
       t.equal(geojson.features.length, 0);
       t.end();
   });
-    
+
 });
 
 test('piped osm', function (t) {
@@ -73,7 +73,7 @@ test('piped osm', function (t) {
       t.equal(geojson.features.length, 1);
       t.equal(geojson.features[0].geometry.type, 'Polygon');
   });
-    
+
 });
 
 test('piped json', function (t) {
@@ -101,7 +101,7 @@ test('piped json', function (t) {
       t.equal(geojson.features.length, 1);
       t.equal(geojson.features[0].geometry.type, 'Polygon');
   });
-    
+
 });
 
 test('piped osm (subformats)', function (t) {
@@ -170,7 +170,7 @@ test('piped osm (subformats)', function (t) {
   testCLI(t, "echo '"+xml+"' | ./osmtogeojson -f xmldom",    compare_results);
   testCLI(t, "echo '"+xml+"' | ./osmtogeojson -f fastxml",   compare_results);
   testCLI(t, "echo '"+xml+"' | ./osmtogeojson -f streamxml", compare_results);
-    
+
 });
 
 test('piped json (subformats)', function (t) {
@@ -189,7 +189,7 @@ test('piped json (subformats)', function (t) {
   testCLI(t, "echo '"+json+"' | ./osmtogeojson -f json",       compare_results);
   testCLI(t, "echo '"+json+"' | ./osmtogeojson -f nativejson", compare_results);
   testCLI(t, "echo '"+json+"' | ./osmtogeojson -f streamjson", compare_results);
-    
+
 });
 
 // ==== data in files ==== //
@@ -202,7 +202,7 @@ test('empty osm file', function (t) {
       t.equal(geojson.features.length, 0);
       t.end();
   });
-    
+
 });
 
 test('empty json file', function (t) {
@@ -213,7 +213,7 @@ test('empty json file', function (t) {
       t.equal(geojson.features.length, 0);
       t.end();
   });
-    
+
 });
 
 test('osm file', function (t) {
@@ -237,7 +237,7 @@ test('osm file', function (t) {
       t.equal(geojson.features.length, 1);
       t.equal(geojson.features[0].geometry.type, 'Polygon');
   });
-    
+
 });
 
 test('json file', function (t) {
@@ -261,7 +261,7 @@ test('json file', function (t) {
       t.equal(geojson.features.length, 1);
       t.equal(geojson.features[0].geometry.type, 'Polygon');
   });
-    
+
 });
 
 test('osm file (subformats)', function (t) {
@@ -280,7 +280,7 @@ test('osm file (subformats)', function (t) {
   testCLI(t, "./osmtogeojson ./test-cli/data/map.osm -f xmldom",    compare_results);
   testCLI(t, "./osmtogeojson ./test-cli/data/map.osm -f fastxml",   compare_results);
   testCLI(t, "./osmtogeojson ./test-cli/data/map.osm -f streamxml", compare_results);
-    
+
 });
 
 test('json file (subformats)', function (t) {
@@ -297,7 +297,7 @@ test('json file (subformats)', function (t) {
   testCLI(t, "./osmtogeojson ./test-cli/data/map.json -f json",       compare_results);
   testCLI(t, "./osmtogeojson ./test-cli/data/map.json -f nativejson", compare_results);
   testCLI(t, "./osmtogeojson ./test-cli/data/map.json -f streamjson", compare_results);
-    
+
 });
 
 test('overpass geometry types', function (t) {
@@ -306,7 +306,7 @@ test('overpass geometry types', function (t) {
   t.plan(3*2+3*2+4*2+5*2);
 
   // center output mode (xml)
-  xml = 
+  xml =
     '<osm>'+
       '<way id="89227521"><center lat="49.2491429" lon="6.6639613"/></way>'+
       '<relation id="19227521"><center lat="19.2491429" lon="1.6639613"/></relation>'+
@@ -320,7 +320,7 @@ test('overpass geometry types', function (t) {
       t.equal(geojson.features[1].geometry.type, 'Point');
   });
   // center output mode (json)
-  json = 
+  json =
     '{ "elements": ['+
       '{"type":"way", "id":"1", "center":{"lat":1.23,"lon":3.21} },'+
       '{"type":"relation", "id":"2", "center":{"lat":5.23,"lon":6.21} }'+
@@ -335,7 +335,7 @@ test('overpass geometry types', function (t) {
   });
 
   // bounds output mode (xml)
-  xml = 
+  xml =
     '<osm>'+
       '<way id="89227521"><bounds minlat="49.2490528" minlon="6.6638484" maxlat="49.2492329" maxlon="6.6640742"/></way>'+
       '<relation id="19227521"><bounds minlat="19.2490528" minlon="1.6638484" maxlat="19.2492329" maxlon="1.6640742"/></relation>'+
@@ -349,7 +349,7 @@ test('overpass geometry types', function (t) {
       t.equal(geojson.features[1].geometry.type, 'Polygon');
   });
   // bounds output mode (json)
-  json = 
+  json =
     '{ "elements": ['+
       '{"type":"way", "id":"1", "bounds":{"minlat":1.23,"minlon":3.21,"maxlat":11.23,"maxlon":13.21} },'+
       '{"type":"relation", "id":"2", "bounds":{"minlat":5.23,"minlon":6.21,"maxlat":15.23,"maxlon":16.21} }'+
@@ -364,7 +364,7 @@ test('overpass geometry types', function (t) {
   });
 
   // full geometry (xml)
-  xml = 
+  xml =
     '<osm>' +
       '<way id="89227521"><nd ref="1" lat="0" lon="0" /><nd ref="2" lat="1" lon="1" /><nd ref="3" lat="2" lon="2" /></way>'+
       '<relation id="1"><bounds minlat="0" minlon="0" maxlat="1" maxlon="1"/><member type="way" ref="1" role="outer"><nd lat="0" lon="0" /><nd lat="0" lon="1" /><nd lat="1" lon="1" /><nd lat="1" lon="0" /><nd lat="0" lon="0" /></member><member type="way" ref="2" role="outer"><nd lat="0.1" lon="0.1" /><nd lat="0.1" lon="0.2" /><nd lat="0.2" lon="0.2" /><nd lat="0.1" lon="0.1" /></member><tag k="type" v="boundary" /></relation>'+
@@ -394,7 +394,7 @@ test('overpass geometry types', function (t) {
   });
 
   // full geometry, tainted (xml)
-  xml = 
+  xml =
     '<osm>' +
       '<way id="89227521"><nd ref="1" lat="0" lon="0" /><nd ref="2" lat="1" lon="1" /><nd /></way>'+
       '<relation id="1"><member type="way" ref="1" role="outer"><nd lat="0" lon="0" /><nd lat="0" lon="1" /><nd lat="1" lon="1" /><nd /><nd lat="0" lon="0" /></member><tag k="type" v="multipolygon" /></relation>'+
@@ -416,8 +416,8 @@ test('overpass geometry types', function (t) {
     '{ "elements": ['+
       '{"type":"way", "id":"1", "nodes": [1,2,3], "geometry": [{"lat":0,"lon":0}, {"lat":1,"lon":1}, null] },'+
       '{"type":"relation", "id":"2", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},null,{"lat":1,"lon":0},{"lat":0,"lon":0}] } ] },'+
-      '{"type":"relation", "id":"2", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},{"lat":1,"lon":1},{"lat":1,"lon":0},{"lat":0,"lon":0}] }, { "type": "way", "ref": 777, "role": "inner", "geometry": null } ] },'+
-      '{"type":"relation", "id":"2", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},{"lat":1,"lon":1},{"lat":1,"lon":0},{"lat":0,"lon":0}] }, { "type": "node", "ref": 9, "role": "" } ] }'+
+      '{"type":"relation", "id":"3", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},{"lat":1,"lon":1},{"lat":1,"lon":0},{"lat":0,"lon":0}] }, { "type": "way", "ref": 777, "role": "inner", "geometry": null } ] },'+
+      '{"type":"relation", "id":"4", "tags": {"type": "multipolygon"}, "members": [{"type": "way", "ref": "3", "role":"outer", "geometry": [{"lat":0,"lon":0},{"lat":0,"lon":1},{"lat":1,"lon":1},{"lat":1,"lon":0},{"lat":0,"lon":0}] }, { "type": "node", "ref": 9, "role": "" } ] }'+
     '] }';
   testCLI(t,
     'echo \''+json+'\' | ./osmtogeojson -e',
@@ -445,7 +445,7 @@ test('parameters: -n', function (t) {
     function (geojson) {
       t.equal(geojson.features[0].properties.num, 2);
   });
-    
+
 });
 
 test('parameters: -e', function (t) {
@@ -471,7 +471,7 @@ test('parameters: -e', function (t) {
       t.equal(geojson.features[0].properties.tags.k, 'v');
       t.equal(geojson.features[0].properties.meta.version, 2);
   });
-    
+
 });
 
 test('parameters: -m', function (t) {
@@ -500,5 +500,5 @@ test('parameters: -m', function (t) {
     function (text) {
       t.equal(text.match(/\n/g), null);
   });
-    
+
 });
