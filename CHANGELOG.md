@@ -1,3 +1,20 @@
+2.2.12
+------
+backported from 3.0.0-dev: de-namespace full geometry content in output (internal state leak)
+
+2.2.11
+------
+revert "use strict" because of some issues on older (0.…) nodejs
+
+2.2.10
+------
+* fix another undeclared variable breaking the module in strict mode
+* enable "use strict";
+
+2.2.9
+-----
+split off polygon detection data: https://github.com/tyrasd/osm-polygon-features
+
 2.2.8
 -----
 fix variable leaking into global scope
