@@ -3688,8 +3688,47 @@ describe("duplicate elements", function () {
     expect(geojson.features[0].properties.tags.foo).to.eql("2");
   });
 
-  // todo:
-  // * mixed full-geom + native ??
-  // * custom callback
+  it("node, different version", function () {
+    var json, geojson;
+
+    // do not include full geometry nd's as node in output
+    json = {
+      elements: [
+        {
+          type: "node",
+          id: 1,
+          version: 2,
+          lat: 1,
+          lon: 1,
+          tags: {
+            "foo": "bar",
+            "dupe": "x"
+          }
+        },
+        {
+          type: "node",
+          id: 1,
+          version: 1,
+          lat: 1,
+          lon: 1,
+          tags: {
+            "asd": "fasd",
+            "dupe": "y"
+          }
+        }
+      ]
+    };
+    geojson = osmtogeojson.toGeojson(json, {
+      deduplicator: function(a,b) {
+        return a.version < b.version ? a : b;
+      }
+    });
+
+    expect(geojson.features.length).to.eql(1);
+    expect(geojson.features[0].id).to.eql("node/1");
+    expect(geojson.features[0].properties.tags.asd).to.eql("fasd");
+    expect(geojson.features[0].properties.tags.foo).to.be(undefined);
+    expect(geojson.features[0].properties.tags.dupe).to.eql("y");
+  });
 
 });
