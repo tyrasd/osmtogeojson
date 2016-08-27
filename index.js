@@ -532,24 +532,16 @@ osmtogeojson = function( data, options ) {
         continue; // ignore relations without members (e.g. returned by an ids_only query)
       }
       for (var j=0;j<rels[i].members.length;j++) {
-        var m;
-        switch (rels[i].members[j].type) {
-          case "node":
-            m = nodeids[rels[i].members[j].ref];
-          break;
-          case "way":
-            m = wayids[rels[i].members[j].ref];
-          break;
-          case "relation":
-            m = relids[rels[i].members[j].ref];
-          break;
-        }
-        if (!m) {
-          if (options.verbose) console.warn('Relation',rels[i].type+'/'+rels[i].id,'member',rels[i].members[j].type+'/'+rels[i].members[j].id,'ignored because it has an invalid type');
-          continue;
-        }
         var m_type = rels[i].members[j].type;
         var m_ref = rels[i].members[j].ref;
+        if (typeof m_ref !== "number") {
+          // de-namespace full geometry content
+          m_ref = m_ref.replace("_fullGeom", "");
+        }
+        if (!relsmap[m_type]) {
+          if (options.verbose) console.warn('Relation',rels[i].type+'/'+rels[i].id,'member',m_type+'/'+m_ref,'ignored because it has an invalid type');
+          continue;
+        }
         if (typeof relsmap[m_type][m_ref] === "undefined")
           relsmap[m_type][m_ref] = [];
         relsmap[m_type][m_ref].push({
@@ -836,6 +828,10 @@ osmtogeojson = function( data, options ) {
       }
       if (ways[i].is_multipolygon_outline)
         continue; // ignore ways which are already rendered as (part of) a multipolygon
+      if (typeof ways[i].id !== "number") {
+        // remove full geometry namespace for output
+        ways[i].id = +ways[i].id.replace("_fullGeom", "");
+      }
       ways[i].tainted = false;
       ways[i].hidden = false;
       var coords = new Array();
