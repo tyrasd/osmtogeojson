@@ -17,27 +17,40 @@ This code is used in and maintained by the [overpass turbo](http://github.com/ty
 Usage
 -----
 
-* as a **command line tool**:
+### command line tool
   
-        $ npm install -g osmtogeojson
-        $ osmtogeojson file.osm > file.geojson
-  
-  When working with extra large data files (≳ 100 MB) it is recommended to run the programm with a little extra memory to avoid *process out of memory* errors. The easiest way to do this is by running the command as `node <path-to-osmtogeojson>` and setting the `--max_old_space_size=…` parameter to the available memory size in MB (osmtogeojson typically needs about 4-5 times the input data size):
-  
-        $ node --max_old_space_size=8192 `which osmtogeojson` large.osm > large.geojson
-  
-* as a **nodejs library**:
-  
-        $ npm install osmtogeojson
-  
-        var osmtogeojson = require('osmtogeojson');
-        osmtogeojson(osm_data);
-  
-* as a **browser library**:
-  
-        <script src='osmtogeojson.js'></script>
-  
-        osmtogeojson(osm_data);
+Installation:
+
+      $ npm install -g osmtogeojson
+
+Usage:
+
+    $ osmtogeojson file.osm > file.geojson
+
+Supported command line options are shown with:
+
+    $ osmtogeojson --help
+
+When working with extra large data files (≳ 100 MB) it is recommended to run the programm with a little extra memory to avoid *process out of memory* errors. The easiest way to do this is by running the command as `node <path-to-osmtogeojson>` and setting the `--max_old_space_size=…` parameter to the available memory size in MB (osmtogeojson typically needs about 4-5 times the input data size):
+
+    $ node --max_old_space_size=8192 `which osmtogeojson` large.osm > large.geojson
+
+### nodejs library
+
+Installation:
+
+    $ npm install osmtogeojson
+
+Usage:
+
+    var osmtogeojson = require('osmtogeojson');
+    osmtogeojson(osm_data);
+
+### browser library
+
+    <script src='osmtogeojson.js'></script>
+
+    osmtogeojson(osm_data);
 
 API
 ---
