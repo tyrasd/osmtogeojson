@@ -497,6 +497,7 @@ osmtogeojson = function( data, options ) {
           has_interesting_tags(node.tags)) // this checks if the node has any tags other than "created_by"
         poinids[node.id] = true;
     }
+    // todo -> after deduplication of relations??
     for (var i=0;i<rels.length;i++) {
       if (_.isArray(rels[i].members)) {
         for (var j=0;j<rels[i].members.length;j++) {
@@ -516,6 +517,7 @@ osmtogeojson = function( data, options ) {
       wayids[way.id] = way;
       if (_.isArray(way.nodes)) {
         for (var j=0;j<way.nodes.length;j++) {
+          if (typeof way.nodes[j] === "object") continue; // ignore already replaced way node objects
           waynids[way.nodes[j]] = true;
           way.nodes[j] = nodeids[way.nodes[j]];
         }
@@ -838,6 +840,11 @@ osmtogeojson = function( data, options ) {
     }
     // process lines and polygons
     for (var i=0;i<ways.length;i++) {
+      // todo: refactor such that this loops over wayids instead of ways?
+      if (wayids[ways[i].id] !== ways[i]) {
+        // skip way because it's a deduplication artifact
+        continue;
+      }
       if (!_.isArray(ways[i].nodes)) {
         if (options.verbose) console.warn('Way',ways[i].type+'/'+ways[i].id,'ignored because it has no nodes');
         continue; // ignore ways without nodes (e.g. returned by an ids_only query)
