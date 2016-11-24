@@ -16,6 +16,7 @@ var osmtogeojson = require('./'),
     xmldom = new (require('xmldom').DOMParser)(),
     osmxmlParser = require('./parse_osmxml.js'),
     JSONStream = require('JSONStream'),
+    osmpbfParser = require('tiny-osmpbf'),
     geojsonNumeric = require('geojson-numeric'),
     pack = require('./package.json');
 
@@ -38,6 +39,7 @@ if (!format) {
     if (filename.match(/\.osm$/i)) format = 'osm';
     if (filename.match(/\.xml$/i)) format = 'osm';
     if (filename.match(/\.json$/i)) format = 'json';
+    if (filename.match(/\.pbf$/i)) format = 'pbf';
 }
 // fall back to the native JSON parser if the file is small enough
 // (unfortunately, the streaming JSON parser isn't very fast)
@@ -89,11 +91,18 @@ default:
 }
 
 function legacyParsers(data) {
-    if (!data) data = ''; else data = data.toString();
+    if (!data) data = new Buffer([]);
+
+    var sampleStr = data.slice(0,100).toString();
+
     if (format === 'auto') {
-        if (data.match(/^\s*</)) // (osm) xml files begin with a "<"
+        if (data.readUInt32BE(0).toString(16) === 'd' &&
+            data.readUInt16BE(4).toString(16) === 'a09' &&
+            data.slice(6,15).toString() === 'OSMHeader') // osmpbf binary file magic
+            format = 'pbf';
+        else if (sampleStr.match(/^\s*</)) // (osm) xml files begin with a "<"
             format = 'osm';
-        else if (data.match(/^\s*{/)) // osm json files begin with a "{"
+        else if (sampleStr.match(/^\s*{/)) // osm json files begin with a "{"
             format = 'json';
         else {
             format = 'unknown';
@@ -101,15 +110,22 @@ function legacyParsers(data) {
     }
     switch (format) {
     case 'xmldom':
+        data = data.toString();
         data = xmldom.parseFromString(data);
     break;
     case 'json':
     case 'nativejson':
+        data = data.toString();
         data = JSON.parse(data);
     break;
     case 'osm':
     case 'fastxml':
+        data = data.toString();
         data = osmxmlParser.parseFromString(data);
+    break;
+    case 'pbf':
+    case 'tinypbf':
+        data = osmpbfParser(data);
     break;
     default:
         process.stderr.write('This doesn\'t look like a recognized file format.\n');
