@@ -96,7 +96,7 @@ function legacyParsers(data) {
     var sampleStr = data.slice(0,100).toString();
 
     if (format === 'auto') {
-        if (data.readUInt32BE(0).toString(16) === 'd' &&
+        if (/*data.readUInt32BE(0).toString(16) === 'd' &&*/
             data.readUInt16BE(4).toString(16) === 'a09' &&
             data.slice(6,15).toString() === 'OSMHeader') // osmpbf binary file magic
             format = 'pbf';
