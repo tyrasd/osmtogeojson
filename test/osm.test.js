@@ -10,7 +10,7 @@ describe("osm (xml)", function () {
     var xml = "<osm></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    expect(osmtogeojson.toGeojson(xml)).to.eql({
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql({
       type: 'FeatureCollection',
       features: []
     });
@@ -42,7 +42,7 @@ describe("osm (xml)", function () {
       ]
     };
 
-    expect(osmtogeojson.toGeojson(xml)).to.eql(geojson);
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
   });
 
   it('way', function() {
@@ -75,7 +75,7 @@ describe("osm (xml)", function () {
       ]
     };
 
-    expect(osmtogeojson.toGeojson(xml)).to.eql(geojson);
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
   });
 
   it('relation', function() {
@@ -122,7 +122,7 @@ describe("osm (xml)", function () {
       ]
     };
 
-    expect(osmtogeojson.toGeojson(xml)).to.eql(geojson);
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
   });
 
 
@@ -162,7 +162,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   it("way", function () {
@@ -218,7 +218,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   it("polygon", function () {
@@ -283,7 +283,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   it("simple multipolygon", function () {
@@ -400,7 +400,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
     // invalid simple multipolygon (no outer way)
     json = {
@@ -429,7 +429,7 @@ describe("osm (json)", function () {
       features: [
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   it("multipolygon", function () {
@@ -688,12 +688,12 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
     // handle role-less members as outer ways
     json.elements[0].members[3].role = "";
     geojson.features[2].properties.relations[0].role = "";
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   // tags & pois
@@ -789,7 +789,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   // invalid one-node-ways
@@ -811,7 +811,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
   });
   // invalid empty multipolygon
@@ -827,7 +827,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
   });
   // relations
@@ -987,7 +987,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   // meta info // todo +lines, +polygons
@@ -1035,7 +1035,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
     // ways and relsvar json, geojson;
     json = {
@@ -1078,7 +1078,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(4);
     expect(result.features[0].properties.meta).to.have.property("user");
     expect(result.features[1].properties.meta).to.have.property("user");
@@ -1163,7 +1163,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(2);
     expect(result.features[0].properties.id).to.eql(1);
     expect(result.features[1].properties.id).to.eql(2);
@@ -1249,7 +1249,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].geometry.type).to.equal("Polygon");
@@ -1329,7 +1329,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(2);
     expect(result.features[0].geometry.type).to.equal("Polygon");
@@ -1397,7 +1397,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].geometry.type).to.equal("Polygon");
@@ -1511,7 +1511,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].geometry.type).to.equal("Polygon");
@@ -1576,7 +1576,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].geometry.type).to.equal("Polygon");
@@ -1639,7 +1639,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].geometry.type).to.equal("Polygon");
@@ -1658,7 +1658,7 @@ describe("osm (json)", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
   });
 
@@ -1691,7 +1691,7 @@ describe("defaults", function() {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(2);
     expect(result.features[0].geometry.type).to.equal("LineString");
     expect(result.features[1].geometry.type).to.equal("Point");
@@ -1753,7 +1753,7 @@ describe("defaults", function() {
             '<node id="4295668181" version="1" changeset="23123" lat="46.4923235" lon="11.2752747" user="tyrTester06" uid="1178" visible="true" timestamp="2013-05-14T10:33:04Z"/>'+
           '</osm>'
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
-    var result = osmtogeojson.toGeojson(xml);
+    var result = osmtogeojson(xml, {flatProperties: false});
     expect(result.features).to.have.length(8);
   });
   // polygon detection
@@ -1795,7 +1795,7 @@ describe("defaults", function() {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(2);
     expect(result.features[0].geometry.type).to.equal("Polygon");
     expect(result.features[1].geometry.type).to.equal("LineString");
@@ -1831,7 +1831,7 @@ describe("defaults", function() {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].geometry.type).to.equal("LineString");
   });
@@ -1858,7 +1858,10 @@ describe("options", function () {
       foo: "bar",
       user: "johndoe"
     };
-    var result = osmtogeojson.toGeojson(json, {flatProperties: true});
+    var result = osmtogeojson(json, {flatProperties: true});
+    expect(result.features[0].properties).to.eql(geojson_properties);
+    // check default
+    result = osmtogeojson(json);
     expect(result.features[0].properties).to.eql(geojson_properties);
   });
   // interesting objects
@@ -1889,7 +1892,7 @@ describe("options", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json, {uninterestingTags: {foo:true}});
+    var result = osmtogeojson(json, {flatProperties: false, uninterestingTags: {foo:true}});
     expect(result.features).to.have.length(2);
     expect(result.features[1].properties.id).to.eql(3);
   });
@@ -1919,7 +1922,7 @@ describe("options", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json, {uninterestingTags: function(tags, ignore_tags) {
+    var result = osmtogeojson(json, {flatProperties: false, uninterestingTags: function(tags, ignore_tags) {
       return tags["tag"] != "1";
     }});
     expect(result.features).to.have.length(2);
@@ -1990,7 +1993,7 @@ describe("options", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json, {
+    result = osmtogeojson(json, {
       polygonFeatures: {
         "is_polygon_key": true,
         "is_polygon_key_value": {
@@ -2046,7 +2049,7 @@ describe("options", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json, {polygonFeatures: function(tags) {
+    var result = osmtogeojson(json, {polygonFeatures: function(tags) {
       return tags["tag"] == "1";
     }});
     expect(result.features).to.have.length(2);
@@ -2186,7 +2189,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
   // ignore missing node coordinates
@@ -2200,7 +2203,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
     json = {
       elements: [
@@ -2210,7 +2213,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
     json = {
       elements: [
@@ -2220,7 +2223,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
   });
   // tainted way
@@ -2247,7 +2250,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    var result = osmtogeojson.toGeojson(json);
+    var result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].geometry.coordinates).to.eql([[0.0,0.0],[1.0,1.0]]);
@@ -2305,7 +2308,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(2);
     expect(result.features[0].properties.tainted).to.equal(true);
@@ -2331,7 +2334,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
     // missing node
     json = {
@@ -2373,7 +2376,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(2);
     expect(result.features[0].properties.tainted).to.equal(true);
@@ -2426,7 +2429,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].properties.tainted).to.equal(true);
@@ -2480,7 +2483,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(1);
     expect(result.features[0].properties.id).to.equal(1);
     expect(result.features[0].properties.tainted).to.equal(true);
@@ -2520,7 +2523,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
     // no outer ring
     json = {
@@ -2562,7 +2565,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     // expected behaviour: do not return a degenerate (multi)polygon.
     // this could in principle return just the way that is now sort of unused
     // but just as with an (untagged) node of a one-node-way we're going to
@@ -2607,7 +2610,7 @@ describe("tainted data", function () {
         }
       ]
     };
-    result = osmtogeojson.toGeojson(json);
+    result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
   });
 
@@ -2644,7 +2647,7 @@ describe("other", function () {
       ]
     };
     json_before = JSON.stringify(json);
-    osmtogeojson.toGeojson(json);
+    osmtogeojson(json, {flatProperties: false});
     json_after = JSON.stringify(json);
     expect(json_after).to.equal(json_before);
   });
@@ -2660,7 +2663,7 @@ describe("overpass geometry types", function () {
     xml = "<osm><way id='1'><center lat='1.234' lon='4.321' /></way></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -2672,7 +2675,7 @@ describe("overpass geometry types", function () {
     xml = "<osm><relation id='1'><center lat='1.234' lon='4.321' /></relation></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("relation/1");
@@ -2696,7 +2699,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -2717,7 +2720,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("relation/1");
@@ -2734,7 +2737,7 @@ describe("overpass geometry types", function () {
     xml = "<osm><way id='1'><bounds minlat='1.234' minlon='4.321' maxlat='2.234' maxlon='5.321'/></way></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -2745,7 +2748,7 @@ describe("overpass geometry types", function () {
     xml = "<osm><relation id='1'><bounds minlat='1.234' minlon='4.321' maxlat='2.234' maxlon='5.321'/></relation></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("relation/1");
@@ -2770,7 +2773,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -2792,7 +2795,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("relation/1");
@@ -2815,7 +2818,7 @@ describe("overpass geometry types", function () {
         + "</way></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -2833,7 +2836,7 @@ describe("overpass geometry types", function () {
         + "</way></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -2862,7 +2865,7 @@ describe("overpass geometry types", function () {
         + "</relation></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("relation/1");
@@ -2909,7 +2912,7 @@ describe("overpass geometry types", function () {
         + "</osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
@@ -2952,7 +2955,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -2983,7 +2986,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3040,7 +3043,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("relation/1");
@@ -3129,7 +3132,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
@@ -3155,7 +3158,7 @@ describe("overpass geometry types", function () {
         + "</node></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3193,7 +3196,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3214,7 +3217,7 @@ describe("overpass geometry types", function () {
         + "</way></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3231,7 +3234,7 @@ describe("overpass geometry types", function () {
         + "</way></osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3265,7 +3268,7 @@ describe("overpass geometry types", function () {
         + "</osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3303,7 +3306,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3326,7 +3329,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3387,7 +3390,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3458,7 +3461,7 @@ describe("overpass geometry types", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features[0].id).to.eql("relation/1");
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
@@ -3491,7 +3494,7 @@ describe("overpass geometry types", function () {
         + "</osm>";
     xml = (new DOMParser()).parseFromString(xml, 'text/xml');
 
-    geojson = osmtogeojson.toGeojson(xml);
+    geojson = osmtogeojson(xml, {flatProperties: false});
 
     expect(geojson.features[0].id).to.eql("relation/1");
     expect(geojson.features[0].geometry.type).to.eql("Polygon");
@@ -3533,7 +3536,7 @@ describe("duplicate elements", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("node/1");
@@ -3572,7 +3575,7 @@ describe("duplicate elements", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("node/1");
@@ -3615,7 +3618,7 @@ describe("duplicate elements", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3669,7 +3672,7 @@ describe("duplicate elements", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(1);
     expect(geojson.features[0].id).to.eql("way/1");
@@ -3736,7 +3739,7 @@ describe("duplicate elements", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json);
+    geojson = osmtogeojson(json, {flatProperties: false});
 
     expect(geojson.features.length).to.eql(2);
     expect(geojson.features[0].id).to.eql("relation/1");
@@ -3775,7 +3778,8 @@ describe("duplicate elements", function () {
         }
       ]
     };
-    geojson = osmtogeojson.toGeojson(json, {
+    geojson = osmtogeojson(json, {
+      flatProperties: false,
       deduplicator: function(a,b) {
         return a.version < b.version ? a : b;
       }
