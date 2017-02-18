@@ -1,3 +1,9 @@
+3.0.0-dev
+---------
+* (breaking) objects are by default returned with flat (un-nested) properties ("flatProperties" option is enabled by default)
+* add pbf file support
+* allow customized object deduplication handling
+
 2.2.12
 ------
 backported from 3.0.0-dev: de-namespace full geometry content in output (internal state leak)

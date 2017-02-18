@@ -36,7 +36,7 @@ osmtogeojson = function( data, options ) {
   options = _.merge(
     {
       verbose: false,
-      flatProperties: false,
+      flatProperties: true,
       uninterestingTags: {
         "source": true,
         "source_ref": true,
