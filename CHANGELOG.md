@@ -1,6 +1,7 @@
 3.0.0-dev
 ---------
 * (breaking) objects are by default returned with flat (un-nested) properties ("flatProperties" option is enabled by default)
+* create (Multi)LineString features for route relations
 * add pbf file support
 * add newline delimited GeoJSON output mode (ndjson compatible)
 * new API option: feature callback for custom output
