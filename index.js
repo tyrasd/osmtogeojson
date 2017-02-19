@@ -31,7 +31,7 @@ function default_deduplicator(objectA, objectB) {
 
 var osmtogeojson = {};
 
-osmtogeojson = function( data, options ) {
+osmtogeojson = function( data, options, featureCallback ) {
 
   options = _.merge(
     {
@@ -567,9 +567,7 @@ osmtogeojson = function( data, options ) {
     }
     // construct geojson
     var geojson;
-    var geojsonnodes = {
-      "type"     : "FeatureCollection",
-      "features" : new Array()};
+    var geojsonnodes = [];
     for (i=0;i<pois.length;i++) {
       if (typeof pois[i].lon == "undefined" || typeof pois[i].lat == "undefined") {
         if (options.verbose) console.warn('POI',pois[i].type+'/'+pois[i].id,'ignored because it lacks coordinates');
@@ -592,14 +590,13 @@ osmtogeojson = function( data, options ) {
       };
       if (pois[i].__is_center_placeholder)
         feature.properties["geometry"] = "center";
-      geojsonnodes.features.push(feature);
+      if (!featureCallback)
+        geojsonnodes.push(feature);
+      else
+        featureCallback(feature);
     }
-    var geojsonlines = {
-      "type"     : "FeatureCollection",
-      "features" : new Array()};
-    var geojsonpolygons = {
-      "type"     : "FeatureCollection",
-      "features" : new Array()};
+    var geojsonlines = [];
+    var geojsonpolygons = [];
     // process multipolygons
     for (var i=0;i<rels.length;i++) {
       // todo: refactor such that this loops over relids instead of rels?
@@ -655,7 +652,10 @@ osmtogeojson = function( data, options ) {
           if (options.verbose) console.warn('Multipolygon relation',rels[i].type+'/'+rels[i].id,'ignored because it has invalid geometry');
           continue; // abort if feature could not be constructed
         }
-        geojsonpolygons.features.push(feature);
+        if (!featureCallback)
+          geojsonpolygons.push(feature);
+        else
+          featureCallback(rewind(feature));
         function construct_multipolygon(tag_object, rel) {
           var is_tainted = false;
           var mp_geometry = simple_mp ? 'way' : 'relation',
@@ -904,19 +904,26 @@ osmtogeojson = function( data, options ) {
       }
       if (ways[i].__is_bounds_placeholder)
         feature.properties["geometry"] = "bounds";
-      if (way_type == "LineString")
-        geojsonlines.features.push(feature);
-      else
-        geojsonpolygons.features.push(feature);
+      if (!featureCallback) {
+        if (way_type == "LineString")
+          geojsonlines.push(feature);
+        else
+          geojsonpolygons.push(feature);
+      } else {
+        featureCallback(rewind(feature));
+      }
     }
+
+    if (featureCallback)
+      return true;
 
     geojson = {
       "type": "FeatureCollection",
       "features": []
     };
-    geojson.features = geojson.features.concat(geojsonpolygons.features);
-    geojson.features = geojson.features.concat(geojsonlines.features);
-    geojson.features = geojson.features.concat(geojsonnodes.features);
+    geojson.features = geojson.features.concat(geojsonpolygons);
+    geojson.features = geojson.features.concat(geojsonlines);
+    geojson.features = geojson.features.concat(geojsonnodes);
     // optionally, flatten properties
     if (options.flatProperties) {
       geojson.features.forEach(function(f) {

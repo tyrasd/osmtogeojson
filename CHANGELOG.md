@@ -3,6 +3,7 @@
 * (breaking) objects are by default returned with flat (un-nested) properties ("flatProperties" option is enabled by default)
 * add pbf file support
 * allow customized object deduplication handling
+* add feature callback
 
 2.2.12
 ------

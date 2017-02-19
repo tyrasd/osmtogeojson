@@ -3793,3 +3793,285 @@ describe("duplicate elements", function () {
   });
 
 });
+
+describe('featureCallback', function() {
+
+  it("node", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type: "node",
+          id:   1,
+          lat:  2.0,
+          lon:  3.0
+        }
+      ]
+    };
+    geojson = {
+      type: "Feature",
+      id: "node/1",
+      properties: {
+        type: "node",
+        id: 1,
+        tags: {},
+        relations: [],
+        meta: {}
+      },
+      geometry: {
+        type: "Point",
+        coordinates: [3.0,2.0]
+      }
+    };
+    var result = osmtogeojson(json, {flatProperties: false}, function(feature) {
+      expect(feature).to.eql(geojson);
+    });
+    expect(result).to.equal(true);
+  });
+
+  it("way (line)", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type:  "way",
+          id:    1,
+          nodes: [2,3]
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  1.0,
+          lon:  0.0
+        }
+      ]
+    };
+    geojson = {
+      type: "Feature",
+      id: "way/1",
+      properties: {
+        type: "way",
+        id: 1,
+        tags: {},
+        relations: [],
+        meta: {}
+      },
+      geometry: {
+        type: "LineString",
+        coordinates: [[0.0, 0.0], [0.0,1.0]]
+      }
+    };
+    var result = osmtogeojson(json, {flatProperties: false}, function(feature) {
+      expect(feature).to.eql(geojson);
+    });
+    expect(result).to.equal(true);
+  });
+
+  it("way (polygon)", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type:  "way",
+          id:    1,
+          nodes: [2,3,4,5,2],
+          tags:  {area: "yes"}
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  0.0,
+          lon:  1.0
+        }
+      ]
+    };
+    geojson = {
+      type: "Feature",
+      id: "way/1",
+      properties: {
+        type: "way",
+        id: 1,
+        tags: {area: "yes"},
+        relations: [],
+        meta: {}
+      },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [0.0,0.0],
+          [1.0,0.0],
+          [1.0,1.0],
+          [0.0,1.0],
+          [0.0,0.0],
+        ]]
+      }
+    };
+    var result = osmtogeojson(json, {flatProperties: false}, function(feature) {
+      expect(feature).to.eql(geojson);
+    });
+    expect(result).to.equal(true);
+  });
+
+  it("relation (simple multipolygon)", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type:    "relation",
+          id:      1,
+          members: [{type: "way", ref: 1, role: "outer"}],
+          tags:    {type: "multipolygon"}
+        },
+        {
+          type:  "way",
+          id:    1,
+          nodes: [2,3,4,5,2],
+          tags:  {name: "foo"}
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  0.0,
+          lon:  1.0
+        }
+      ]
+    };
+    geojson = {
+      type: "Feature",
+      id: "way/1",
+      properties: {
+        type: "way",
+        id: 1,
+        tags: {name: "foo"},
+        relations: [{rel:1, role:"outer", reltags:{type:"multipolygon"}}],
+        meta: {}
+      },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [0.0,0.0],
+          [1.0,0.0],
+          [1.0,1.0],
+          [0.0,1.0],
+          [0.0,0.0],
+        ]]
+      }
+    };
+    var result = osmtogeojson(json, {flatProperties: false}, function(feature) {
+      expect(feature).to.eql(geojson);
+    });
+    expect(result).to.equal(true);
+  });
+
+  it("relation (multipolygon)", function () {
+    var json, geojson;
+    json = {
+      elements: [
+        {
+          type:    "relation",
+          id:      1,
+          members: [{type: "way", ref: 1, role: "outer"}],
+          tags:    {type: "multipolygon", name: "foo"}
+        },
+        {
+          type:  "way",
+          id:    1,
+          nodes: [2,3,4,5,2],
+          tags:  {}
+        },
+        {
+          type: "node",
+          id:   2,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   3,
+          lat:  1.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   4,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  0.0,
+          lon:  1.0
+        }
+      ]
+    };
+    geojson = {
+      type: "Feature",
+      id: "relation/1",
+      properties: {
+        type: "relation",
+        id: 1,
+        tags: {type: "multipolygon", name: "foo"},
+        relations: [],
+        meta: {}
+      },
+      geometry: {
+        type: "Polygon",
+        coordinates: [[
+          [0.0,0.0],
+          [1.0,0.0],
+          [1.0,1.0],
+          [0.0,1.0],
+          [0.0,0.0],
+        ]]
+      }
+    };
+    var result = osmtogeojson(json, {flatProperties: false}, function(feature) {
+      expect(feature).to.eql(geojson);
+    });
+    expect(result).to.equal(true);
+  });
+
+})
