@@ -928,7 +928,7 @@ osmtogeojson = function( data, options ) {
       });
     }
     // fix polygon winding
-    geojson = rewind(geojson, true /*remove for geojson-rewind >0.1.0*/);
+    geojson = rewind(geojson);
     return geojson;
   }
   function _isPolygonFeature( tags ) {
