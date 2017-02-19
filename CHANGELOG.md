@@ -2,8 +2,9 @@
 ---------
 * (breaking) objects are by default returned with flat (un-nested) properties ("flatProperties" option is enabled by default)
 * add pbf file support
-* allow customized object deduplication handling
-* add feature callback
+* add newline delimited GeoJSON output mode (ndjson compatible)
+* new API option: feature callback for custom output
+* new API option: allow customized object deduplication handling
 
 2.2.12
 ------

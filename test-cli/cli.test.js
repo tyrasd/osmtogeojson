@@ -502,3 +502,27 @@ test('parameters: -m', function (t) {
   });
 
 });
+
+test('parameters: --ndjson', function (t) {
+
+  var xml = "<osm><node id='1' version='1' lat='0' lon='0'></node><node id='2' version='1' lat='1' lon='1'></node></osm>";
+
+  function testCLI_raw(test, command, cb) {
+    exec(command, function(error, stdout, stderr) {
+      if (error) {
+        test.fail("unable to execute test");
+        console.error(error, stderr.toString());
+        return;
+      }
+      cb(stdout.toString());
+    });
+  }
+
+  t.plan(1);
+  testCLI_raw(t,
+    'echo "'+xml+'" | ./osmtogeojson --ndjson',
+    function (text) {
+      t.equal(text.match(/\n/g).length, 2);
+  });
+
+});
