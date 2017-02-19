@@ -696,6 +696,115 @@ describe("osm (json)", function () {
     result = osmtogeojson(json, {flatProperties: false});
     expect(result).to.eql(geojson);
   });
+  it("route relation", function () {
+    var json, geojson;
+    // valid multipolygon
+    json = {
+      elements: [
+        {
+          type:    "relation",
+          id:      1,
+          tags:    {"type":"route"},
+          members: [
+            {
+              type: "way",
+              ref:  2,
+              role: "forward"
+            },
+            {
+              type: "way",
+              ref:  3,
+              role: "backward"
+            },
+            {
+              type: "way",
+              ref:  4,
+              role: "forward"
+            }
+          ]
+        },
+        {
+          type:  "way",
+          id:    2,
+          nodes: [4,5]
+        },
+        {
+          type:  "way",
+          id:    3,
+          nodes: [5,6]
+        },
+        {
+          type:  "way",
+          id:    4,
+          nodes: [7,8]
+        },
+        {
+          type: "node",
+          id:   4,
+          lat: -1.0,
+          lon: -1.0
+        },
+        {
+          type: "node",
+          id:   5,
+          lat:  0.0,
+          lon:  0.0
+        },
+        {
+          type: "node",
+          id:   6,
+          lat:  1.0,
+          lon:  1.0
+        },
+        {
+          type: "node",
+          id:   7,
+          lat:  10.0,
+          lon:  10.0
+        },
+        {
+          type: "node",
+          id:   8,
+          lat:  20.0,
+          lon:  20.0
+        }
+      ]
+    };
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "relation/1",
+          properties: {
+            type: "relation",
+            id: 1,
+            tags: {"type":"route"},
+            relations: [],
+            meta: {}
+          },
+          geometry: {
+            type: "MultiLineString",
+            coordinates: [[
+              [-1.0,-1.0],
+              [ 0.0, 0.0],
+              [ 1.0, 1.0]
+            ],[
+              [10.0,10.0],
+              [20.0,20.0]
+            ]]
+          }
+        }
+      ]
+    };
+    var result = osmtogeojson(json, {flatProperties: false});
+    function _sorter(a,b) {
+      return a.length - b.length;
+    }
+    result.features[0].geometry.coordinates.sort(_sorter);
+    geojson.features[0].geometry.coordinates.sort(_sorter);
+    expect(result).to.eql(geojson);
+  });
   // tags & pois
   it("tags: ways and nodes / pois", function () {
     var json, geojson;
