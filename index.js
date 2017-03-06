@@ -21,7 +21,7 @@ function default_deduplicator(objectA, objectB) {
   // if object versions differ, use highest available version
   if ((objectA.version || objectB.version) &&
       (objectA.version !== objectB.version)) {
-    return (objectA.version || 0) > (objectB.version || 0)
+    return (+objectA.version || 0) > (+objectB.version || 0)
       ? objectA
       : objectB;
   }
