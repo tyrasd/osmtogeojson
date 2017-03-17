@@ -31,7 +31,7 @@ Supported command line options are shown with:
 
     $ osmtogeojson --help
 
-When working with extra large data files (≳ 100 MB) it is recommended to run the programm with a little extra memory to avoid *process out of memory* errors. The easiest way to do this is by running the command as `node <path-to-osmtogeojson>` and setting the `--max_old_space_size=…` parameter to the available memory size in MB (osmtogeojson typically needs about 4-5 times the input data size):
+When working with extra large data files (≳ 100 MB) it is recommended to run the programm with a little extra memory to avoid *process out of memory* errors. The easiest way to do this is by running the command as `node <path-to-osmtogeojson>` and setting the `--max_old_space_size=…` parameter to the available memory size in MB (osmtogeojson typically needs about 4-5 times the input data size). On a Unix system, you can use the following command:
 
     $ node --max_old_space_size=8192 `which osmtogeojson` large.osm > large.geojson
 
