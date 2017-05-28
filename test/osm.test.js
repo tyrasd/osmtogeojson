@@ -698,7 +698,7 @@ describe("osm (json)", function () {
   });
   it("route relation", function () {
     var json, geojson;
-    // valid multipolygon
+    // valid route relation
     json = {
       elements: [
         {
@@ -924,7 +924,7 @@ describe("osm (json)", function () {
     expect(result.features).to.have.length(0);
   });
   // invalid empty multipolygon
-  it("empty multipolygon", function () {
+  it("invalid multipolygon: empty", function () {
     var json, result;
     // empty multipolygon
     json = {
@@ -939,6 +939,116 @@ describe("osm (json)", function () {
     result = osmtogeojson(json, {flatProperties: false});
     expect(result.features).to.have.length(0);
   });
+  // invalid multipolygon with missing members
+  it("invalid multipolygon: missing members", function () {
+    var json, result;
+    // empty multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type":"multipolygon"},
+          members: [{
+            type: "way",
+            ref:  1,
+            role: "outer"
+          }]
+        }
+      ]
+    };
+    result = osmtogeojson(json, {flatProperties: false});
+    expect(result.features).to.have.length(0);
+  });
+  // invalid multipolygon with empty members
+  it("invalid multipolygon: empty members", function () {
+    var json, result;
+    // empty multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type":"multipolygon"},
+          members: [{
+            type: "way",
+            ref:  1,
+            role: "outer"
+          }]
+        },
+        {
+          type: "way",
+          id: 1
+        }
+      ]
+    };
+    result = osmtogeojson(json, {flatProperties: false});
+    expect(result.features).to.have.length(0);
+  });
+
+  // invalid empty route
+  it("invalid route: empty", function () {
+    var json, result;
+    // empty multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type":"route"}
+        }
+      ]
+    };
+    result = osmtogeojson(json, {flatProperties: false});
+    expect(result.features).to.have.length(0);
+  });
+  // invalid route with missing members
+  it("invalid route: missing members", function () {
+    var json, result;
+    // empty multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type":"route"},
+          members: [{
+            type: "way",
+            ref:  1,
+            role: "forward"
+          }]
+        }
+      ]
+    };
+    result = osmtogeojson(json, {flatProperties: false});
+    expect(result.features).to.have.length(0);
+  });
+  // invalid route with empty members
+  it("invalid route: empty members", function () {
+    var json, result;
+    // empty multipolygon
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id:   1,
+          tags: {"type":"route"},
+          members: [{
+            type: "way",
+            ref:  1,
+            role: "forward"
+          }]
+        },
+        {
+          type: "way",
+          id: 1
+        }
+      ]
+    };
+    result = osmtogeojson(json, {flatProperties: false});
+    expect(result.features).to.have.length(0);
+  });
+
   // relations
   it("relations and id-spaces", function () {
     var json, geojson;

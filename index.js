@@ -631,8 +631,8 @@ osmtogeojson = function( data, options, featureCallback ) {
           members = rel.members.filter(function(m) {return m.type === "way";});
           members = members.map(function(m) {
             var way = wayids[m.ref];
-            if (way === undefined) { // check for missing ways
-              if (options.verbose) console.warn('Route '+rel.type+'/'+rel.id, 'tainted by a missing way', m.type+'/'+m.ref);
+            if (way === undefined || way.nodes === undefined) { // check for missing ways
+              if (options.verbose) console.warn('Route '+rel.type+'/'+rel.id, 'tainted by a missing or incomplete  way', m.type+'/'+m.ref);
               is_tainted = true;
               return;
             }
@@ -752,8 +752,8 @@ osmtogeojson = function( data, options, featureCallback ) {
           members = rel.members.filter(function(m) {return m.type === "way";});
           members = members.map(function(m) {
             var way = wayids[m.ref];
-            if (way === undefined) { // check for missing ways
-              if (options.verbose) console.warn('Multipolygon', mp_geometry+'/'+mp_id, 'tainted by a missing way', m.type+'/'+m.ref);
+            if (way === undefined || way.nodes === undefined) { // check for missing ways
+              if (options.verbose) console.warn('Multipolygon', mp_geometry+'/'+mp_id, 'tainted by a missing or incomplete way', m.type+'/'+m.ref);
               is_tainted = true;
               return;
             }

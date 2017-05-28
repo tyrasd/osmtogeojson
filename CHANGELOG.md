@@ -1,3 +1,7 @@
+3.0.0-beta.1
+------------
+* make multipolygon/route handlers robust against empty members
+
 3.0.0-beta.0
 ------------
 * (breaking) objects are by default returned with flat (un-nested) properties ("flatProperties" option is enabled by default)
