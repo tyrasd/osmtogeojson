@@ -1,3 +1,8 @@
+3.0.0-beta.2
+------------
+* output linestrings for waterway relations, too
+* improve handling of data with duplicate osm objects
+
 3.0.0-beta.1
 ------------
 * make multipolygon/route handlers robust against empty members
