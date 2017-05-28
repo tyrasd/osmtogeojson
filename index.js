@@ -915,8 +915,8 @@ osmtogeojson = function( data, options, featureCallback ) {
         continue;
       }
       var way_type = "LineString"; // default
-      if (typeof ways[i].nodes[0] != "undefined" && // way has its nodes loaded
-        ways[i].nodes[0] === ways[i].nodes[ways[i].nodes.length-1] && // ... and forms a closed ring
+      if (typeof ways[i].nodes[0] != "undefined" && typeof ways[i].nodes[ways[i].nodes.length-1] != "undefined" && // way has its start/end nodes loaded
+        ways[i].nodes[0].id === ways[i].nodes[ways[i].nodes.length-1].id && // ... and forms a closed ring
         (
           typeof ways[i].tags != "undefined" && // ... and has tags
           _isPolygonFeature(ways[i].tags) // ... and tags say it is a polygon
