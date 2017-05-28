@@ -605,7 +605,7 @@ osmtogeojson = function( data, options, featureCallback ) {
         continue;
       }
       if ((typeof rels[i].tags != "undefined") &&
-          (rels[i].tags["type"] == "route")) {
+          (rels[i].tags["type"] == "route" || rels[i].tags["type"] == "waterway")) {
         if (!_.isArray(rels[i].members)) {
           if (options.verbose) console.warn('Route',rels[i].type+'/'+rels[i].id,'ignored because it has no members');
           continue; // ignore relations without members (e.g. returned by an ids_only query)
