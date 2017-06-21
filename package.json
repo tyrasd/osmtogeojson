@@ -3,6 +3,7 @@
   "version": "3.0.0-beta.2",
   "description": "convert OSM to geojson",
   "main": "index.js",
+  "types": "index.d.ts",
   "scripts": {
     "pretest": "npm ls --depth=Infinity > /dev/null",
     "test": "npm run test-lib && npm run test-cli",
@@ -35,6 +36,10 @@
     "osm-polygon-features": "^0.9.1",
     "tiny-osmpbf": "^0.1.0",
     "xmldom": "~0.1.16"
+  },
+  "optionalDependencies": {
+    "@types/geojson": "^1.0.2"
+
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
