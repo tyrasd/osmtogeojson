@@ -45,6 +45,8 @@ Usage:
 
     var osmtogeojson = require('osmtogeojson');
     osmtogeojson(osm_data);
+    
+Tutorial on usage of nodejs library [here](https://github.com/akarsh/osmtogeojson-nodejs-server-tutorial)
 
 ### browser library
 
