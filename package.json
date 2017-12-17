@@ -1,6 +1,6 @@
 {
   "name": "osmtogeojson",
-  "version": "3.0.0-beta.2",
+  "version": "3.0.0-beta.3",
   "description": "convert OSM to geojson",
   "main": "index.js",
   "types": "index.d.ts",
@@ -39,7 +39,6 @@
   },
   "optionalDependencies": {
     "@types/geojson": "^1.0.2"
-
   },
   "devDependencies": {
     "expect.js": "~0.2.0",

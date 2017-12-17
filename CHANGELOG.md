@@ -1,3 +1,8 @@
+3.0.0-beta.3
+------------
+* add typescript definitions #81 thanks @enko!
+* fix a bug (https://github.com/tyrasd/overpass-turbo/issues/353) where duplicate multipolygon members in input produced wrong and broken geojson output
+
 3.0.0-beta.2
 ------------
 * output linestrings for waterway relations, too
