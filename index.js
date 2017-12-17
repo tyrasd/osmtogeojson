@@ -1017,29 +1017,32 @@ osmtogeojson = function( data, options, featureCallback ) {
 function join(ways) {
   var _first = function(arr) {return arr[0]};
   var _last  = function(arr) {return arr[arr.length-1]};
+  var _fitTogether = function(n1, n2) {
+    return n1 !== undefined && n2 !== undefined && n1.id === n2.id;
+  }
   // stolen from iD/relation.js
   var joined = [], current, first, last, i, how, what;
   while (ways.length) {
     current = ways.pop().nodes.slice();
     joined.push(current);
-    while (ways.length && _first(current) !== _last(current)) {
+    while (ways.length && !_fitTogether(_first(current), _last(current))) {
       first = _first(current);
       last  = _last(current);
       for (i = 0; i < ways.length; i++) {
         what = ways[i].nodes;
-        if (last === _first(what)) {
+        if (_fitTogether(last, _first(what))) {
           how  = current.push;
           what = what.slice(1);
           break;
-        } else if (last === _last(what)) {
+        } else if (_fitTogether(last, _last(what))) {
           how  = current.push;
           what = what.slice(0, -1).reverse();
           break;
-        } else if (first == _last(what)) {
+        } else if (_fitTogether(first, _last(what))) {
           how  = current.unshift;
           what = what.slice(0, -1);
           break;
-        } else if (first == _first(what)) {
+        } else if (_fitTogether(first, _first(what))) {
           how  = current.unshift;
           what = what.slice(1).reverse();
           break;

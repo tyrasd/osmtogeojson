@@ -3967,6 +3967,68 @@ describe("duplicate elements", function () {
     expect(geojson.features[0].properties.tags.foo).to.eql("2");
   });
 
+  it("relation, additional skeleton ways", function () {
+    var json, geojson;
+
+    // do not include full geometry nd's as node in output
+    json = {
+      elements: [
+        {
+          type: "relation",
+          id: 1,
+          version: 2,
+          members: [{type: "way", ref: 1, role: "outer"}, {type: "way", ref: 2, role: "outer"}],
+          tags: {
+            "type": "multipolygon",
+            "foo": "bar"
+          }
+        },
+        {
+          type: "way",
+          id: 1,
+          nodes: [1,2,3],
+          tags: {
+            "asd": "fasd"
+          }
+        },
+        {
+          type: "way",
+          id: 1,
+          nodes: [1,2,3]
+        },
+        {
+          type: "way",
+          id: 2,
+          nodes: [3,1]
+        },
+        {
+          type: "node",
+          id: 1,
+          lat: 1,
+          lon: 1
+        },
+        {
+          type: "node",
+          id: 2,
+          lat: 2,
+          lon: 2
+        },
+        {
+          type: "node",
+          id: 3,
+          lat: 2,
+          lon: 1
+        }
+      ]
+    };
+    geojson = osmtogeojson(json, {flatProperties: false});
+
+    expect(geojson.features.length).to.eql(2);
+    expect(geojson.features[0].id).to.eql("relation/1");
+    expect(geojson.features[1].id).to.eql("way/1");
+    expect(geojson.features[0].geometry.coordinates.length).to.eql(1);
+  });
+
   it("custom deduplicator", function () {
     var json, geojson;
 
