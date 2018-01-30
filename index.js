@@ -500,22 +500,25 @@ osmtogeojson = function( data, options, featureCallback ) {
       rels.push(relObject);
     });
     // deriveds
-    _.each( xml.childNodes, function( object, i ) {
+    _.each( xml.childNodes[0].childNodes, function( object, i ) {
       if (object.nodeType == Node.ELEMENT_NODE
         && object.nodeName != 'node'
         && object.nodeName != 'way'
         && object.nodeName != 'relation')
       {
         var tags = {};
-        _.each( way.getElementsByTagName('tag'), function( tag ) {
+        _.each( object.getElementsByTagName('tag'), function( tag ) {
           tags[tag.getAttribute('k')] = tag.getAttribute('v');
         });
         var derivedObject = {
-          "type": object.nodeName
+          "type": object.nodeName,
+          "geometry": {}
         };
         copy_attribute( object, derivedObject, 'id' );
-        var geometry = {};
-        xml2Geometry(object, geometry);
+        if (!_.isEmpty(tags))
+          derivedObject.tags = tags;
+        xml2Geometry(object, derivedObject.geometry);
+        deriveds.push(derivedObject);
       }
     });
     return _convert2geoJSON(nodes,ways,rels,deriveds);
