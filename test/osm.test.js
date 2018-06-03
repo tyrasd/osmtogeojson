@@ -3721,6 +3721,217 @@ describe("overpass geometry types", function () {
     expect(geojson.features[0].geometry.coordinates[0].length).to.eql(6);
   });
 
+  it("derived point", function () {
+    var xml, geojson;
+
+    xml = "<osm><derived id='42'><point lat='1.234' lon='4.321'/><tag k='geom_type' v='pt'/></derived></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "derived/42",
+          properties: {
+            type: "derived",
+            id: 42,
+            tags: { "geom_type": "pt" },
+            relations: [],
+            meta: {}
+          },
+          geometry: {
+            type: "Point",
+            coordinates: [4.321, 1.234]
+          }
+        }
+      ]
+    };
+
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
+  });
+
+  it("derived linestring", function () {
+    var xml, geojson;
+
+    xml = "<osm><derived id='42'><vertex lat='1.2345' lon='4.3211'/><vertex lat='1.2346' lon='4.3210'/><tag k='geom_type' v='lstr'/></derived></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "derived/42",
+          properties: {
+            type: "derived",
+            id: 42,
+            tags: { "geom_type": "lstr" },
+            relations: [],
+            meta: {}
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: [[4.3211, 1.2345], [4.3210, 1.2346]]
+          }
+        }
+      ]
+    };
+
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
+  });
+
+  it("derived simple polygon", function () {
+    var xml, geojson;
+
+    xml = "<osm><derived id='42'><linestring><vertex lat='1.01' lon='2.01'/><vertex lat='1.01' lon='2.02'/><vertex lat='1.02' lon='2.02'/><vertex lat='1.02' lon='2.01'/><vertex lat='1.01' lon='2.01'/></linestring><tag k='geom_type' v='poly'/></derived></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "derived/42",
+          properties: {
+            type: "derived",
+            id: 42,
+            tags: { "geom_type": "poly" },
+            relations: [],
+            meta: {}
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [[[2.01, 1.01], [2.02, 1.01], [2.02, 1.02], [2.01, 1.02], [2.01, 1.01]]]
+          }
+        }
+      ]
+    };
+
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
+  });
+
+  it("derived polygon with a hole", function () {
+    var xml, geojson;
+
+    xml = "<osm><derived id='42'><linestring><vertex lat='1.01' lon='2.01'/><vertex lat='1.01' lon='2.02'/><vertex lat='1.02' lon='2.02'/><vertex lat='1.02' lon='2.01'/><vertex lat='1.01' lon='2.01'/></linestring><linestring><vertex lat='1.014' lon='2.014'/><vertex lat='1.016' lon='2.015'/><vertex lat='1.014' lon='2.016'/><vertex lat='1.014' lon='2.014'/></linestring><tag k='geom_type' v='poly'/></derived></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "derived/42",
+          properties: {
+            type: "derived",
+            id: 42,
+            tags: { "geom_type": "poly" },
+            relations: [],
+            meta: {}
+          },
+          geometry: {
+            type: "Polygon",
+            coordinates: [
+              [[2.01, 1.01], [2.02, 1.01], [2.02, 1.02], [2.01, 1.02], [2.01, 1.01]],
+              [[2.014, 1.014], [2.015, 1.016], [2.016, 1.014], [2.014, 1.014]]
+            ]
+          }
+        }
+      ]
+    };
+
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
+  });
+
+  it("simple compound geometry", function () {
+    var xml, geojson;
+
+    xml = "<osm><derived id='42'><group><point lat='1.234' lon='4.321'/></group><group><vertex lat='1.2345' lon='4.3211'/><vertex lat='1.2346' lon='4.3210'/></group><group><point lat='1.233' lon='4.321'/></group><tag k='geom_type' v='compound'/></derived></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "derived/42",
+          properties: {
+            type: "derived",
+            id: 42,
+            tags: { "geom_type": "compound" },
+            relations: [],
+            meta: {}
+          },
+          geometry: {
+            type: "GeometryCollection",
+            geometries: [
+              { type: 'Point', coordinates: [4.321, 1.234] },
+              { type: 'LineString', coordinates: [[4.3211, 1.2345], [4.3210, 1.2346]] },
+              { type: 'Point', coordinates: [4.321, 1.233] }
+            ]
+          }
+        }
+      ]
+    };
+
+    expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
+  });
+
+  it("nested compound geometry", function () {
+    var xml, geojson;
+
+    xml = "<osm><derived id='42'><group><group><point lat='1.234' lon='4.321'/></group><group><group><point lat='1.235' lon='4.321'/></group></group></group><tag k='geom_type' v='compound'/></derived></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "derived/42",
+          properties: {
+            type: "derived",
+            id: 42,
+            tags: { "geom_type": "compound" },
+            relations: [],
+            meta: {}
+          },
+          geometry:
+          {
+            type: "GeometryCollection",
+            geometries:
+            [
+              {
+                type: "GeometryCollection",
+                geometries:
+                [
+                  {
+                    type: "GeometryCollection", geometries:
+                    [
+                      { type: 'Point', coordinates: [4.321, 1.234] }
+                    ]
+                  },
+                  {
+                    type: "GeometryCollection", geometries:
+                    [
+                      {
+                        type: "GeometryCollection", geometries: [
+                          { type: 'Point', coordinates: [4.321, 1.235] }
+                        ]
+                      }
+                    ]
+                  }
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    };
+
+    expect(osmtogeojson(xml, {flatProperties: false}).features[0].geometry.geometries.geometries).to.eql(geojson.features[0].geometry.geometries.geometries);
+  });
 });
 
 

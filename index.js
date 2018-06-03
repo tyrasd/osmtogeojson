@@ -67,6 +67,7 @@ osmtogeojson = function( data, options, featureCallback ) {
     var nodes = new Array();
     var ways  = new Array();
     var rels  = new Array();
+    var deriveds = new Array();
     // helper functions
     function centerGeometry(object) {
       var pseudoNode = _.clone(object);
@@ -222,16 +223,19 @@ osmtogeojson = function( data, options, featureCallback ) {
           boundsGeometry(rel);
       break;
       default:
+        var derived = json.elements[i];
+        deriveds.push(derived);
       // type=area (from coord-query) is an example for this case.
       }
     }
-    return _convert2geoJSON(nodes,ways,rels);
+    return _convert2geoJSON(nodes,ways,rels,deriveds);
   }
   function _osmXML2geoJSON(xml) {
     // sort elements
     var nodes = new Array();
     var ways  = new Array();
     var rels  = new Array();
+    var deriveds = new Array();
     // helper function
     function copy_attribute( x, o, attr ) {
       if (x.hasAttribute(attr))
@@ -264,6 +268,49 @@ osmtogeojson = function( data, options, featureCallback ) {
       pseudoWay.nodes.push(pseudoWay.nodes[0]);
       pseudoWay.__is_bounds_placeholder = true;
       ways.push(pseudoWay);
+    }
+    function xml2Geometry(xml, geometry) {
+      _.each( xml.childNodes, function( geom, i ) {
+        if (geom.nodeType == Node.ELEMENT_NODE)
+        {
+          if (geom.nodeName == 'point')
+          {
+            geometry.type = "Point";
+            geometry.coordinates = [geom.getAttribute('lon'), geom.getAttribute('lat')];
+          }
+          else if (geom.nodeName == 'vertex')
+          {
+            if (!geometry.type || geometry.type != 'LineString')
+            {
+              geometry.type = "LineString";
+              geometry.coordinates = new Array();
+            }
+            geometry.coordinates.push([geom.getAttribute('lon'), geom.getAttribute('lat')]);
+          }
+          else if (geom.nodeName == 'linestring')
+          {
+            if (!geometry.type || geometry.type != 'Polygon')
+            {
+              geometry.type = "Polygon";
+              geometry.coordinates = new Array();
+            }
+            var linestring = {};
+            xml2Geometry(geom, linestring);
+            geometry.coordinates.push(linestring.coordinates);
+          }
+          else if (geom.nodeName == 'group')
+          {
+            if (!geometry.type || geometry.type != 'GeometryCollection')
+            {
+              geometry.type = "GeometryCollection";
+              geometry.geometries = new Array();
+            }
+            var subgeom = {};
+            xml2Geometry(geom, subgeom);
+            geometry.geometries.push(subgeom);
+          }
+        }
+      });
     }
     function fullGeometryWay(way, nds) {
       function addFullGeometryNode(lat,lon,id) {
@@ -452,9 +499,31 @@ osmtogeojson = function( data, options, featureCallback ) {
         boundsGeometry(relObject,bounds);
       rels.push(relObject);
     });
-    return _convert2geoJSON(nodes,ways,rels);
+    // deriveds
+    _.each( xml.childNodes[0].childNodes, function( object, i ) {
+      if (object.nodeType == Node.ELEMENT_NODE
+        && object.nodeName != 'node'
+        && object.nodeName != 'way'
+        && object.nodeName != 'relation')
+      {
+        var tags = {};
+        _.each( object.getElementsByTagName('tag'), function( tag ) {
+          tags[tag.getAttribute('k')] = tag.getAttribute('v');
+        });
+        var derivedObject = {
+          "type": object.nodeName,
+          "geometry": {}
+        };
+        copy_attribute( object, derivedObject, 'id' );
+        if (!_.isEmpty(tags))
+          derivedObject.tags = tags;
+        xml2Geometry(object, derivedObject.geometry);
+        deriveds.push(derivedObject);
+      }
+    });
+    return _convert2geoJSON(nodes,ways,rels,deriveds);
   }
-  function _convert2geoJSON(nodes,ways,rels) {
+  function _convert2geoJSON(nodes,ways,rels,deriveds) {
 
     // helper function that checks if there are any tags other than "created_by", "source", etc. or any tag provided in ignore_tags
     function has_interesting_tags(t, ignore_tags) {
@@ -597,6 +666,7 @@ osmtogeojson = function( data, options, featureCallback ) {
     }
     var geojsonlines = [];
     var geojsonpolygons = [];
+    var geojsoncollections = [];
     // process multipolygons
     for (var i=0;i<rels.length;i++) {
       // todo: refactor such that this loops over relids instead of rels?
@@ -957,6 +1027,36 @@ osmtogeojson = function( data, options, featureCallback ) {
         featureCallback(rewind(feature));
       }
     }
+    // process derived geometries
+    for (var i=0;i<deriveds.length;i++) {
+      var feature = {
+        "type"       : "Feature",
+        "id"         : deriveds[i].type+"/"+deriveds[i].id,
+        "properties" : {
+          "type" : deriveds[i].type,
+          "id"   : deriveds[i].id,
+          "tags" : deriveds[i].tags || {},
+          "relations" : [],
+          "meta": {}
+        },
+        "geometry"   : deriveds[i].geometry
+      }
+      if (!featureCallback) {
+        if (deriveds[i].geometry)
+        {
+          if (deriveds[i].geometry.type == "Point")
+            geojsonnodes.push(feature);
+          else if (deriveds[i].geometry.type == "LineString")
+            geojsonlines.push(feature);
+          else if (deriveds[i].geometry.type == "Polygon")
+            geojsonpolygons.push(feature);
+          else if (deriveds[i].geometry.type == "GeometryCollection")
+            geojsoncollections.push(feature);
+        }
+      } else {
+        featureCallback(rewind(feature));
+      }
+    }
 
     if (featureCallback)
       return true;
@@ -965,6 +1065,7 @@ osmtogeojson = function( data, options, featureCallback ) {
       "type": "FeatureCollection",
       "features": []
     };
+    geojson.features = geojson.features.concat(geojsoncollections);
     geojson.features = geojson.features.concat(geojsonpolygons);
     geojson.features = geojson.features.concat(geojsonlines);
     geojson.features = geojson.features.concat(geojsonnodes);
