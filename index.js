@@ -475,7 +475,8 @@ osmtogeojson = function( data, options, featureCallback ) {
         "version": object.version,
         "changeset": object.changeset,
         "user": object.user,
-        "uid": object.uid
+        "uid": object.uid,
+        "ndrefs": object.hasOwnProperty('ndrefs')  && options.wayRefs ? object.ndrefs : undefined
       };
       for (var k in res)
         if (res[k] === undefined)
@@ -517,7 +518,7 @@ osmtogeojson = function( data, options, featureCallback ) {
       }
       wayids[way.id] = way;
       if (_.isArray(way.nodes)) {
-        way.ndrefs = Object.assign([], way.nodes)
+        way.ndrefs = Object.assign([], way.nodes);
         for (var j=0;j<way.nodes.length;j++) {
           if (typeof way.nodes[j] === "object") continue; // ignore already replaced way node objects
           waynids[way.nodes[j]] = true;
@@ -943,10 +944,6 @@ osmtogeojson = function( data, options, featureCallback ) {
           "type" : way_type,
           "coordinates" : coords,
         }
-      }
-
-      if (options.wayRefs) {
-        feature.properties.ndrefs = ways[i].ndrefs
       }
 
       if (ways[i].tainted) {
