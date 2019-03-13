@@ -37,6 +37,7 @@ osmtogeojson = function( data, options, featureCallback ) {
     {
       verbose: false,
       flatProperties: true,
+      wayRefs: false,
       uninterestingTags: {
         "source": true,
         "source_ref": true,
@@ -455,7 +456,6 @@ osmtogeojson = function( data, options, featureCallback ) {
     return _convert2geoJSON(nodes,ways,rels);
   }
   function _convert2geoJSON(nodes,ways,rels) {
-
     // helper function that checks if there are any tags other than "created_by", "source", etc. or any tag provided in ignore_tags
     function has_interesting_tags(t, ignore_tags) {
       if (typeof ignore_tags !== "object")
@@ -510,12 +510,14 @@ osmtogeojson = function( data, options, featureCallback ) {
     var waynids = new Object();
     for (var i=0;i<ways.length;i++) {
       var way = ways[i];
+      way.ndrefs = [];
       if (wayids[way.id]) {
         // handle input data duplication
         way = options.deduplicator(way, wayids[way.id]);
       }
       wayids[way.id] = way;
       if (_.isArray(way.nodes)) {
+        way.ndrefs = Object.assign([], way.nodes)
         for (var j=0;j<way.nodes.length;j++) {
           if (typeof way.nodes[j] === "object") continue; // ignore already replaced way node objects
           waynids[way.nodes[j]] = true;
@@ -942,6 +944,11 @@ osmtogeojson = function( data, options, featureCallback ) {
           "coordinates" : coords,
         }
       }
+
+      if (options.wayRefs) {
+        feature.properties.ndrefs = ways[i].ndrefs
+      }
+
       if (ways[i].tainted) {
         if (options.verbose) console.warn('Way',ways[i].type+'/'+ways[i].id,'is tainted');
         feature.properties["tainted"] = true;
