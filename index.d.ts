@@ -7,14 +7,14 @@ declare var osmtogeojson: osmtogeojson.OsmToGeoJsonStatic;
 
 declare namespace osmtogeojson {
     interface OsmToGeoJSONOptions {
-        verbose: boolean;
-        flatProperties: boolean;
+        verbose?: boolean;
+        flatProperties?: boolean;
         // tslint:disable-next-line:no-any
-        uninterestingTags: any;
+        uninterestingTags?: any;
         // tslint:disable-next-line:no-any
-        polygonFeatures: any;
+        polygonFeatures?: any;
         // tslint:disable-next-line:no-any
-        deduplicator: any;
+        deduplicator?: any;
     }
 
     export interface OsmToGeoJsonStatic {
