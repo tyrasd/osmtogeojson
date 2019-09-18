@@ -374,10 +374,9 @@ osmtogeojson = function( data, options, featureCallback ) {
       copy_attribute( node, nodeObject, 'changeset' );
       copy_attribute( node, nodeObject, 'uid' );
       copy_attribute( node, nodeObject, 'user' );
-      if (!_.isEmpty(tags))
       // always set nodeObject.tags to tags, even if tags is and empty object.
       // this ensures we get valid properties when returning data for all nodes
-        nodeObject.tags = tags;
+      nodeObject.tags = tags;
       nodes.push(nodeObject);
     });
     // ways
