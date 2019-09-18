@@ -373,8 +373,8 @@ osmtogeojson = function( data, options, featureCallback ) {
       copy_attribute( node, nodeObject, 'changeset' );
       copy_attribute( node, nodeObject, 'uid' );
       copy_attribute( node, nodeObject, 'user' );
-      if (!_.isEmpty(tags))
-        nodeObject.tags = tags;
+      // if (!_.isEmpty(tags))
+      nodeObject.tags = tags;
       nodes.push(nodeObject);
     });
     // ways
