@@ -38,6 +38,7 @@ osmtogeojson = function( data, options, featureCallback ) {
       verbose: false,
       flatProperties: true,
       wayRefs: false,
+      allNodes: false,
       uninterestingTags: {
         "source": true,
         "source_ref": true,
@@ -373,8 +374,10 @@ osmtogeojson = function( data, options, featureCallback ) {
       copy_attribute( node, nodeObject, 'changeset' );
       copy_attribute( node, nodeObject, 'uid' );
       copy_attribute( node, nodeObject, 'user' );
-      // if (!_.isEmpty(tags))
-      nodeObject.tags = tags;
+      if (!_.isEmpty(tags))
+      // always set nodeObject.tags to tags, even if tags is and empty object.
+      // this ensures we get valid properties when returning data for all nodes
+        nodeObject.tags = tags;
       nodes.push(nodeObject);
     });
     // ways
@@ -458,16 +461,19 @@ osmtogeojson = function( data, options, featureCallback ) {
   function _convert2geoJSON(nodes,ways,rels) {
     // helper function that checks if there are any tags other than "created_by", "source", etc. or any tag provided in ignore_tags
     function has_interesting_tags(t, ignore_tags) {
-      return true;
-      // if (typeof ignore_tags !== "object")
-      //   ignore_tags={};
-      // if (typeof options.uninterestingTags === "function")
-      //   return !options.uninterestingTags(t, ignore_tags);
-      // for (var k in t)
-      //   if (!(options.uninterestingTags[k]===true) &&
-      //       !(ignore_tags[k]===true || ignore_tags[k]===t[k]))
-      //     return true;
-      // return false;
+
+      // if the allNodes option is set, we always return all nodes, regardless of tags
+      if (options.allNodes)
+        return true;
+      if (typeof ignore_tags !== "object")
+        ignore_tags={};
+      if (typeof options.uninterestingTags === "function")
+        return !options.uninterestingTags(t, ignore_tags);
+      for (var k in t)
+        if (!(options.uninterestingTags[k]===true) &&
+            !(ignore_tags[k]===true || ignore_tags[k]===t[k]))
+          return true;
+      return false;
     };
     // helper function to extract meta information
     function build_meta_information(object) {
