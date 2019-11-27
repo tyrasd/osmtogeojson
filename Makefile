@@ -1,5 +1,5 @@
 osmtogeojson.js: index.js package.json lodash.custom.js node_modules
-	browserify -s osmtogeojson index.js | uglifyjs -c -m -o osmtogeojson.js
+	browserify -s osmtogeojson index.js | ./node_modules/.bin/uglifyjs -c -m -o osmtogeojson.js
 coverage: .
 	./node_modules/.bin/istanbul cover node_modules/.bin/_mocha -x lodash.custom.js -- -R spec
 lodash: .

@@ -1,5 +1,5 @@
 var _ = require("./lodash.custom.js");
-var rewind = require("geojson-rewind");
+var rewind = require("@mapbox/geojson-rewind");
 
 // see https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features
 var polygonFeatures = {};
