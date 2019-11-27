@@ -2083,6 +2083,67 @@ describe("options", function () {
     result = osmtogeojson(json);
     expect(result.features[0].properties).to.eql(geojson_properties);
   });
+
+  it("add way node references without flatProperties", function () {
+    var xml, geojson;
+
+    xml = "<osm><way id='1'><nd ref='2' /><nd ref='3' /><nd ref='4' /></way><node id='2' lat='0.0' lon='1.0' /><node id='3' lat='0.0' lon='1.1' /><node id='4' lat='0.1' lon='1.2' /></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "way/1",
+          properties: {
+            type: "way",
+            id: 1,
+            tags: {},
+            relations: [],
+            meta: {ndrefs: [2, 3, 4]}
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [1.0,0.0],
+              [1.1,0.0],
+              [1.2,0.1],
+            ]
+          }
+        }
+      ]
+    };
+    expect(osmtogeojson(xml, {flatProperties: false, wayRefs: true})).to.eql(geojson);
+  })
+
+  it("add way node references with flatProperties", function () {
+    var xml, geojson;
+
+    xml = "<osm><way id='1'><nd ref='2' /><nd ref='3' /><nd ref='4' /></way><node id='2' lat='0.0' lon='1.0' /><node id='3' lat='0.0' lon='1.1' /><node id='4' lat='0.1' lon='1.2' /></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+    geojson = {
+      type: "FeatureCollection",
+      features: [
+        {
+          type: "Feature",
+          id: "way/1",
+          properties: {
+            id: "way/1",
+            ndrefs: [2, 3, 4]
+          },
+          geometry: {
+            type: "LineString",
+            coordinates: [
+              [1.0,0.0],
+              [1.1,0.0],
+              [1.2,0.1],
+            ]
+          }
+        }
+      ]
+    };
+    expect(osmtogeojson(xml, {flatProperties: true, wayRefs: true})).to.eql(geojson);
+  })
   // interesting objects
   it("uninteresting tags", function () {
     var json;
