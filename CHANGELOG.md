@@ -1,3 +1,7 @@
+3.0.0-beta.4
+------------
+* update dependencies
+
 3.0.0-beta.3
 ------------
 * add typescript definitions #81 thanks @enko!
