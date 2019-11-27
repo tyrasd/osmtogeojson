@@ -38,7 +38,7 @@
     "xmldom": "~0.1.16"
   },
   "optionalDependencies": {
-    "@types/geojson": "^1.0.2"
+    "@types/geojson": "^7946.0"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
