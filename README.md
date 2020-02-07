@@ -65,6 +65,7 @@ Converts OSM data into GeoJSON.
   * `wayRefs`: If true, the GeoJSON will have a `ndrefs` property when flat, or in `meta` when not flat, which is an array of all the node members of the `way`. default: false
   * `uninterestingTags`: Either a [blacklist](https://github.com/tyrasd/osmtogeojson/blob/2.0.0/index.js#L14-L24) of tag keys or a callback function. Will be used to decide if a feature is *interesting* enough for its own GeoJSON feature.
   * `polygonFeatures`: Either a [json object](https://github.com/tyrasd/osmtogeojson/blob/2.0.0/polygon_features.json) or callback function that is used to determine if a closed way should be treated as a Polygon or LineString. [read more](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
+  * `mapRelations` either `true` or `false`. If set to true, osmtogeojson returns some additional data, apart from the GeoJSON. The data returned will now be an object containing `geojson`, `featuresInRelation` and `nodes`. `geojson` will be the current geojson format. `featuresInRelation` is an array of feature ids that are members of relations. `nodes` is an array of node objects, including nodes without tags. Additionally, if `mapRelations` is passed, geometry processing of relations is ignored, and relations are omitted from the `geojson` output.
 
 The result is a javascript object of GeoJSON data:
 

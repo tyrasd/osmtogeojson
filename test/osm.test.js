@@ -125,7 +125,148 @@ describe("osm (xml)", function () {
     expect(osmtogeojson(xml, {flatProperties: false})).to.eql(geojson);
   });
 
+  it('relation', function() {
+    var xml, geojson;
 
+    xml = "<osm><relation id='1'><tag k='type' v='multipolygon' /><member type='way' ref='2' role='outer' /><member type='way' ref='3' role='inner' /></relation><way id='2'><tag k='area' v='yes' /><nd ref='4' /><nd ref='5' /><nd ref='6' /><nd ref='7' /><nd ref='4' /></way><way id='3'><nd ref='8' /><nd ref='9' /><nd ref='10' /><nd ref='8' /></way><node id='4' lat='-1.0' lon='-1.0' /><node id='5' lat='-1.0' lon='1.0' /><node id='6' lat='1.0' lon='1.0' /><node id='7' lat='1.0' lon='-1.0' /><node id='8' lat='-0.5' lon='0.0' /><node id='9' lat='0.5' lon='0.0' /><node id='10' lat='0.0' lon='0.5' /></osm>";
+    xml = (new DOMParser()).parseFromString(xml, 'text/xml');
+
+    expectedResult = {
+      "geojson": {
+        "type": "FeatureCollection",
+        "features": [
+          {
+            "type": "Feature",
+            "id": "way/2",
+            "properties": {
+              "type": "way",
+              "id": 2,
+              "tags": {
+                "area": "yes"
+              },
+              "relations": [],
+              "meta": {}
+            },
+            "geometry": {
+              "type": "Polygon",
+              "coordinates": [
+                [
+                  [
+                    -1,
+                    -1
+                  ],
+                  [
+                    1,
+                    -1
+                  ],
+                  [
+                    1,
+                    1
+                  ],
+                  [
+                    -1,
+                    1
+                  ],
+                  [
+                    -1,
+                    -1
+                  ]
+                ]
+              ]
+            }
+          },
+          {
+            "type": "Feature",
+            "id": "way/3",
+            "properties": {
+              "type": "way",
+              "id": 3,
+              "tags": {},
+              "relations": [],
+              "meta": {}
+            },
+            "geometry": {
+              "type": "LineString",
+              "coordinates": [
+                [
+                  0,
+                  -0.5
+                ],
+                [
+                  0,
+                  0.5
+                ],
+                [
+                  0.5,
+                  0
+                ],
+                [
+                  0,
+                  -0.5
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "featuresInRelation": [
+        "way/2",
+        "way/3"
+      ],
+      "nodes": [
+        {
+          "type": "node",
+          "id": "4",
+          "lat": "-1.0",
+          "lon": "-1.0",
+          "tags": {}
+        },
+        {
+          "type": "node",
+          "id": "5",
+          "lat": "-1.0",
+          "lon": "1.0",
+          "tags": {}
+        },
+        {
+          "type": "node",
+          "id": "6",
+          "lat": "1.0",
+          "lon": "1.0",
+          "tags": {}
+        },
+        {
+          "type": "node",
+          "id": "7",
+          "lat": "1.0",
+          "lon": "-1.0",
+          "tags": {}
+        },
+        {
+          "type": "node",
+          "id": "8",
+          "lat": "-0.5",
+          "lon": "0.0",
+          "tags": {}
+        },
+        {
+          "type": "node",
+          "id": "9",
+          "lat": "0.5",
+          "lon": "0.0",
+          "tags": {}
+        },
+        {
+          "type": "node",
+          "id": "10",
+          "lat": "0.0",
+          "lon": "0.5",
+          "tags": {}
+        }
+      ]
+    };
+    expect(osmtogeojson(xml, {flatProperties: false, mapRelations: true})).to.eql(expectedResult);
+  });
 });
 
 describe("osm (json)", function () {

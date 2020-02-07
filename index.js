@@ -38,6 +38,7 @@ osmtogeojson = function( data, options, featureCallback ) {
       verbose: false,
       flatProperties: true,
       wayRefs: false,
+      mapRelations: false,
       uninterestingTags: {
         "source": true,
         "source_ref": true,
@@ -233,6 +234,8 @@ osmtogeojson = function( data, options, featureCallback ) {
     var nodes = new Array();
     var ways  = new Array();
     var rels  = new Array();
+    var featuresInRelation = new Set();
+
     // helper function
     function copy_attribute( x, o, attr ) {
       if (x.hasAttribute(attr))
@@ -373,8 +376,9 @@ osmtogeojson = function( data, options, featureCallback ) {
       copy_attribute( node, nodeObject, 'changeset' );
       copy_attribute( node, nodeObject, 'uid' );
       copy_attribute( node, nodeObject, 'user' );
-      if (!_.isEmpty(tags))
-        nodeObject.tags = tags;
+      // always set nodeObject.tags to tags, even if tags is an empty object.
+      // this ensures we get valid properties when returning data for all nodes
+      nodeObject.tags = tags;
       nodes.push(nodeObject);
     });
     // ways
@@ -418,42 +422,59 @@ osmtogeojson = function( data, options, featureCallback ) {
     _.each( xml.getElementsByTagName('relation'), function( relation, i ) {
       var tags = {};
       var members = [];
-      _.each( relation.getElementsByTagName('tag'), function( tag ) {
-        tags[tag.getAttribute('k')] = tag.getAttribute('v');
-      });
+
       var has_full_geometry = false;
       _.each( relation.getElementsByTagName('member'), function( member, i ) {
         members[i] = {};
+
         copy_attribute( member, members[i], 'ref' );
         copy_attribute( member, members[i], 'role' );
         copy_attribute( member, members[i], 'type' );
+
         if (!has_full_geometry &&
              (members[i].type == 'node' && member.getAttribute('lat')) ||
              (members[i].type == 'way'  && member.getElementsByTagName('nd').length>0) )
           has_full_geometry = true;
+        if (options.mapRelations) {
+          featuresInRelation.add(`${members[i].type}/${members[i].ref}`);
+        }
       });
-      var relObject = {
-        "type": "relation"
+
+      if (!options.mapRelations) {
+        _.each( relation.getElementsByTagName('tag'), function( tag ) {
+          tags[tag.getAttribute('k')] = tag.getAttribute('v');
+        });
+        var relObject = {
+          "type": "relation"
+        }
+        copy_attribute( relation, relObject, 'id' );
+        copy_attribute( relation, relObject, 'version' );
+        copy_attribute( relation, relObject, 'timestamp' );
+        copy_attribute( relation, relObject, 'changeset' );
+        copy_attribute( relation, relObject, 'uid' );
+        copy_attribute( relation, relObject, 'user' );
+        if (members.length > 0)
+          relObject.members = members;
+        if (!_.isEmpty(tags))
+          relObject.tags = tags;
+        if (centroid = relation.getElementsByTagName('center')[0])
+          centerGeometry(relObject,centroid);
+        if (has_full_geometry)
+          fullGeometryRelation(relObject, relation.getElementsByTagName('member'));
+        else if (bounds = relation.getElementsByTagName('bounds')[0])
+          boundsGeometry(relObject,bounds);
+        rels.push(relObject);
       }
-      copy_attribute( relation, relObject, 'id' );
-      copy_attribute( relation, relObject, 'version' );
-      copy_attribute( relation, relObject, 'timestamp' );
-      copy_attribute( relation, relObject, 'changeset' );
-      copy_attribute( relation, relObject, 'uid' );
-      copy_attribute( relation, relObject, 'user' );
-      if (members.length > 0)
-        relObject.members = members;
-      if (!_.isEmpty(tags))
-        relObject.tags = tags;
-      if (centroid = relation.getElementsByTagName('center')[0])
-        centerGeometry(relObject,centroid);
-      if (has_full_geometry)
-        fullGeometryRelation(relObject, relation.getElementsByTagName('member'));
-      else if (bounds = relation.getElementsByTagName('bounds')[0])
-        boundsGeometry(relObject,bounds);
-      rels.push(relObject);
     });
-    return _convert2geoJSON(nodes,ways,rels);
+    if (options.mapRelations) {
+      return {
+        geojson: _convert2geoJSON(nodes,ways,rels),
+        featuresInRelation: Array.from(featuresInRelation),
+        nodes: nodes
+      }
+    } else {
+      return _convert2geoJSON(nodes,ways,rels);
+    }
   }
   function _convert2geoJSON(nodes,ways,rels) {
     // helper function that checks if there are any tags other than "created_by", "source", etc. or any tag provided in ignore_tags
