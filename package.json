@@ -35,7 +35,7 @@
     "optimist": "~0.3.5",
     "osm-polygon-features": "^0.9.1",
     "tiny-osmpbf": "^0.1.0",
-    "xmldom": "~0.1.16"
+    "xmldom": "~0.5.0"
   },
   "optionalDependencies": {
     "@types/geojson": "^7946.0"
