@@ -106,7 +106,7 @@ test('piped json', function (t) {
 
 test('piped osm (subformats)', function (t) {
 
-  var xml = '<osm version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="http://www.openstreetmap.org/copyright" license="http://opendatacommons.org/licenses/odbl/1-0/">'+
+  var xml = '<osm version="0.6" generator="OpenStreetMap server" copyright="OpenStreetMap and contributors" attribution="https://www.openstreetmap.org/copyright" license="https://opendatacommons.org/licenses/odbl/1-0/">'+
     '<relation id="4294968148" visible="true" timestamp="2013-05-14T10:33:05Z" version="1" changeset="23123" user="tyrTester06" uid="1178">'+
       '<member type="way" ref="4295032195" role="line"/>'+
       '<member type="node" ref="4295668179" role="point"/>'+
