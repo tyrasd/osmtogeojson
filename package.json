@@ -1,6 +1,6 @@
 {
   "name": "osmtogeojson",
-  "version": "3.0.0-beta.4",
+  "version": "3.0.0-beta.5",
   "description": "convert OSM to geojson",
   "main": "index.js",
   "types": "index.d.ts",
@@ -27,25 +27,25 @@
     "url": "https://github.com/tyrasd/osmtogeojson/issues"
   },
   "dependencies": {
-    "JSONStream": "0.8.0",
+    "@mapbox/geojson-rewind": "0.5.2",
+    "@xmldom/xmldom": "0.8.3",
     "concat-stream": "2.0.0",
     "geojson-numeric": "0.2.1",
-    "@mapbox/geojson-rewind": "0.4.0",
     "htmlparser2": "3.5.1",
+    "JSONStream": "0.8.0",
     "optimist": "~0.3.5",
     "osm-polygon-features": "^0.9.1",
-    "tiny-osmpbf": "^0.1.0",
-    "xmldom": "~0.1.16"
+    "tiny-osmpbf": "^0.1.0"
   },
   "optionalDependencies": {
     "@types/geojson": "^7946.0"
   },
   "devDependencies": {
     "expect.js": "~0.2.0",
+    "faucet": "~0.0.1",
     "istanbul": "^0.4.5",
-    "mocha": "~1.12.0",
-    "tape": "~2.10.2",
-    "faucet": "~0.0.1"
+    "mocha": "~10.1.0",
+    "tape": "~5.6.1"
   },
   "engines": {
     "node": ">=0.5"

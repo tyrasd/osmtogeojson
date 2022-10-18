@@ -1,6 +1,6 @@
 if (typeof require !== "undefined") {
   var expect = require("expect.js");
-  var DOMParser = require("xmldom").DOMParser;
+  var DOMParser = require("@xmldom/xmldom").DOMParser;
   var osmtogeojson = require("../");
 }
 
