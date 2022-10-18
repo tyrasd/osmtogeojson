@@ -1,18 +1,18 @@
 osmtogeojson
 ============
 
-Converts [OSM](http://openstreetmap.org) [data](http://wiki.openstreetmap.org/wiki/OSM_XML) to [GeoJSON](http://www.geojson.org/). Try the [demo](http://tyrasd.github.io/osmtogeojson/)!
+Converts [OSM](https://www.openstreetmap.org/) [data](https://wiki.openstreetmap.org/wiki/OSM_XML) to [GeoJSON](https://geojson.org/). Try the [demo](https://tyrasd.github.io/osmtogeojson/)!
 
 * stable
 * real OSM [polygon detection](https://wiki.openstreetmap.org/wiki/Overpass_turbo/Polygon_Features)
 * proper OSM multipolygon support
-* full support for extended Overpass API [geometry modes](http://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Print_.28out.29)
+* full support for extended Overpass API [geometry modes](https://wiki.openstreetmap.org/wiki/Overpass_API/Overpass_QL#Print_.28out.29)
 * well [tested](https://github.com/tyrasd/osmtogeojson/tree/gh-pages/test/) and proven
 * fast
 
-This code is used in and maintained by the [overpass turbo](http://github.com/tyrasd/overpass-ide) project.
+This code is used in and maintained by the [overpass turbo](https://github.com/tyrasd/overpass-turbo) project.
 
-[![Build Status](https://secure.travis-ci.org/tyrasd/osmtogeojson.png)](https://travis-ci.org/tyrasd/osmtogeojson)
+[![Build Status](https://secure.travis-ci.org/tyrasd/osmtogeojson.png)](https://travis-ci.org/github/tyrasd/osmtogeojson)
 
 Usage
 -----
@@ -59,7 +59,7 @@ API
 
 Converts OSM data into GeoJSON.
 
-* `data`: the OSM data. Either as a XML DOM or in [OSM JSON](http://overpass-api.de/output_formats.html#json).
+* `data`: the OSM data. Either as a XML DOM or in [OSM JSON](https://overpass-api.de/output_formats.html#json).
 * `options`: optional. The following options can be used:
   * `flatProperties`: If true, the resulting GeoJSON feature's properties will be a simple key-value list instead of a structured json object (with separate tags and metadata). default: false
   * `uninterestingTags`: Either a [blacklist](https://github.com/tyrasd/osmtogeojson/blob/2.0.0/index.js#L14-L24) of tag keys or a callback function. Will be used to decide if a feature is *interesting* enough for its own GeoJSON feature.
