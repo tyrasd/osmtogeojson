@@ -919,6 +919,7 @@ osmtogeojson = function( data, options, featureCallback ) {
         ways[i].nodes[0].id === ways[i].nodes[ways[i].nodes.length-1].id && // ... and forms a closed ring
         (
           typeof ways[i].tags != "undefined" && // ... and has tags
+          ways[i].tags != null && // ... and tags is not null
           _isPolygonFeature(ways[i].tags) // ... and tags say it is a polygon
           || // or is a placeholder for a bounds geometry
           ways[i].__is_bounds_placeholder
