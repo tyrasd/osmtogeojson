@@ -2835,6 +2835,101 @@ describe("tainted data", function () {
 
 });
 
+describe("references without coordinates", function() {
+  // ignore references to missing node coordinates
+  it("way with nodes missing coordinates", function() {
+    var json = { elements: [
+      { type: "way", id: 1, nodes: [2, 3, 4] },
+      { type: "node", id: 2 },
+      { type: "node", id: 3 },
+      { type: "node", id: 4 },
+    ] };
+    var result = osmtogeojson(json, {flatProperties: false});
+    expect(result).property("features").empty();
+  });
+  // ignore references to ways which have no geometry
+  it("line relation with ways missing nodes", function() {
+    var json = {
+      "elements": [
+        { "type": "relation", "id": 1, "members": [
+          { "type": "way", "ref": 2, "role": "" },
+          { "type": "way", "ref": 3, "role": "" }
+        ], "tags": { "type": "route" } },
+        { "type": "way", "id": 2, "nodes": [4, 5] },
+        { "type": "way", "id": 3, "nodes": [6, 7] }
+      ]
+    };
+    var result = osmtogeojson(json, {flatProperties: false});
+    expect(result).property("features").empty();
+  });
+  it("area relation with ways missing nodes", function() {
+    var json = {
+      "elements": [
+        { "type": "relation", "id": 1, "members": [
+          { "type": "way", "ref": 2, "role": "outer" },
+          { "type": "way", "ref": 3, "role": "outer" }
+        ], "tags": { "type": "multipolygon" } },
+        { "type": "way", "id": 2, "nodes": [4, 5, 5, 4] },
+        { "type": "way", "id": 3, "nodes": [6, 7, 7, 6] },
+      ]
+    };
+    var result = osmtogeojson(json, {flatProperties: false});
+    expect(result).property("features").empty();
+  });
+  it("another way", function() {
+    var json = {
+      elements: [
+        { type: 'way', id: 1, nodes: [ 2, 3, 4 ] },
+        { type: 'node', id: 2, lon: 2, lat: 2 },
+        { type: 'node', id: 3 },
+        { type: 'node', id: 4, lon: 4, lat: 4 }
+      ]
+    };
+    var result = osmtogeojson(json, {flatProperties: false});
+    expect(result.features[0].properties).property("tainted", true);
+    expect(result.features[0]).property("geometry").eql({
+      type: 'LineString',
+      coordinates: [ [ 2, 2 ], [ 4, 4 ] ],
+    });
+  });
+  it("line relation has ways and nodes but no coordinates", function() {
+    var json = {
+      "elements": [
+        { "type": "relation", "id": 1, "members": [
+          { "type": "way", "ref": 2, "role": "" },
+          { "type": "way", "ref": 3, "role": "" }
+        ], "tags": { "type": "route" } },
+        { "type": "way", "id": 2, "nodes": [4, 5] },
+        { "type": "way", "id": 3, "nodes": [6, 7] },
+        { "type": "node", "id": 4 },
+        { "type": "node", "id": 5 },
+        { "type": "node", "id": 6 },
+        { "type": "node", "id": 7 },
+      ]
+    };
+    var result = osmtogeojson(json, {flatProperties: false});
+    expect(result).property("features").empty();
+  });
+  it("area relation has ways and nodes but no coordinates", function() {
+    var json = {
+      "elements": [
+        { "type": "relation", "id": 1, "members": [
+          { "type": "way", "ref": 2, "role": "outer" },
+          { "type": "way", "ref": 3, "role": "outer" }
+        ], "tags": { "type": "multipolygon" } },
+        { "type": "way", "id": 2, "nodes": [4, 5, 5, 4] },
+        { "type": "way", "id": 3, "nodes": [6, 7, 7, 6] },
+        { "type": "node", "id": 4 },
+        { "type": "node", "id": 5 },
+        { "type": "node", "id": 6 },
+        { "type": "node", "id": 7 },
+      ]
+    };
+    var result = osmtogeojson(json, {flatProperties: false});
+    expect(result).property("features").empty();
+  });
+});
+
 describe("other", function () {
   //
   it("sideeffects", function () {
