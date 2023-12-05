@@ -641,7 +641,7 @@ osmtogeojson = function( data, options, featureCallback ) {
               role: m.role,
               way: way,
               nodes: way.nodes.filter(function(n) {
-                if (n !== undefined)
+                if (n !== undefined && n.lon !== undefined && n.lat !== undefined)
                   return true;
                 is_tainted = true;
                 if (options.verbose) console.warn('Route', rel.type+'/'+rel.id,  'tainted by a way', m.type+'/'+m.ref, 'with a missing node');
@@ -649,7 +649,9 @@ osmtogeojson = function( data, options, featureCallback ) {
               })
             };
           });
-          members = _.compact(members);
+          members = _.compact(members).filter(function(m) {
+            return m.nodes.length;
+          });
           // construct connected linestrings
           var linestrings;
           linestrings = join(members);
@@ -762,7 +764,7 @@ osmtogeojson = function( data, options, featureCallback ) {
               role: m.role || "outer",
               way: way,
               nodes: way.nodes.filter(function(n) {
-                if (n !== undefined)
+                if (n !== undefined && n.lon !== undefined && n.lat !== undefined)
                   return true;
                 is_tainted = true;
                 if (options.verbose) console.warn('Multipolygon', mp_geometry+'/'+mp_id,  'tainted by a way', m.type+'/'+m.ref, 'with a missing node');
@@ -770,7 +772,9 @@ osmtogeojson = function( data, options, featureCallback ) {
               })
             };
           });
-          members = _.compact(members);
+          members = _.compact(members).filter(function(m) {
+            return m.nodes.length;
+          });
           // construct outer and inner rings
           var outers, inners;
           outers = join(members.filter(function(m) {return m.role==="outer";}));
@@ -903,7 +907,7 @@ osmtogeojson = function( data, options, featureCallback ) {
       ways[i].hidden = false;
       var coords = new Array();
       for (j=0;j<ways[i].nodes.length;j++) {
-        if (typeof ways[i].nodes[j] == "object")
+        if (typeof ways[i].nodes[j] == "object" && typeof ways[i].nodes[j].lon != "undefined" && typeof ways[i].nodes[j].lat != "undefined")
           coords.push([+ways[i].nodes[j].lon, +ways[i].nodes[j].lat]);
         else {
           if (options.verbose) console.warn('Way',ways[i].type+'/'+ways[i].id,'is tainted by an invalid node');
